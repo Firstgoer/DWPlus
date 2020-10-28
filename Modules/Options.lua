@@ -737,7 +737,6 @@ function DWP:Options()
 	DWP.ConfigTab4.DWPScaleSize = CreateFrame("SLIDER", "$parentDWPScaleSizeSlider", DWP.ConfigTab4, "DWPOptionsSliderTemplate");
 	DWP.ConfigTab4.DWPScaleSize:SetPoint("TOPLEFT", DWP.ConfigTab4.DKPHistorySlider, "BOTTOMLEFT", 0, -50);
 	DWP.ConfigTab4.DWPScaleSize:SetMinMaxValues(0.5, 2.0);
-	print(DWPlus_DB.defaults.DWPScaleSize);
 	DWP.ConfigTab4.DWPScaleSize:SetValue(DWPlus_DB.defaults.DWPScaleSize);
 	DWP.ConfigTab4.DWPScaleSize:SetValueStep(0.05);
 	DWP.ConfigTab4.DWPScaleSize.tooltipText = L["DWPSCALESIZE"]
