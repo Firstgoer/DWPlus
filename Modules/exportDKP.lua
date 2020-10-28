@@ -208,7 +208,7 @@ function MonDKPExportBox_Show(text)
         f.desc = f:CreateFontString(nil, "OVERLAY")
 		f.desc:SetFontObject("MonDKPSmallLeft");
 		f.desc:SetPoint("TOPLEFT", sf, "BOTTOMLEFT", 10, -10);
-		f.desc:SetText("|CFFAEAEDDExport below one at a time in order. Copy all html and paste into local .html file one after the other. DKP and Loot History often take a few seconds to generate and will lock your screen briefly. As a result they are limited to the most recent 200 entries for each. All tables will be tabbed for convenience.|r");
+		f.desc:SetText("|CFFAEAEDDExport below one at a time in order. Copy all html and paste into local .html file one after the other. RP and Loot History often take a few seconds to generate and will lock your screen briefly. As a result they are limited to the most recent 200 entries for each. All tables will be tabbed for convenience.|r");
 		f.desc:SetWidth(sf:GetWidth()-30)
         
         -- EditBox
@@ -270,7 +270,7 @@ function MonDKPExportBox_Show(text)
 		function f.FormatDropDown:SetValue(arg1)
 			CurFormat = arg1;
 			if arg1 == "HTML" then
-				ExportDefinition = "|CFFAEAEDDExport below one at a time in order. Copy all html and paste into local .html file one after the other. DKP and Loot History often take a few seconds to generate and will lock your screen briefly. As a result they are limited to the most recent 200 entries for each. All tables will be tabbed for convenience.|r"
+				ExportDefinition = "|CFFAEAEDDExport below one at a time in order. Copy all html and paste into local .html file one after the other. RP and Loot History often take a few seconds to generate and will lock your screen briefly. As a result they are limited to the most recent 200 entries for each. All tables will be tabbed for convenience.|r"
 			elseif arg1 == "CSV" then
 				ExportDefinition = "|CFFAEAEDDCSV can only be used for applications designed specifically to distribute each value to the correct variable. Generate them one at a time (in order) and copy/paste all contents, one after the other, and use as needed.|r"
 			elseif arg1 == "XML" then

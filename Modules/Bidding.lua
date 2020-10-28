@@ -495,7 +495,7 @@ local function StartBidding()
 			core.BiddingWindow.CustomMinBid:SetShown(false);
 		end
 	else
-		if MonDKP_DB.modes.costvalue == "Percent" then perc = "%" else perc = " DKP" end;
+		if MonDKP_DB.modes.costvalue == "Percent" then perc = "%" else perc = " RP" end;
 		MonDKP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText(), core.BiddingWindow.item:GetText().." Cost: "..core.BiddingWindow.cost:GetNumber()..perc, CurrItemIcon)
 		MonDKP.Sync:SendData("MonDKPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.cost:GetText()..perc..","..CurrItemIcon)
 		MonDKP:BidInterface_Toggle()

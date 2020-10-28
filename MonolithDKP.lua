@@ -477,7 +477,7 @@ function MonDKP:CreateMenu()
 	MonDKP.UIConfig.Title:SetColorTexture(0, 0, 0, 1)
 	MonDKP.UIConfig.Title:SetPoint("CENTER", MonDKP.UIConfig.TitleBar, "CENTER");
 	MonDKP.UIConfig.Title:SetSize(160, 48);
-	MonDKP.UIConfig.Title:SetTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\mondkp-title-t.tga");
+	MonDKP.UIConfig.Title:SetTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\dw-plus-tracker.tga");
 
 	---------------------------------------
 	-- CHANGE LOG WINDOW

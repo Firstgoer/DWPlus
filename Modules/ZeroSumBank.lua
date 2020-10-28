@@ -51,7 +51,7 @@ local function ZeroSumDistribution()
 
 		MonDKP.Sync:SendData("MonDKPDKPDist", MonDKP_DKPHistory[1])
 		MonDKP.Sync:SendData("MonDKPBCastMsg", L["RAIDDKPADJUSTBY"].." "..distribution.." "..L["AMONG"].." "..#VerifyTable.." "..L["PLAYERSFORREASON"]..": "..reason)
-		MonDKP:Print("Raid DKP Adjusted by "..distribution.." "..L["AMONG"].." "..#VerifyTable.." "..L["PLAYERSFORREASON"]..": "..reason)
+		MonDKP:Print("Raid RP Adjusted by "..distribution.." "..L["AMONG"].." "..#VerifyTable.." "..L["PLAYERSFORREASON"]..": "..reason)
 		
 		table.wipe(VerifyTable)
 		table.wipe(MonDKP_DB.modes.ZeroSumBank)
@@ -72,9 +72,9 @@ function MonDKP:ZeroSumBank_Update()
 
 	for i=1, #MonDKP_DB.modes.ZeroSumBank do
  		if i==1 then
- 			core.ZeroSumBank.LootFrame.LootList:SetText(MonDKP_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..MonDKP_DB.modes.ZeroSumBank[i].cost.." "..L["DKP"].."\n")
+ 			core.ZeroSumBank.LootFrame.LootList:SetText(MonDKP_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..MonDKP_DB.modes.ZeroSumBank[i].cost.." "..L["RP"].."\n")
  		else
- 			core.ZeroSumBank.LootFrame.LootList:SetText(core.ZeroSumBank.LootFrame.LootList:GetText()..MonDKP_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..MonDKP_DB.modes.ZeroSumBank[i].cost.." "..L["DKP"].."\n")
+ 			core.ZeroSumBank.LootFrame.LootList:SetText(core.ZeroSumBank.LootFrame.LootList:GetText()..MonDKP_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..MonDKP_DB.modes.ZeroSumBank[i].cost.." "..L["RP"].."\n")
  		end
  	end
  	

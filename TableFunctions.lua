@@ -152,21 +152,21 @@ local function DisplayUserHistory(self, player)
 			if PlayerTable[i].dkp then
 				if strfind(PlayerTable[i].dkp, "%%") then
 					local decay = {strsplit(",", PlayerTable[i].dkp)}
-					GameTooltip:AddDoubleLine("  "..PlayerTable[i].reason, "|cffff0000"..decay[#decay].." DKP|r", 1.0, 0, 0);
+					GameTooltip:AddDoubleLine("  "..PlayerTable[i].reason, "|cffff0000"..decay[#decay].." RP|r", 1.0, 0, 0);
 				elseif tonumber(PlayerTable[i].dkp) < 0 then
-					GameTooltip:AddDoubleLine("  "..PlayerTable[i].reason, "|cffff0000"..MonDKP_round(PlayerTable[i].dkp, MonDKP_DB.modes.rounding).." DKP|r", 1.0, 0, 0);
+					GameTooltip:AddDoubleLine("  "..PlayerTable[i].reason, "|cffff0000"..MonDKP_round(PlayerTable[i].dkp, MonDKP_DB.modes.rounding).." RP|r", 1.0, 0, 0);
 				else
-					GameTooltip:AddDoubleLine("  "..PlayerTable[i].reason, "|cff00ff00"..MonDKP_round(PlayerTable[i].dkp, MonDKP_DB.modes.rounding).." DKP|r", 0, 1.0, 0);
+					GameTooltip:AddDoubleLine("  "..PlayerTable[i].reason, "|cff00ff00"..MonDKP_round(PlayerTable[i].dkp, MonDKP_DB.modes.rounding).." RP|r", 0, 1.0, 0);
 				end
 			elseif PlayerTable[i].cost then
-				GameTooltip:AddDoubleLine("  "..PlayerTable[i].zone..": |cffff0000"..PlayerTable[i].boss.."|r", PlayerTable[i].loot.." |cffff0000("..PlayerTable[i].cost.." DKP)|r", 1.0, 1.0, 1.0);
+				GameTooltip:AddDoubleLine("  "..PlayerTable[i].zone..": |cffff0000"..PlayerTable[i].boss.."|r", PlayerTable[i].loot.." |cffff0000("..PlayerTable[i].cost.." RP)|r", 1.0, 1.0, 1.0);
 			end
 		end
 		GameTooltip:AddDoubleLine(" ", " ", 1.0, 1.0, 1.0);
 		GameTooltip:AddLine("  |cff00ff00"..L["LIFETIMEEARNED"]..": "..MonDKP_DKPTable[LifetimeSearch[1][1]].lifetime_gained.."|r", 1.0, 1.0, 1.0, true);
 		GameTooltip:AddLine("  |cffff0000"..L["LIFETIMESPENT"]..": "..MonDKP_DKPTable[LifetimeSearch[1][1]].lifetime_spent.."|r", 1.0, 1.0, 1.0, true);
 	else
-		GameTooltip:AddLine("No DKP Entries", 1.0, 1.0, 1.0, true);
+		GameTooltip:AddLine("No RP Entries", 1.0, 1.0, 1.0, true);
 	end
 
 	GameTooltip:Show();

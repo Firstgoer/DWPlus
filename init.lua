@@ -31,7 +31,7 @@ MonDKP.Commands = {
 				StaticPopup_Show ("SUGGEST_RELOAD")
 			end
 		else
-			MonDKP:Print("Monolith DKP has not completed initialization.")
+			MonDKP:Print("DW Plus has not completed initialization.")
 		end
 	end,
 	["reset"] = MonDKP.ResetPosition,
@@ -52,7 +52,7 @@ MonDKP.Commands = {
 			end
 			MonDKP:BidInterface_Toggle()
 		else
-			MonDKP:Print("Monolith DKP has not completed initialization.")
+			MonDKP:Print("DW Plus has not completed initialization.")
 		end 
 	end,
 	["repairtables"] = function(...) 			-- test new features
@@ -107,26 +107,26 @@ MonDKP.Commands = {
 				MonDKP:Print(L["NOPERMISSION"])
 			end
 		else
-			MonDKP:Print("Monolith DKP has not completed initialization.")
+			MonDKP:Print("DW Plus has not completed initialization.")
 		end
 	end,
 	["help"] = function()
 		MonDKP:Print(" ");
 		MonDKP:Print(L["SLASHCOMMANDLIST"]..":")
-		MonDKP:Print("|cff00cc66/dkp|r - "..L["DKPLAUNCH"]);
-		MonDKP:Print("|cff00cc66/dkp ?|r - "..L["HELPINFO"]);
-		MonDKP:Print("|cff00cc66/dkp reset|r - "..L["DKPRESETPOS"]);
-		MonDKP:Print("|cff00cc66/dkp lockouts|r - "..L["DKPLOCKOUT"]);
-		MonDKP:Print("|cff00cc66/dkp timer|r - "..L["CREATERAIDTIMER"]);
-		MonDKP:Print("|cff00cc66/dkp bid|r - "..L["OPENBIDWINDOWHELP"]);
-		MonDKP:Print("|cff00cc66/dkp bid [itemlink]|r - "..L["OPENAUCWINHELP"]);
-		MonDKP:Print("|cff00cc66/dkp award [item link]|r - "..L["DKPAWARDHELP"]);
-		MonDKP:Print("|cff00cc66/dkp modes|r - "..L["DKPMODESHELP"]);
-		MonDKP:Print("|cff00cc66/dkp export|r - "..L["DKPEXPORTHELP"]);
+		MonDKP:Print("|cff00cc66/rp|r - "..L["DKPLAUNCH"]);
+		MonDKP:Print("|cff00cc66/rp ?|r - "..L["HELPINFO"]);
+		MonDKP:Print("|cff00cc66/rp reset|r - "..L["DKPRESETPOS"]);
+		MonDKP:Print("|cff00cc66/rp lockouts|r - "..L["DKPLOCKOUT"]);
+		MonDKP:Print("|cff00cc66/rp timer|r - "..L["CREATERAIDTIMER"]);
+		MonDKP:Print("|cff00cc66/rp bid|r - "..L["OPENBIDWINDOWHELP"]);
+		MonDKP:Print("|cff00cc66/rp bid [itemlink]|r - "..L["OPENAUCWINHELP"]);
+		MonDKP:Print("|cff00cc66/rp award [item link]|r - "..L["DKPAWARDHELP"]);
+		MonDKP:Print("|cff00cc66/rp modes|r - "..L["DKPMODESHELP"]);
+		MonDKP:Print("|cff00cc66/rp export|r - "..L["DKPEXPORTHELP"]);
 		MonDKP:Print(" ");
 		MonDKP:Print(L["WHISPERCMDSHELP"]);
 		MonDKP:Print("|cff00cc66!bid (or !bid <"..L["VALUE"]..">)|r - "..L["BIDHELP"]);
-		MonDKP:Print("|cff00cc66!dkp (or !dkp <"..L["PLAYERNAME"]..">)|r - "..L["DKPCMDHELP"]);
+		MonDKP:Print("|cff00cc66!dkp (or !rp <"..L["PLAYERNAME"]..">)|r - "..L["DKPCMDHELP"]);
 	end,
 };
 
@@ -238,7 +238,7 @@ function MonDKP_OnEvent(self, event, arg1, ...)
 	elseif event == "CHAT_MSG_WHISPER" then
 		MonDKP:CheckOfficer()
 		arg1 = strlower(arg1)
-		if (core.BidInProgress or string.find(arg1, "!dkp") == 1 or string.find(arg1, "！dkp") == 1) and core.IsOfficer == true then
+		if (core.BidInProgress or string.find(arg1, "!rp") == 1 or string.find(arg1, "！rp") == 1) and core.IsOfficer == true then
 			MonDKP_CHAT_MSG_WHISPER(arg1, ...)
 		end
 	elseif event == "GUILD_ROSTER_UPDATE" then
@@ -254,7 +254,7 @@ function MonDKP_OnEvent(self, event, arg1, ...)
 				MonDKP:SortDKPHistoryTable()
 				MonDKP:Print(L["VERSION"].." "..core.MonVersion..", "..L["CREATEDMAINTAIN"].." Roeshambo@Stalagg-PvP");
 				MonDKP:Print(L["LOADED"].." "..#MonDKP_DKPTable.." "..L["PLAYERRECORDS"]..", "..#MonDKP_Loot.." "..L["LOOTHISTRECORDS"].." "..#MonDKP_DKPHistory.." "..L["DKPHISTRECORDS"]..".");
-				MonDKP:Print(L["USE"].." /dkp ? "..L["SUBMITBUGS"].." @ https://github.com/Roeshambo/MonolithDKP/issues");
+				MonDKP:Print(L["USE"].." /rp ? "..L["SUBMITBUGS"].." @ https://github.com/Roeshambo/MonolithDKP/issues");
 				MonDKP.Sync:SendData("MonDKPBuild", tostring(core.BuildNumber)) -- broadcasts build number to guild to check if a newer version is available
 
 				if not MonDKP_DB.defaults.installed210 then
@@ -283,7 +283,7 @@ function MonDKP_OnEvent(self, event, arg1, ...)
 	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
 		MonDKP:CheckOfficer()
 		arg1 = strlower(arg1)
-		if (core.BidInProgress or string.find(arg1, "!dkp") == 1 or string.find(arg1, "!standby") == 1 or string.find(arg1, "！dkp") == 1) and core.IsOfficer == true then
+		if (core.BidInProgress or string.find(arg1, "!rp") == 1 or string.find(arg1, "!standby") == 1 or string.find(arg1, "！rp") == 1) and core.IsOfficer == true then
 			MonDKP_CHAT_MSG_WHISPER(arg1, ...)
 		end
 	elseif event == "UPDATE_INSTANCE_INFO" then
@@ -339,7 +339,7 @@ function MonDKP_OnEvent(self, event, arg1, ...)
 		MonDKP:CheckOfficer()
 		if core.IsOfficer then
 			arg1 = strlower(arg1)
-			if (core.BidInProgress or string.find(arg1, "!dkp") == 1 or string.find(arg1, "！dkp") == 1) and MonDKP_DB.modes.channels.guild then
+			if (core.BidInProgress or string.find(arg1, "!rp") == 1 or string.find(arg1, "！rp") == 1) and MonDKP_DB.modes.channels.guild then
 				MonDKP_CHAT_MSG_WHISPER(arg1, ...)
 			elseif string.find(arg1, "!standby") == 1 and core.StandbyActive then
 				MonDKP_Standby_Handler(arg1, ...)
@@ -446,8 +446,8 @@ function MonDKP:OnInitialize(event, name)		-- This is the FIRST function to run 
 	----------------------------------
 	-- Register Slash Commands
 	----------------------------------
-	SLASH_MonolithDKP1 = "/dkp";
-	SLASH_MonolithDKP2 = "/mondkp";
+	SLASH_MonolithDKP1 = "/rp";
+	SLASH_MonolithDKP2 = "/dwplus";
 	SlashCmdList.MonolithDKP = HandleSlashCommands;
 
 	--[[SLASH_RELOADUI1 = "/rl"; -- new slash command for reloading UI 				-- for debugging

@@ -323,7 +323,7 @@ function MonDKP:AwardConfirm(player, cost, boss, zone, loot, reassign)
 	core.AwardConfirm.cost:SetScript("OnKeyUp", function(self)
 		cost = self:GetNumber();
 	end)
-	core.AwardConfirm.costFooter:SetText("DKP")
+	core.AwardConfirm.costFooter:SetText("RP")
 	--core.AwardConfirm.boss:SetText(boss.." in "..zone)
 
 	if player then

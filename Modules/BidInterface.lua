@@ -349,8 +349,8 @@ function MonDKP:CurrItem_Set(item, value, icon)
 
 	UpdateBidderWindow()
 
-	if not strfind(value, "%%") and not strfind(value, "DKP") then
-		core.BidInterface.MinBid:SetText(value.." DKP");
+	if not strfind(value, "%%") and not strfind(value, "RP") then
+		core.BidInterface.MinBid:SetText(value.." RP");
 	else
 		core.BidInterface.MinBid:SetText(value);
 	end

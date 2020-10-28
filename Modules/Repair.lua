@@ -213,9 +213,9 @@ function MonDKP:RepairTables(keepDKP)  -- Repair starts
 	MonDKP:Print(L["REPAIRSTART"])
 
 	if keepDKP then
-		MonDKP:Print("Keep DKP: true")
+		MonDKP:Print("Keep RP: true")
 	else
-		MonDKP:Print("Keep DKP: false")
+		MonDKP:Print("Keep RP: false")
 	end
 
 	local ValidateTimer = ValidateTimer or CreateFrame("StatusBar", nil, UIParent)
