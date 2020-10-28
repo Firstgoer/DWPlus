@@ -673,6 +673,8 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 										table.insert(DWPlus_MinBids, deserialized[2][i])
 									end
 								end
+
+								DWP:Print(L["RECOMMENDRELOAD"])
 							end
 						elseif prefix == "DWPWhitelist" and DWP:GetGuildRankIndex(UnitName("player")) > 1 then -- only applies if not GM
 							DWPlus_Whitelist = deserialized;
