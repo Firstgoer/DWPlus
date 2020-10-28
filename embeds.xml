@@ -8,5 +8,7 @@
     <Include file="Libs\ChatThrottleLib\ChatThrottleLib.xml"/>
     <Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
     <Script file="Libs\LibDeflate\LibDeflate.lua"/>
+    <Script file="Libs\UTF8\utf8.lua" />
+    <Script file="Libs\UTF8\utf8data.lua" />
     <!--<Include file="Libs\LibCompress\lib.xml"/>-->
 </Ui>

@@ -79,7 +79,7 @@ function DWP:ValidateDKPTable_DKP()
 			processing = true
 			pause = true
 
-			local players = {strsplit(",", strsub(DWPlus_RPHistory[i].players, 1, -2))}
+			local players = {strsplit(",", string.utf8sub(DWPlus_RPHistory[i].players, 1, -2))}
 			local dkp = {strsplit(",", DWPlus_RPHistory[i].dkp)}
 
 			if #dkp == 1 then

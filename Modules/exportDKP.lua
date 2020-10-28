@@ -81,7 +81,7 @@ local function GenerateDKPTables(table, format)
 			ExportString = ExportString.."DKPHistory = ";
 			for i=1, numrows do
 				local PlayerString = gsub(DWPlus_RPHistory[i].players, ",", "-")
-				PlayerString = strsub(PlayerString, 1, -2)
+				PlayerString = string.utf8sub(PlayerString, 1, -2)
 
 				if i == numrows then
 					ExportString = ExportString..PlayerString..","..DWPlus_RPHistory[i].dkp..","..DWPlus_RPHistory[i].date..","..DWPlus_RPHistory[i].reason;

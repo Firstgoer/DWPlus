@@ -109,10 +109,13 @@ function DWP:FilterDKPTable(sort, reset)          -- filters core.WorkingTable b
 		local searchFilter = true
 
 		if DWP.UIConfig.search:GetText() ~= L["SEARCH"] and DWP.UIConfig.search:GetText() ~= "" then
-			if not strfind(string.upper(v.player), string.upper(DWP.UIConfig.search:GetText())) and not strfind(string.upper(v.class), string.upper(DWP.UIConfig.search:GetText()))
-			and not strfind(string.upper(v.role), string.upper(DWP.UIConfig.search:GetText())) and not strfind(string.upper(v.rankName), string.upper(DWP.UIConfig.search:GetText()))
-			and not strfind(string.upper(v.spec), string.upper(DWP.UIConfig.search:GetText())) then
-				searchFilter = false;
+			if not strfind(string.upper(v.player), string.upper(DWP.UIConfig.search:GetText()))
+				and not strfind(string.upper(v.class), string.upper(DWP.UIConfig.search:GetText()))
+				and not strfind(string.upper(core.LocalClass[v.class] ), string.upper(DWP.UIConfig.search:GetText()))
+				and not strfind(string.upper(v.role), string.upper(DWP.UIConfig.search:GetText()))
+				and not strfind(string.upper(v.rankName), string.upper(DWP.UIConfig.search:GetText()))
+				and not strfind(string.upper(v.spec), string.upper(DWP.UIConfig.search:GetText())) then
+					searchFilter = false;
 			end
 		end
 		
@@ -384,12 +387,12 @@ function DWP:CreateMenu()
 	DWP.UIConfig.search:SetTextInsets(10, 10, 5, 5)
 	DWP.UIConfig.search:SetText(L["SEARCH"])
 	DWP.UIConfig.search:SetScript("OnKeyUp", function(self)    -- clears text and focus on esc
-		if (DWP.UIConfig.search:GetText():match("[%^%$%(%)%%%.%[%]%*%+%-%?]")) then
-			DWP.UIConfig.search:SetText(string.gsub(DWP.UIConfig.search:GetText(), "[%^%$%(%)%%%.%[%]%*%+%-%?]", ""))
-			--DWP.UIConfig.search:SetText(strsub(DWP.UIConfig.search:GetText(), 1, -2))
-		else
-			DWP:FilterDKPTable(core.currentSort, "reset")
-		end
+			if (DWP.UIConfig.search:GetText():match("[%^%$%(%)%%%.%[%]%*%+%-%?]")) then
+				DWP.UIConfig.search:SetText(string.gsub(DWP.UIConfig.search:GetText(), "[%^%$%(%)%%%.%[%]%*%+%-%?]", ""))
+				--DWP.UIConfig.search:SetText(strsub(DWP.UIConfig.search:GetText(), 1, -2))
+			else
+				DWP:FilterDKPTable(core.currentSort, "reset")
+			end
 	end)
 	DWP.UIConfig.search:SetScript("OnEscapePressed", function(self)    -- clears text and focus on esc
 		self:SetText(L["SEARCH"])

@@ -33,13 +33,13 @@ local function ConsolidateTables(keepDKP)
 					table.insert(DKPTableTemp, { player=ConsolidatedTable[i].player, dkp=tonumber(ConsolidatedTable[i].cost), lifetime_spent=tonumber(ConsolidatedTable[i].cost), lifetime_gained=0 })
 				end
 			elseif ConsolidatedTable[i].reason then
-				local players = {strsplit(",", strsub(ConsolidatedTable[i].players, 1, -2))}
+				local players = {strsplit(",", string.utf8sub(ConsolidatedTable[i].players, 1, -2))}
 
 				if strfind(ConsolidatedTable[i].dkp, "%-%d*%.?%d+%%") then -- is a decay, calculate new values
 					local f = {strfind(ConsolidatedTable[i].dkp, "%-%d*%.?%d+%%")}
 					local playerString = ""
 					local DKPString = ""
-					local value = tonumber(strsub(ConsolidatedTable[i].dkp, f[1]+1, f[2]-1)) / 100
+					local value = tonumber(string.utf8sub(ConsolidatedTable[i].dkp, f[1]+1, f[2]-1)) / 100
 
 					for j=1, #players do
 						local search2 = DWP:Table_Search(DKPTableTemp, players[j], "player")

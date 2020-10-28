@@ -54,22 +54,22 @@ core.WorkingTable = {};       -- table of all entries from DWPlus_RPTable that a
 core.EncounterList = {      -- Event IDs must be in the exact same order as core.BossList declared in localization files
 	MC = {
 		663, 664, 665,
-		666, 668, 667, 669, 
+		666, 668, 667, 669,
 		670, 671, 672
 	},
 	BWL = {
 		610, 611, 612,
-		613, 614, 615, 616, 
+		613, 614, 615, 616,
 		617
 	},
 	AQ = {
 		709, 711, 712,
-		714, 715, 717, 
+		714, 715, 717,
 		710, 713, 716
 	},
 	NAXX = {
 		1107, 1110, 1116,
-		1117, 1112, 1115, 
+		1117, 1112, 1115,
 		1113, 1109, 1121,
 		1118, 1111, 1108, 1120,
 		1119, 1114
@@ -112,7 +112,7 @@ core.CenterSort = "class";
 core.OOD = false
 
 function DWP:GetCColors(class)
-	if core.CColors then 
+	if core.CColors then
 	local c
 		if class then
 		c = core.CColors[class] or core.CColors["UNKNOWN"];
@@ -281,7 +281,7 @@ function DWP:PurgeDKPHistory()     -- purges old entries and stores relevant dat
 		while #DWPlus_RPHistory > limit do
 			DWP:SortDKPHistoryTable()
 			local path = DWPlus_RPHistory[#DWPlus_RPHistory]
-			local players = {strsplit(",", strsub(path.players, 1, -2))}
+			local players = {strsplit(",", string.utf8sub(path.players, 1, -2))}
 			local dkp = {strsplit(",", path.dkp)}
 
 			if #dkp == 1 then
@@ -347,7 +347,7 @@ function DWP:CreateButton(point, relativeFrame, relativePoint, xOffset, yOffset,
 	btn:GetFontString():SetTextColor(1, 1, 1, 1)
 	btn:SetNormalFontObject("DWPSmallCenter");
 	btn:SetHighlightFontObject("DWPSmallCenter");
-	return btn; 
+	return btn;
 end
 
 function DWP:BroadcastTimer(seconds, ...)       -- broadcasts timer and starts it natively

@@ -141,7 +141,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 			
 				if curClass == "WARRIOR" then
 					local a,b,c = strsplit("/", message)
-					if strfind(message, "Protection") or (tonumber(c) and tonumber(strsub(c, 1, -2)) > 15) then
+					if strfind(message, "Protection") or (tonumber(c) and tonumber(string.utf8sub(c, 1, -2)) > 15) then
 						curSelection.role = L["TANK"]
 					else
 						curSelection.role = L["MELEEDPS"]
@@ -361,7 +361,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 								local search = DWP:Table_Search(DWPlus_RPHistory, deserialized.DKP[i].index, "index")
 
 								if not search and ((DWPlus_Archive.DKPMeta and DWPlus_Archive.DKPMeta < deserialized.DKP[i].date) or (not DWPlus_Archive.DKPMeta)) then   -- prevents adding entry if this entry has already been archived
-									local players = {strsplit(",", strsub(deserialized.DKP[i].players, 1, -2))}
+									local players = {strsplit(",", string.utf8sub(deserialized.DKP[i].players, 1, -2))}
 									local dkp
 
 									if strfind(deserialized.DKP[i].dkp, "%-%d*%.?%d+%%") then
@@ -492,7 +492,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							DWP:LootHistory_Update(L["NOFILTER"])
 							DWP:FilterDKPTable(core.currentSort, "reset")
 						elseif prefix == "DWPDKPDist" then
-							local players = {strsplit(",", strsub(deserialized.players, 1, -2))}
+							local players = {strsplit(",", string.utf8sub(deserialized.players, 1, -2))}
 							local dkp = deserialized.dkp
 
 							tinsert(DWPlus_RPHistory, 1, deserialized)
@@ -517,7 +517,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							end
 							DWP:FilterDKPTable(core.currentSort, "reset")
 						elseif prefix == "DWPDecay" then
-							local players = {strsplit(",", strsub(deserialized.players, 1, -2))}
+							local players = {strsplit(",", string.utf8sub(deserialized.players, 1, -2))}
 							local dkp = {strsplit(",", deserialized.dkp)}
 
 							tinsert(DWPlus_RPHistory, 1, deserialized)
@@ -609,7 +609,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							DWP:FilterDKPTable(core.currentSort, "reset")
 						elseif prefix == "DWPDelSync" then
 							local search = DWP:Table_Search(DWPlus_RPHistory, deserialized.deletes, "index")
-							local players = {strsplit(",", strsub(deserialized.players, 1, -2))} 	-- cuts off last "," from string to avoid creating an empty value
+							local players = {strsplit(",", string.utf8sub(deserialized.players, 1, -2))} 	-- cuts off last "," from string to avoid creating an empty value
 							local dkp, mod;
 
 							if strfind(deserialized.dkp, "%-%d*%.?%d+%%") then 		-- determines if it's a mass decay

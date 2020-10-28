@@ -99,7 +99,7 @@ function DKPHistoryFilterBox_Create()
 			for i=1, numSubs do
 				local max = i*20;
 				if max > #PlayerList then max = #PlayerList end
-				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = strsub(PlayerList[((i*20)-19)], 1, 1).."-"..strsub(PlayerList[max], 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
+				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = string.utf8sub(PlayerList[((i*20)-19)], 1, 1).."-"..string.utf8sub(PlayerList[max], 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
 				UIDropDownMenu_AddButton(filterName)
 			end
 			
@@ -174,7 +174,7 @@ local function DWPDeleteDKPEntry(index, timestamp, item)  -- index = entry index
 			local search = DWP:Table_Search(DWPlus_RPHistory, index, "index")
 
 			if search then
-				local players = {strsplit(",", strsub(DWPlus_RPHistory[search[1][1]].players, 1, -2))} 	-- cuts off last "," from string to avoid creating an empty value
+				local players = {strsplit(",", string.utf8sub(DWPlus_RPHistory[search[1][1]].players, 1, -2))} 	-- cuts off last "," from string to avoid creating an empty value
 				local dkp, mod;
 				local dkpString = "";
 				local curOfficer = UnitName("player")

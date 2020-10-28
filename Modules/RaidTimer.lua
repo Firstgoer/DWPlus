@@ -104,7 +104,7 @@ function DWP:StopRaidTimer()
 	core.RaidInProgress = false
 	DWP.ConfigTab2.RaidTimerContainer.OutputHeader:SetText(L["RAIDENDED"]..":")
 	DWP.ConfigTab2.RaidTimerContainer.StartTimer:SetText(L["INITRAID"])
-	DWP.ConfigTab2.RaidTimerContainer.Output:SetText("|cff00ff00"..strsub(DWP.ConfigTab2.RaidTimerContainer.Output:GetText(), 11, -3).."|r")
+	DWP.ConfigTab2.RaidTimerContainer.Output:SetText("|cff00ff00"..string.utf8sub(DWP.ConfigTab2.RaidTimerContainer.Output:GetText(), 11, -3).."|r")
 	DWP.RaidTimerPopout.Output:SetText(DWP.ConfigTab2.RaidTimerContainer.Output:GetText());
 	DWP.ConfigTab2.RaidTimerContainer.PauseTimer:Hide();
 	DWP.ConfigTab2.RaidTimerContainer.BonusHeader:SetText(L["TOTALDKPAWARD"]..":")
@@ -162,7 +162,7 @@ function DWP:StartRaidTimer(pause, syncTimer, syncSecondCount, syncMinuteCount, 
 			DWP.ConfigTab2.RaidTimerContainer.StartTimer:SetText(L["CONTINUERAID"])
 			DWP.ConfigTab2.RaidTimerContainer.OutputHeader:SetText(L["RAIDPAUSED"]..":")
 			DWP.ConfigTab2.RaidTimerContainer.PauseTimer:Hide();
-			DWP.ConfigTab2.RaidTimerContainer.Output:SetText("|cffff0000"..strsub(DWP.ConfigTab2.RaidTimerContainer.Output:GetText(), 11, -3).."|r")
+			DWP.ConfigTab2.RaidTimerContainer.Output:SetText("|cffff0000"..string.utf8sub(DWP.ConfigTab2.RaidTimerContainer.Output:GetText(), 11, -3).."|r")
 			DWP.RaidTimerPopout.Output:SetText(DWP.ConfigTab2.RaidTimerContainer.Output:GetText())
 			core.RaidInProgress = false
 			return;

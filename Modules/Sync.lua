@@ -182,7 +182,7 @@ function DWP_BroadcastFull_Init()
 			for i=1, numSubs do
 				local max = i*20;
 				if max > #PlayerList then max = #PlayerList end
-				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = strsub(PlayerList[((i*20)-19)].player, 1, 1).."-"..strsub(PlayerList[max].player, 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
+				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = string.utf8sub(PlayerList[((i*20)-19)].player, 1, 1).."-"..string.utf8sub(PlayerList[max].player, 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
 				UIDropDownMenu_AddButton(filterName)
 			end
 			

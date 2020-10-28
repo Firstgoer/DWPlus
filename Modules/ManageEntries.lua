@@ -455,7 +455,7 @@ function DWP:ManageEntries()
 
 	-- Create and bind the initialization function to the dropdown menu
 	UIDropDownMenu_Initialize(DWP.ConfigTab3.GuildRankDropDown, function(self, level, menuList)
-	local rank = UIDropDownMenu_CreateInfo()
+		local rank = UIDropDownMenu_CreateInfo()
 		rank.func = self.SetValue
 		rank.fontObject = "DWPSmallCenter"
 

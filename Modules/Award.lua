@@ -347,7 +347,7 @@ function DWP:AwardConfirm(player, cost, boss, zone, loot, reassign)
 			for i=1, numSubs do
 				local max = i*20;
 				if max > #PlayerList then max = #PlayerList end
-				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = strsub(PlayerList[((i*20)-19)], 1, 1).."-"..strsub(PlayerList[max], 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
+				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = string.utf8sub(PlayerList[((i*20)-19)], 1, 1).."-"..string.utf8sub(PlayerList[max], 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
 				UIDropDownMenu_AddButton(filterName)
 			end
 			
