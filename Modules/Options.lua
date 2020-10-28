@@ -79,7 +79,7 @@ function MonDKP:Options()
 			MonDKP.ConfigTab4.default[i]:SetSize(80, 24)
 			MonDKP.ConfigTab4.default[i]:SetBackdrop({
 				bgFile   = "Textures\\white.blp", tile = true,
-				edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+				edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 			});
 			MonDKP.ConfigTab4.default[i]:SetBackdropColor(0,0,0,0.9)
 			MonDKP.ConfigTab4.default[i]:SetBackdropBorderColor(0.12, 0.12, 0.34, 1)
@@ -245,7 +245,7 @@ function MonDKP:Options()
 				MonDKP.ConfigTab4.DefaultMinBids.SlotBox[i]:SetSize(60, 24)
 				MonDKP.ConfigTab4.DefaultMinBids.SlotBox[i]:SetBackdrop({
 					bgFile   = "Textures\\white.blp", tile = true,
-					edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+					edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 				});
 				MonDKP.ConfigTab4.DefaultMinBids.SlotBox[i]:SetBackdropColor(0,0,0,0.9)
 				MonDKP.ConfigTab4.DefaultMinBids.SlotBox[i]:SetBackdropBorderColor(0.12, 0.12, 0.34, 1)
@@ -514,7 +514,7 @@ function MonDKP:Options()
 		MonDKP.ConfigTab4.bidTimer:SetSize(50, 18)
 		MonDKP.ConfigTab4.bidTimer:SetBackdrop({
 			bgFile   = "Textures\\white.blp", tile = true,
-			edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 		});
 		MonDKP.ConfigTab4.bidTimer:SetBackdropColor(0,0,0,0.9)
 		MonDKP.ConfigTab4.bidTimer:SetBackdropBorderColor(0.12, 0.12, 0.34, 1)
@@ -565,7 +565,7 @@ function MonDKP:Options()
 	MonDKP.ConfigTab4.TooltipHistory:SetSize(50, 18)
 	MonDKP.ConfigTab4.TooltipHistory:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 	});
 	MonDKP.ConfigTab4.TooltipHistory:SetBackdropColor(0,0,0,0.9)
 	MonDKP.ConfigTab4.TooltipHistory:SetBackdropBorderColor(0.12,0.12, 0.34, 1)
@@ -617,7 +617,7 @@ function MonDKP:Options()
 	MonDKP.ConfigTab4.history:SetSize(50, 18)
 	MonDKP.ConfigTab4.history:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 	});
 	MonDKP.ConfigTab4.history:SetBackdropColor(0,0,0,0.9)
 	MonDKP.ConfigTab4.history:SetBackdropBorderColor(0.12,0.12, 0.34, 1)
@@ -664,7 +664,7 @@ function MonDKP:Options()
 	MonDKP.ConfigTab4.DKPHistory:SetSize(50, 18)
 	MonDKP.ConfigTab4.DKPHistory:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 	});
 	MonDKP.ConfigTab4.DKPHistory:SetBackdropColor(0,0,0,0.9)
 	MonDKP.ConfigTab4.DKPHistory:SetBackdropBorderColor(0.12, 0.12, 0.34, 1)
@@ -713,7 +713,7 @@ function MonDKP:Options()
 	MonDKP.ConfigTab4.TimerSize:SetSize(50, 18)
 	MonDKP.ConfigTab4.TimerSize:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 	});
 	MonDKP.ConfigTab4.TimerSize:SetBackdropColor(0,0,0,0.9)
 	MonDKP.ConfigTab4.TimerSize:SetBackdropBorderColor(0.12, 0.12, 0.34, 1)
@@ -761,7 +761,7 @@ function MonDKP:Options()
 	MonDKP.ConfigTab4.UIScaleSize:SetSize(50, 18)
 	MonDKP.ConfigTab4.UIScaleSize:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 	});
 	MonDKP.ConfigTab4.UIScaleSize:SetBackdropColor(0,0,0,0.9)
 	MonDKP.ConfigTab4.UIScaleSize:SetBackdropBorderColor(0.12, 0.12, 0.34, 1)
@@ -929,7 +929,7 @@ function MonDKP:Options()
 	end)
 
 	-- Chatframe Selection 
-	MonDKP.ConfigTab4.ChatFrame = CreateFrame("FRAME", "MonDKPChatFrameSelectDropDown", MonDKP.ConfigTab4, "MonolithDKPUIDropDownMenuTemplate")
+	MonDKP.ConfigTab4.ChatFrame = CreateFrame("FRAME", "MonDKPChatFrameSelectDropDown", MonDKP.ConfigTab4, "DWPlusUIDropDownMenuTemplate")
 	if not MonDKP_DB.defaults.ChatFrames then MonDKP_DB.defaults.ChatFrames = {} end
 
 	UIDropDownMenu_Initialize(MonDKP.ConfigTab4.ChatFrame, function(self, level, menuList)

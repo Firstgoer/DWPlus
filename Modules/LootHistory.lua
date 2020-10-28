@@ -130,7 +130,7 @@ function CreateSortBox()
 
 	-- Create the dropdown, and configure its appearance
 	if not sortDropdown then
-		sortDropdown = CreateFrame("FRAME", "MonDKPConfigFilterNameDropDown", MonDKP.ConfigTab5, "MonolithDKPUIDropDownMenuTemplate")
+		sortDropdown = CreateFrame("FRAME", "MonDKPConfigFilterNameDropDown", MonDKP.ConfigTab5, "DWPlusUIDropDownMenuTemplate")
 	end
 
 	-- Create and bind the initialization function to the dropdown menu

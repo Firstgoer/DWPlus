@@ -93,7 +93,7 @@ function MonDKP:ZeroSumBank_Create()
 	f:SetSize(325, 350);
 	f:SetBackdrop( {
 		bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,  
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
 	f:SetBackdropColor(0,0,0,0.9);
@@ -112,7 +112,7 @@ function MonDKP:ZeroSumBank_Create()
 	f.closeContainer:SetPoint("CENTER", f, "TOPRIGHT", -4, 0)
 	f.closeContainer:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3, 
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 	});
 	f.closeContainer:SetBackdropColor(0,0,0,0.9)
 	f.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
@@ -144,7 +144,7 @@ function MonDKP:ZeroSumBank_Create()
     f.Balance:SetSize(85, 28)
     f.Balance:SetBackdrop({
       bgFile   = "Textures\\white.blp", tile = true,
-      edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\slider-border", tile = true, tileSize = 1, edgeSize = 2, 
+      edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\slider-border", tile = true, tileSize = 1, edgeSize = 2,
     });
     f.Balance:SetBackdropColor(0,0,0,0.9)
     f.Balance:SetBackdropBorderColor(1,1,1,0.4)
@@ -171,7 +171,7 @@ function MonDKP:ZeroSumBank_Create()
 	f.Balance.Header:SetPoint("RIGHT", f.Balance, "LEFT", -7, 0);
 	f.Balance.Header:SetText(L["BALANCE"]..": ")
 
-	f.Distribute = CreateFrame("Button", "MonDKPBiddingDistributeButton", f, "MonolithDKPButtonTemplate")
+	f.Distribute = CreateFrame("Button", "MonDKPBiddingDistributeButton", f, "DWPlusButtonTemplate")
 	f.Distribute:SetPoint("TOPRIGHT", f, "TOPRIGHT", -15, -95);
 	f.Distribute:SetSize(90, 25);
 	f.Distribute:SetText(L["DISTRIBUTEDKP"]);
@@ -236,7 +236,7 @@ function MonDKP:ZeroSumBank_Create()
 	f.LootFrame:SetSize(305, 190)
 	f.LootFrame:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3, 
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 	});
 	f.LootFrame:SetBackdropColor(0,0,0,0.9)
 	f.LootFrame:SetBackdropBorderColor(1,1,1,1)

@@ -134,7 +134,7 @@ function MonDKP:ResetPosition()
 	MonDKP.UIConfig:SetPoint("CENTER", UIParent, "CENTER", -250, 100);
 	MonDKP.UIConfig:SetSize(550, 590);
 	MonDKP.UIConfig.TabMenu:Hide()
-	MonDKP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\expand-arrow");
+	MonDKP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\expand-arrow");
 	core.ShowState = false;
 	MonDKP.BidTimer:ClearAllPoints()
 	MonDKP.BidTimer:SetPoint("CENTER", UIParent)
@@ -323,10 +323,10 @@ function MonDKP:FormatTime(time)
 	return str;
 end
 
-function MonDKP:Print(...)        --print function to add "MonolithDKP:" to the beginning of print() outputs.
+function MonDKP:Print(...)        --print function to add "DWPlus:" to the beginning of print() outputs.
 	if not MonDKP_DB.defaults.supressNotifications then
 		local defaults = MonDKP:GetThemeColor();
-		local prefix = string.format("|cff%s%s|r|cff%s", defaults[1].hex:upper(), "MonolithDKP:", defaults[2].hex:upper());
+		local prefix = string.format("|cff%s%s|r|cff%s", defaults[1].hex:upper(), "DWPlus:", defaults[2].hex:upper());
 		local suffix = "|r";
 
 		for i = 1, NUM_CHAT_WINDOWS do
@@ -340,7 +340,7 @@ function MonDKP:Print(...)        --print function to add "MonolithDKP:" to the 
 end
 
 function MonDKP:CreateButton(point, relativeFrame, relativePoint, xOffset, yOffset, text)
-	local btn = CreateFrame("Button", nil, relativeFrame, "MonolithDKPButtonTemplate")
+	local btn = CreateFrame("Button", nil, relativeFrame, "DWPlusButtonTemplate")
 	btn:SetPoint(point, relativeFrame, relativePoint, xOffset, yOffset);
 	btn:SetSize(100, 30);
 	btn:SetText(text);
@@ -365,7 +365,7 @@ end
 function MonDKP:CreateContainer(parent, name, header)
 	local f = CreateFrame("Frame", "MonDKP"..name, parent);
 	f:SetBackdrop( {
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,  
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
 	f:SetBackdropColor(0,0,0,0.9);
@@ -501,7 +501,7 @@ function MonDKP:StatusVerify_Update()
 		end
 
 		if not core.OOD then
-			MonDKP.DKPTable.SeedVerifyIcon:SetTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\up-to-date")
+			MonDKP.DKPTable.SeedVerifyIcon:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\up-to-date")
 			MonDKP.DKPTable.SeedVerify:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
 				GameTooltip:SetText(L["DKPSTATUS"], 0.25, 0.75, 0.90, 1, true);
@@ -518,7 +518,7 @@ function MonDKP:StatusVerify_Update()
 
 			return true;
 		else
-			MonDKP.DKPTable.SeedVerifyIcon:SetTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\out-of-date")
+			MonDKP.DKPTable.SeedVerifyIcon:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\out-of-date")
 			MonDKP.DKPTable.SeedVerify:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
 				GameTooltip:SetText(L["DKPSTATUS"], 0.25, 0.75, 0.90, 1, true);

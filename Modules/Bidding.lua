@@ -237,9 +237,9 @@ function MonDKP_CHAT_MSG_WHISPER(text, ...)
 			local search = MonDKP:Table_Search(MonDKP_DKPTable, cmd, "player")
 
 			if search then
-				response = "MonolithDKP: "..MonDKP_DKPTable[search[1][1]].player.." "..L["CURRENTLYHAS"].." "..MonDKP_DKPTable[search[1][1]].dkp.." "..L["DKPAVAILABLE"].."."
+				response = "DWPlus: "..MonDKP_DKPTable[search[1][1]].player.." "..L["CURRENTLYHAS"].." "..MonDKP_DKPTable[search[1][1]].dkp.." "..L["DKPAVAILABLE"].."."
 			else
-				response = "MonolithDKP: "..L["PLAYERNOTFOUND"]
+				response = "DWPlus: "..L["PLAYERNOTFOUND"]
 			end
 		else
 			local search = MonDKP:Table_Search(MonDKP_DKPTable, name)
@@ -273,9 +273,9 @@ function MonDKP_CHAT_MSG_WHISPER(text, ...)
 	        end
 
 			if search then
-				response = "MonolithDKP: "..L["YOUCURRENTLYHAVE"].." "..MonDKP_DKPTable[search[1][1]].dkp.." "..L["DKP"].."."..range;
+				response = "DWPlus: "..L["YOUCURRENTLYHAVE"].." "..MonDKP_DKPTable[search[1][1]].dkp.." "..L["DKP"].."."..range;
 			else
-				response = "MonolithDKP: "..L["PLAYERNOTFOUND"]
+				response = "DWPlus: "..L["PLAYERNOTFOUND"]
 			end
 		end
 
@@ -303,7 +303,7 @@ function MonDKP_CHAT_MSG_WHISPER(text, ...)
 			end
 		end
 
-		if strfind(msg, "MonolithDKP: ") == 1 then
+		if strfind(msg, "DWPlus: ") == 1 then
 			return true
 		elseif strfind(msg, L["NOBIDINPROGRESS"]) == 1 then
 			return true
@@ -892,7 +892,7 @@ function MonDKP:CreateTimer()
 	f.border:SetFrameLevel(19)
 	f.border:SetSize(300, 25);
 	f.border:SetBackdrop( {
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,  
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
 	f.border:SetBackdropColor(0,0,0,0);
@@ -917,7 +917,7 @@ function MonDKP:CreateTimer()
 	f.itemIcon:SetColorTexture(0, 0, 0, 1)
 	f.itemIcon:SetSize(25, 25);
 
-	f.OpenBid = CreateFrame("Button", nil, f, "MonolithDKPButtonTemplate")
+	f.OpenBid = CreateFrame("Button", nil, f, "DWPlusButtonTemplate")
 	f.OpenBid:SetPoint("RIGHT", f.itemIcon, "LEFT", -5, 0);
 	f.OpenBid:SetSize(40,25)
 	f.OpenBid:SetText(L["BID"]);
@@ -945,7 +945,7 @@ local function BidRow_OnClick(self)
 			core.BiddingWindow.bidTable.Rows[i]:SetNormalTexture("Interface\\COMMON\\talent-blue-glow")
 			core.BiddingWindow.bidTable.Rows[i]:GetNormalTexture():SetAlpha(0.2)
 		end
-	    self:SetNormalTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\ListBox-Highlight");
+	    self:SetNormalTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\ListBox-Highlight");
 	    self:GetNormalTexture():SetAlpha(0.7)
 
 	    if MonDKP_DB.modes.costvalue == "Percent" then
@@ -985,7 +985,7 @@ local function BidWindowCreateRow(parent, id) -- Create 3 buttons for each row i
     local f = CreateFrame("Button", "$parentLine"..id, parent)
     f.Strings = {}
     f:SetSize(width, height)
-    f:SetHighlightTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\ListBox-Highlight");
+    f:SetHighlightTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\ListBox-Highlight");
     f:SetNormalTexture("Interface\\COMMON\\talent-blue-glow")
     f:GetNormalTexture():SetAlpha(0.2)
     f:SetScript("OnClick", BidRow_OnClick)
@@ -1114,7 +1114,7 @@ function MonDKP:CreateBidWindow()
 	f:SetClampedToScreen(true)
 	f:SetBackdrop( {
 		bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,  
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
 	f:SetBackdropColor(0,0,0,0.9);
@@ -1154,7 +1154,7 @@ function MonDKP:CreateBidWindow()
 	f.closeContainer:SetPoint("CENTER", f, "TOPRIGHT", -4, 0)
 	f.closeContainer:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2, 
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 	});
 	f.closeContainer:SetBackdropColor(0,0,0,0.9)
 	f.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
@@ -1177,7 +1177,7 @@ function MonDKP:CreateBidWindow()
 		f.boss:SetTextInsets(10, 15, 5, 5)
 		f.boss:SetBackdrop({
 	    	bgFile   = "Textures\\white.blp", tile = true,
-			edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2, 
+			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 		});
 		f.boss:SetBackdropColor(0,0,0,0.6)
 		f.boss:SetBackdropBorderColor(1,1,1,0.6)
@@ -1238,7 +1238,7 @@ function MonDKP:CreateBidWindow()
 		    f.minBid:SetSize(70, 28)
 		    f.minBid:SetBackdrop({
 	      	  bgFile   = "Textures\\white.blp", tile = true,
-		      edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+		      edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 		    });
 		    f.minBid:SetBackdropColor(0,0,0,0.6)
 		    f.minBid:SetBackdropBorderColor(1,1,1,0.6)
@@ -1297,7 +1297,7 @@ function MonDKP:CreateBidWindow()
 	    f.bidTimer:SetSize(70, 28)
 	    f.bidTimer:SetBackdrop({
 	      bgFile   = "Textures\\white.blp", tile = true,
-	      edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+	      edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 	    });
 	    f.bidTimer:SetBackdropColor(0,0,0,0.6)
 	    f.bidTimer:SetBackdropBorderColor(1,1,1,0.6)
@@ -1337,7 +1337,7 @@ function MonDKP:CreateBidWindow()
 		f.bidTimerFooter:SetPoint("LEFT", f.bidTimer, "RIGHT", 5, 0);
 		f.bidTimerFooter:SetText(L["SECONDS"])
 
-		f.StartBidding = CreateFrame("Button", "MonDKPBiddingStartBiddingButton", f, "MonolithDKPButtonTemplate")
+		f.StartBidding = CreateFrame("Button", "MonDKPBiddingStartBiddingButton", f, "DWPlusButtonTemplate")
 		f.StartBidding:SetPoint("TOPRIGHT", f, "TOPRIGHT", -15, -100);
 		f.StartBidding:SetSize(90, 25);
 		f.StartBidding:SetText(L["STARTBIDDING"]);
@@ -1401,7 +1401,7 @@ function MonDKP:CreateBidWindow()
 	    f.bidTable:SetSize(width, height*numrows+3)
 		f.bidTable:SetBackdrop({
 			bgFile   = "Textures\\white.blp", tile = true,
-			edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2, 
+			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 		});
 		f.bidTable:SetBackdropColor(0,0,0,0.2)
 		f.bidTable:SetBackdropBorderColor(1,1,1,0.4)
@@ -1431,7 +1431,7 @@ function MonDKP:CreateBidWindow()
 		f.BidTable_Headers:SetPoint("BOTTOMLEFT", f.bidTable, "TOPLEFT", 0, 1)
 		f.BidTable_Headers:SetBackdrop({
 			bgFile   = "Textures\\white.blp", tile = true,
-			edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2, 
+			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 		});
 		f.BidTable_Headers:SetBackdropColor(0,0,0,0.8);
 		f.BidTable_Headers:SetBackdropBorderColor(1,1,1,0.5)
@@ -1512,7 +1512,7 @@ function MonDKP:CreateBidWindow()
 	    f.cost:SetTextInsets(10, 10, 5, 5)
 	    f.cost:SetBackdrop({
 	      bgFile   = "Textures\\white.blp", tile = true,
-	      edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+	      edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
 	    });
 	    f.cost:SetBackdropColor(0,0,0,0.6)
 	    f.cost:SetBackdropBorderColor(1,1,1,0.6)

@@ -77,7 +77,7 @@ function DKPHistoryFilterBox_Create()
 
 	-- Create the dropdown, and configure its appearance
 	if not filterDropdown then
-		filterDropdown = CreateFrame("FRAME", "MonDKPDKPHistoryFilterNameDropDown", MonDKP.ConfigTab6, "MonolithDKPUIDropDownMenuTemplate")
+		filterDropdown = CreateFrame("FRAME", "MonDKPDKPHistoryFilterNameDropDown", MonDKP.ConfigTab6, "DWPlusUIDropDownMenuTemplate")
 	end
 
 	-- Create and bind the initialization function to the dropdown menu
@@ -499,7 +499,7 @@ function MonDKP:DKPHistory_Update(reset)
 			HistTimer = 0
 
 			if not MonDKP.ConfigTab6.loadMoreBtn then
-				MonDKP.ConfigTab6.loadMoreBtn = CreateFrame("Button", nil, MonDKP.ConfigTab6, "MonolithDKPButtonTemplate")
+				MonDKP.ConfigTab6.loadMoreBtn = CreateFrame("Button", nil, MonDKP.ConfigTab6, "DWPlusButtonTemplate")
 				MonDKP.ConfigTab6.loadMoreBtn:SetSize(100, 30);
 				MonDKP.ConfigTab6.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...");
 				MonDKP.ConfigTab6.loadMoreBtn:GetFontString():SetTextColor(1, 1, 1, 1)
