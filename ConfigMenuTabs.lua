@@ -123,7 +123,7 @@ function MonDKP:ConfigMenuTabs()
 	MonDKP.UIConfig.TabMenu:SetPoint("TOPRIGHT", MonDKP.UIConfig, "TOPRIGHT", -25, -25);
 	MonDKP.UIConfig.TabMenu:SetSize(477, 510);
 	MonDKP.UIConfig.TabMenu:SetBackdrop( {
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,  
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
 	MonDKP.UIConfig.TabMenu:SetBackdropColor(0,0,0,0.9);
@@ -133,7 +133,7 @@ function MonDKP:ConfigMenuTabs()
 	MonDKP.UIConfig.TabMenuBG:SetColorTexture(0, 0, 0, 1)
 	MonDKP.UIConfig.TabMenuBG:SetPoint("TOPLEFT", MonDKP.UIConfig.TabMenu, "TOPLEFT", 2, -2);
 	MonDKP.UIConfig.TabMenuBG:SetSize(478, 511);
-	MonDKP.UIConfig.TabMenuBG:SetTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\menu-bg");
+	MonDKP.UIConfig.TabMenuBG:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\menu-bg");
 
 	-- TabMenu ScrollFrame and ScrollBar
 	MonDKP.UIConfig.TabMenu.ScrollFrame = CreateFrame("ScrollFrame", nil, MonDKP.UIConfig.TabMenu, "UIPanelScrollFrameTemplate");
@@ -218,7 +218,7 @@ function MonDKP:ConfigMenuTabs()
 	MonDKP.ConfigTab1.checkBtn[9]:SetPoint("BOTTOMRIGHT", MonDKP.ConfigTab1.checkBtn[2], "TOPLEFT", 50, 0);
 	MonDKP.ConfigTab1.checkBtn[9].text:SetText("|cff5151de"..L["ALLCLASSES"].."|r");
 	MonDKP.ConfigTab1.checkBtn[10]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[5], "BOTTOMLEFT", 0, 0);
-	MonDKP.ConfigTab1.checkBtn[10].text:SetText("|cff5151de"..L["INPARTYRAID"].."|r");         -- executed in filterDKPTable (MonolithDKP.lua)
+	MonDKP.ConfigTab1.checkBtn[10].text:SetText("|cff5151de"..L["INPARTYRAID"].."|r");         -- executed in filterDKPTable (DWPlus.lua)
 
 	MonDKP.ConfigTab1.checkBtn[11] = CreateFrame("CheckButton", nil, MonDKP.ConfigTab1, "UICheckButtonTemplate");
 	MonDKP.ConfigTab1.checkBtn[11]:SetID(11)

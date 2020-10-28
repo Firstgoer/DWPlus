@@ -315,7 +315,7 @@ local function BidWindowCreateRow(parent, id) -- Create 3 buttons for each row i
     local f = CreateFrame("Button", "$parentLine"..id, parent)
     f.Strings = {}
     f:SetSize(width, height)
-    f:SetHighlightTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\ListBox-Highlight");
+    f:SetHighlightTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\ListBox-Highlight");
     f:SetNormalTexture("Interface\\COMMON\\talent-blue-glow")
     f:GetNormalTexture():SetAlpha(0.2)
     for i=1, 3 do
@@ -425,7 +425,7 @@ function MonDKP:BidInterface_Create()
 	f:SetClampedToScreen(true)
 	f:SetBackdrop( {
 		bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,  
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
 	f:SetBackdropColor(0,0,0,0.9);
@@ -460,7 +460,7 @@ function MonDKP:BidInterface_Create()
 	f.closeContainer:SetPoint("CENTER", f, "TOPRIGHT", -4, 0)
 	f.closeContainer:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2, 
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 	});
 	f.closeContainer:SetBackdropColor(0,0,0,0.9)
 	f.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
@@ -532,7 +532,7 @@ function MonDKP:BidInterface_Create()
     f.Bid:SetSize(70, 28)
     f.Bid:SetBackdrop({
   	  bgFile   = "Textures\\white.blp", tile = true,
-      edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
+      edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile", tile = true, tileSize = 32, edgeSize = 2,
     });
     f.Bid:SetBackdropColor(0,0,0,0.6)
     f.Bid:SetBackdropBorderColor(1,1,1,0.6)
@@ -544,7 +544,7 @@ function MonDKP:BidInterface_Create()
       self:ClearFocus()
     end)
 
-    f.BidPlusOne = CreateFrame("Button", nil, f.Bid, "MonolithDKPButtonTemplate")
+    f.BidPlusOne = CreateFrame("Button", nil, f.Bid, "DWPlusButtonTemplate")
 	f.BidPlusOne:SetPoint("TOPLEFT", f.Bid, "BOTTOMLEFT", 0, -2);
 	f.BidPlusOne:SetSize(33,20)
 	f.BidPlusOne:SetText("+1");
@@ -555,7 +555,7 @@ function MonDKP:BidInterface_Create()
 		f.Bid:SetNumber(f.Bid:GetNumber() + 1);
 	end)
 
-	f.BidPlusFive = CreateFrame("Button", nil, f.Bid, "MonolithDKPButtonTemplate")
+	f.BidPlusFive = CreateFrame("Button", nil, f.Bid, "DWPlusButtonTemplate")
 	f.BidPlusFive:SetPoint("TOPRIGHT", f.Bid, "BOTTOMRIGHT", 0, -2);
 	f.BidPlusFive:SetSize(33,20)
 	f.BidPlusFive:SetText("+5");
@@ -566,7 +566,7 @@ function MonDKP:BidInterface_Create()
 		f.Bid:SetNumber(f.Bid:GetNumber() + 5);
 	end)
 
-	f.BidMax = CreateFrame("Button", nil, f.BidPlusFive, "MonolithDKPButtonTemplate")
+	f.BidMax = CreateFrame("Button", nil, f.BidPlusFive, "DWPlusButtonTemplate")
 	f.BidMax:SetPoint("TOPLEFT", f.BidPlusFive, "BOTTOMLEFT", 0, -2);
 	f.BidMax:SetSize(33,20)
 	f.BidMax:SetText("MAX");
@@ -583,7 +583,7 @@ function MonDKP:BidInterface_Create()
 		end
 	end)
 
-	f.BidHalf = CreateFrame("Button", nil, f.BidPlusOne, "MonolithDKPButtonTemplate")
+	f.BidHalf = CreateFrame("Button", nil, f.BidPlusOne, "DWPlusButtonTemplate")
 	f.BidHalf:SetPoint("TOPLEFT", f.BidPlusOne, "BOTTOMLEFT", 0, -2);
 	f.BidHalf:SetSize(33,20)
 	f.BidHalf:SetText("HALF");
@@ -600,7 +600,7 @@ function MonDKP:BidInterface_Create()
 		end
 	end)
 
-    f.SubmitBid = CreateFrame("Button", nil, f, "MonolithDKPButtonTemplate")
+    f.SubmitBid = CreateFrame("Button", nil, f, "DWPlusButtonTemplate")
 	f.SubmitBid:SetPoint("LEFT", f.Bid, "RIGHT", 8, 0);
 	f.SubmitBid:SetSize(90,25)
 	f.SubmitBid:SetText(L["SUBMITBID"]);
@@ -608,7 +608,7 @@ function MonDKP:BidInterface_Create()
 	f.SubmitBid:SetNormalFontObject("MonDKPSmallCenter");
 	f.SubmitBid:SetHighlightFontObject("MonDKPSmallCenter");
 
-	f.CancelBid = CreateFrame("Button", nil, f, "MonolithDKPButtonTemplate")
+	f.CancelBid = CreateFrame("Button", nil, f, "DWPlusButtonTemplate")
 	f.CancelBid:SetPoint("LEFT", f.SubmitBid, "RIGHT", 8, 0);
 	f.CancelBid:SetSize(90,25)
 	f.CancelBid:SetText(L["CANCELBID"]);
@@ -620,7 +620,7 @@ function MonDKP:BidInterface_Create()
 		f.Bid:ClearFocus();
 	end)
 
-	f.Pass = CreateFrame("Button", nil, f, "MonolithDKPButtonTemplate")
+	f.Pass = CreateFrame("Button", nil, f, "DWPlusButtonTemplate")
 	f.Pass:SetPoint("TOPLEFT", f.SubmitBid, "BOTTOM", 5, -5);
 	f.Pass:SetSize(90,25)
 	f.Pass:SetText(L["PASS"]);
@@ -666,7 +666,7 @@ function MonDKP:BidInterface_Create()
     f.bidTable:SetSize(width, height*numrows+3)
 	f.bidTable:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2, 
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 	});
 	f.bidTable:SetBackdropColor(0,0,0,0.2)
 	f.bidTable:SetBackdropBorderColor(1,1,1,0.4)
@@ -696,7 +696,7 @@ function MonDKP:BidInterface_Create()
 	f.BidTable_Headers:SetPoint("BOTTOMLEFT", f.bidTable, "TOPLEFT", 0, 1)
 	f.BidTable_Headers:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2, 
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 	});
 	f.BidTable_Headers:SetBackdropColor(0,0,0,0.8);
 	f.BidTable_Headers:SetBackdropBorderColor(1,1,1,0.5)

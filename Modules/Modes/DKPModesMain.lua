@@ -50,7 +50,7 @@ function MonDKP:DKPModes_Main()
 	end
 
 
-	f.DKPModesMain.ModesDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "MonolithDKPUIDropDownMenuTemplate")
+	f.DKPModesMain.ModesDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "DWPlusUIDropDownMenuTemplate")
 
 	-- Create and bind the initialization function to the dropdown menu
 	UIDropDownMenu_Initialize(f.DKPModesMain.ModesDropDown, function(self, level, menuList)
@@ -208,7 +208,7 @@ function MonDKP:DKPModes_Main()
 	f.DKPModesMain.ModeHeader:SetText(L["DKPMODES"])
 
 	-- Rounding DROPDOWN box 
-	f.DKPModesMain.RoundDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "MonolithDKPUIDropDownMenuTemplate")
+	f.DKPModesMain.RoundDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "DWPlusUIDropDownMenuTemplate")
 
 	-- Create and bind the initialization function to the dropdown menu
 	UIDropDownMenu_Initialize(f.DKPModesMain.RoundDropDown, function(self, level, menuList)
@@ -312,7 +312,7 @@ function MonDKP:DKPModes_Main()
     f.DKPModesMain.AntiSnipe.Header:SetText(L["ANTISNIPE"])
 
 	-- Channels DROPDOWN box 
-	f.DKPModesMain.ChannelsDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "MonolithDKPUIDropDownMenuTemplate")
+	f.DKPModesMain.ChannelsDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "DWPlusUIDropDownMenuTemplate")
 
 	-- Create and bind the initialization function to the dropdown menu
 	UIDropDownMenu_Initialize(f.DKPModesMain.ChannelsDropDown, function(self, level, menuList)
@@ -364,7 +364,7 @@ function MonDKP:DKPModes_Main()
 
 	-- Cost Auto Update Value DROPDOWN box 
 	if not MonDKP_DB.modes.CostSelection then MonDKP_DB.modes.CostSelection = "Second Bidder" end
-	f.DKPModesMain.CostSelection = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "MonolithDKPUIDropDownMenuTemplate")
+	f.DKPModesMain.CostSelection = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "DWPlusUIDropDownMenuTemplate")
 	f.DKPModesMain.CostSelection:SetPoint("TOPLEFT", f.DKPModesMain.ChannelsDropDown, "BOTTOMLEFT", 0, -10)
 
 	local LocalCostSel;
@@ -476,7 +476,7 @@ function MonDKP:DKPModes_Main()
     end
 
     -- ZeroSum Type DROPDOWN box 
-	f.DKPModesMain.ZeroSumType = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "MonolithDKPUIDropDownMenuTemplate")
+	f.DKPModesMain.ZeroSumType = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "DWPlusUIDropDownMenuTemplate")
 
 	-- Create and bind the initialization function to the dropdown menu
 	UIDropDownMenu_Initialize(f.DKPModesMain.ZeroSumType, function(self, level, menuList)
@@ -539,7 +539,7 @@ function MonDKP:DKPModes_Main()
 	end
 
 	-- Item Cost Value DROPDOWN box 
-	f.DKPModesMain.ItemCostDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "MonolithDKPUIDropDownMenuTemplate")
+	f.DKPModesMain.ItemCostDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f.DKPModesMain, "DWPlusUIDropDownMenuTemplate")
 
 	-- Create and bind the initialization function to the dropdown menu
 	UIDropDownMenu_Initialize(f.DKPModesMain.ItemCostDropDown, function(self, level, menuList)

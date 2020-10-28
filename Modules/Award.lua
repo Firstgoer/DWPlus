@@ -177,7 +177,7 @@ local function AwardConfirm_Create()
 	f:SetClampedToScreen(true)
 	f:SetBackdrop( {
 		bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
-		edgeFile = "Interface\\AddOns\\MonolithDKP\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,  
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
 	f:SetBackdropColor(0,0,0,0.9);
@@ -198,7 +198,7 @@ local function AwardConfirm_Create()
 	f.playerHeader:SetPoint("TOPLEFT", f, "TOPLEFT", 120, -60);
 	f.playerHeader:SetText(L["PLAYER"]..":")
 
-	f.player = CreateFrame("FRAME", "MonDKPAwardConfirmPlayerDropDown", f, "MonolithDKPUIDropDownMenuTemplate")
+	f.player = CreateFrame("FRAME", "MonDKPAwardConfirmPlayerDropDown", f, "DWPlusUIDropDownMenuTemplate")
 	f.player:SetPoint("LEFT", f.playerHeader, "RIGHT", -15, 0)
 	UIDropDownMenu_SetWidth(f.player, 150)
 	UIDropDownMenu_JustifyText(f.player, "LEFT")
@@ -267,7 +267,7 @@ local function AwardConfirm_Create()
 	f.bossHeader:SetPoint("TOPRIGHT", f.costHeader, "BOTTOMRIGHT", 0, -10);
 	f.bossHeader:SetText(L["BOSS"]..":")
 
-	f.bossDropDown = CreateFrame("FRAME", "MonDKPAwardConfirmBossDropDown", f, "MonolithDKPUIDropDownMenuTemplate")
+	f.bossDropDown = CreateFrame("FRAME", "MonDKPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")
 	f.bossDropDown:SetPoint("LEFT", f.bossHeader, "RIGHT", -15, -2)
 	UIDropDownMenu_SetWidth(f.bossDropDown, 150)
 	UIDropDownMenu_JustifyText(f.bossDropDown, "LEFT")
@@ -278,7 +278,7 @@ local function AwardConfirm_Create()
 	f.zoneHeader:SetPoint("TOPRIGHT", f.bossHeader, "BOTTOMRIGHT", 0, -10);
 	f.zoneHeader:SetText(L["ZONE"]..":")
 
-	f.zoneDropDown = CreateFrame("FRAME", "MonDKPAwardConfirmBossDropDown", f, "MonolithDKPUIDropDownMenuTemplate")
+	f.zoneDropDown = CreateFrame("FRAME", "MonDKPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")
 	f.zoneDropDown:SetPoint("LEFT", f.zoneHeader, "RIGHT", -15, -2)
 	UIDropDownMenu_SetWidth(f.zoneDropDown, 150)
 	UIDropDownMenu_JustifyText(f.zoneDropDown, "LEFT")
