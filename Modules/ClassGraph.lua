@@ -1,13 +1,13 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 
-function MonDKP:ClassGraph()
-	local graph = CreateFrame("Frame", "MonDKPClassIcons", MonDKP.ConfigTab1)
+function DWP:ClassGraph()
+	local graph = CreateFrame("Frame", "DWPClassIcons", DWP.ConfigTab1)
 
-	graph:SetPoint("TOPLEFT", MonDKP.ConfigTab1, "TOPLEFT", 0, 0)
+	graph:SetPoint("TOPLEFT", DWP.ConfigTab1, "TOPLEFT", 0, 0)
 	graph:SetBackdropColor(0,0,0,0)
 	graph:SetSize(460, 495)
 
@@ -20,10 +20,10 @@ function MonDKP:ClassGraph()
 	local BarWidth = 25
 
 	for k, v in pairs(core.classes) do
-		local classSearch = MonDKP:Table_Search(MonDKP_DKPTable, v)
+		local classSearch = DWP:Table_Search(DWPlus_RPTable, v)
 		if classSearch and #classSearch > 0 then
 			tinsert(classCount, #classSearch)
-			local classPerc = MonDKP_round(#classSearch / #MonDKP_DKPTable, 4);
+			local classPerc = DWP_round(#classSearch / #DWPlus_RPTable, 4);
 			tinsert(perc, classPerc * 100)
 			local adjustBar = BarMaxHeight * classPerc;
 			tinsert(perc_height, adjustBar)
@@ -45,7 +45,7 @@ function MonDKP:ClassGraph()
 		end
   		graph.icons[i]:SetColorTexture(0, 0, 0, 1)
   		graph.icons[i]:SetSize(28, 28);
-  		graph.icons[i].bar = CreateFrame("Frame", "MonDKP"..i.."Graph", graph)
+  		graph.icons[i].bar = CreateFrame("Frame", "DWP"..i.."Graph", graph)
 		graph.icons[i].bar:SetPoint("BOTTOM", icons[i], "TOP", 0, 5)
 		graph.icons[i].bar:SetBackdropBorderColor(1,1,1,0)
   		graph.icons[i].bar:SetSize(BarWidth, perc_height[i])
@@ -55,22 +55,22 @@ function MonDKP:ClassGraph()
 		});
   		graph.icons[i]:SetTexture("Interface\\GLUES\\CHARACTERCREATE\\UI-CharacterCreate-Classes");
 
-  		local c = MonDKP:GetCColors(core.classes[i])
+  		local c = DWP:GetCColors(core.classes[i])
 		graph.icons[i].bar:SetBackdropColor(c.r, c.g, c.b, 1)
 
 		graph.icons[i].percentage = graph.icons[i].bar:CreateFontString(nil, "OVERLAY")
 		graph.icons[i].percentage:SetPoint("BOTTOM", graph.icons[i].bar, "TOP", 0, 3)
-		graph.icons[i].percentage:SetFontObject("MonDKPSmallCenter")
-		graph.icons[i].percentage:SetText(MonDKP_round(perc[i] or 0, 1).."%")
+		graph.icons[i].percentage:SetFontObject("DWPSmallCenter")
+		graph.icons[i].percentage:SetText(DWP_round(perc[i] or 0, 1).."%")
 		graph.icons[i].percentage:SetTextColor(1, 1, 1, 1)
 
 		graph.icons[i].count = graph.icons[i].bar:CreateFontString(nil, "OVERLAY")
 		graph.icons[i].count:SetPoint("BOTTOM", graph.icons[i].bar, "BOTTOM", 0, -55)
-		graph.icons[i].count:SetFontObject("MonDKPSmallCenter")
+		graph.icons[i].count:SetFontObject("DWPSmallCenter")
 		graph.icons[i].count:SetText(classCount[i])
 		graph.icons[i].count:SetTextColor(1, 1, 1, 1)
 
-		--MonDKP.ConfigTab2.header:SetScale(1.2)
+		--DWP.ConfigTab2.header:SetScale(1.2)
 	end
 
 	if core.faction == "Horde" then
@@ -114,7 +114,7 @@ function MonDKP:ClassGraph()
 	return graph;
 end
 
-function MonDKP:ClassGraph_Update()
+function DWP:ClassGraph_Update()
 	local classCount = {}
 	local perc_height = {}
 	local perc = {}
@@ -122,10 +122,10 @@ function MonDKP:ClassGraph_Update()
 	local BarWidth = 25
 
 	for k, v in pairs(core.classes) do
-		local classSearch = MonDKP:Table_Search(MonDKP_DKPTable, v)
+		local classSearch = DWP:Table_Search(DWPlus_RPTable, v)
 		if classSearch and #classSearch > 0 then
 			tinsert(classCount, #classSearch)
-			local classPerc = MonDKP_round(#classSearch / #MonDKP_DKPTable, 4);
+			local classPerc = DWP_round(#classSearch / #DWPlus_RPTable, 4);
 			tinsert(perc, classPerc * 100)
 			local adjustBar = BarMaxHeight * classPerc;
 			tinsert(perc_height, adjustBar)
@@ -140,7 +140,7 @@ function MonDKP:ClassGraph_Update()
 
 	for i=1, 8 do
   		core.ClassGraph.icons[i].bar:SetSize(BarWidth, perc_height[i])
-		core.ClassGraph.icons[i].percentage:SetText(MonDKP_round(perc[i], 1).."%")
+		core.ClassGraph.icons[i].percentage:SetText(DWP_round(perc[i], 1).."%")
 		core.ClassGraph.icons[i].count:SetText(classCount[i])
 	end
 end

@@ -1,12 +1,12 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 local bytesSent = 0
 local bytesTotal = 0
 
-function MonDKP_Profile_Create(player, dkp, gained, spent)
+function DWP_Profile_Create(player, dkp, gained, spent)
 	local tempName, tempClass
 	local guildSize = GetNumGuildMembers();
 	local class = "NONE"
@@ -20,10 +20,10 @@ function MonDKP_Profile_Create(player, dkp, gained, spent)
 		tempName = strsub(tempName, 1, string.find(tempName, "-")-1)			-- required to remove server name from player (can remove in classic if this is not an issue)
 		if tempName == player then
 			class = tempClass
-			table.insert(MonDKP_DKPTable, { player=player, lifetime_spent=spent, lifetime_gained=gained, class=class, dkp=dkp, rank=10, spec=L["NOSPECREPORTED"], role=L["NOROLEDETECTED"], rankName="None", previous_dkp=0, })
+			table.insert(DWPlus_RPTable, { player=player, lifetime_spent=spent, lifetime_gained=gained, class=class, dkp=dkp, rank=10, spec=L["NOSPECREPORTED"], role=L["NOROLEDETECTED"], rankName="None", previous_dkp=0, })
 
-			MonDKP:FilterDKPTable(core.currentSort, "reset")
-			MonDKP:ClassGraph_Update()
+			DWP:FilterDKPTable(core.currentSort, "reset")
+			DWP:ClassGraph_Update()
 			created = true
 			break
 		end
@@ -41,10 +41,10 @@ function MonDKP_Profile_Create(player, dkp, gained, spent)
 		for i=1, GroupSize do
 			tempName,_,_,_,_,tempClass = GetRaidRosterInfo(i)
 			if tempName == player then
-				if not MonDKP:Table_Search(MonDKP_DKPTable, tempName, "player") then
-					tinsert(MonDKP_DKPTable, { player=player, class=tempClass, dkp=dkp, previous_dkp=0, lifetime_gained=gained, lifetime_spent=spent, rank=10, rankName="None", spec=L["NOSPECREPORTED"], role=L["NOROLEDETECTED"], })
-					MonDKP:FilterDKPTable(core.currentSort, "reset")
-					MonDKP:ClassGraph_Update()
+				if not DWP:Table_Search(DWPlus_RPTable, tempName, "player") then
+					tinsert(DWPlus_RPTable, { player=player, class=tempClass, dkp=dkp, previous_dkp=0, lifetime_gained=gained, lifetime_spent=spent, rank=10, rankName="None", spec=L["NOSPECREPORTED"], role=L["NOROLEDETECTED"], })
+					DWP:FilterDKPTable(core.currentSort, "reset")
+					DWP:ClassGraph_Update()
 					created = true
 					break
 				end
@@ -53,14 +53,14 @@ function MonDKP_Profile_Create(player, dkp, gained, spent)
 	end
 
 	if not created then
-		tinsert(MonDKP_DKPTable, { player=player, class=class, dkp=dkp, previous_dkp=0, lifetime_gained=gained, lifetime_spent=spent, rank=10, rankName="None", spec=L["NOSPECREPORTED"], role=L["NOROLEDETECTED"], })
+		tinsert(DWPlus_RPTable, { player=player, class=class, dkp=dkp, previous_dkp=0, lifetime_gained=gained, lifetime_spent=spent, rank=10, rankName="None", spec=L["NOSPECREPORTED"], role=L["NOROLEDETECTED"], })
 	end
 
 	return created
 end
 
-local function MonDKP_BroadcastFull_Status_Create()
-	local f = CreateFrame("Frame", "MonDKP_FullBroadcastStatus", UIParent, "ShadowOverlaySmallTemplate");
+local function DWP_BroadcastFull_Status_Create()
+	local f = CreateFrame("Frame", "DWP_FullBroadcastStatus", UIParent, "ShadowOverlaySmallTemplate");
 
 	f:SetPoint("TOP", UIParent, "TOP", 0, -10);
 	f:SetSize(300, 85);
@@ -82,7 +82,7 @@ local function MonDKP_BroadcastFull_Status_Create()
 	f:Hide()
 
 	f.bcastHeader = f:CreateFontString(nil, "OVERLAY")
-	f.bcastHeader:SetFontObject("MonDKPLargeLeft");
+	f.bcastHeader:SetFontObject("DWPLargeLeft");
 	f.bcastHeader:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -15);
 	f.bcastHeader:SetScale(0.8)
 
@@ -96,7 +96,7 @@ local function MonDKP_BroadcastFull_Status_Create()
 	f.status:SetPoint("BOTTOM", f, "BOTTOM", 0, 25)
 
 	f.status.percentage = f:CreateFontString(nil, "OVERLAY")
-	f.status.percentage:SetFontObject("MonDKPLargeCenter");
+	f.status.percentage:SetFontObject("DWPLargeCenter");
 	f.status.percentage:SetPoint("TOP", f.status, "BOTTOM", 0, -9);
 	f.status.percentage:SetScale(0.6)
 
@@ -115,8 +115,8 @@ local function MonDKP_BroadcastFull_Status_Create()
 	return f
 end
 
-local function MonDKP_BroadcastFull_Status()
-	core.BroadcastProgress = core.BroadcastProgress or MonDKP_BroadcastFull_Status_Create()
+local function DWP_BroadcastFull_Status()
+	core.BroadcastProgress = core.BroadcastProgress or DWP_BroadcastFull_Status_Create()
 	core.BroadcastProgress:SetShown(not core.BroadcastProgress:IsShown())
 
 	core.BroadcastProgress.status:Show()
@@ -134,7 +134,7 @@ local function MonDKP_BroadcastFull_Status()
 		end
 
 		self:SetValue(val)
-		core.BroadcastProgress.status.percentage:SetText(MonDKP_round(val, 0).."%")
+		core.BroadcastProgress.status.percentage:SetText(DWP_round(val, 0).."%")
 
 		if bytesSent == bytesTotal then
 			self:SetValue(100)
@@ -146,7 +146,7 @@ local function MonDKP_BroadcastFull_Status()
 	end)
 end
 
-function MonDKP_BroadcastFull_Init()
+function DWP_BroadcastFull_Init()
 	local PlayerList = {}
 	local curSelected = 0
 	local player
@@ -164,7 +164,7 @@ function MonDKP_BroadcastFull_Init()
 		return a["player"] < b["player"]
 	end)
 
-	core.Broadcast = core.Broadcast or MonDKP_BroadcastFull_Create()
+	core.Broadcast = core.Broadcast or DWP_BroadcastFull_Create()
 	core.Broadcast:SetShown(not core.Broadcast:IsShown())
 
 	UIDropDownMenu_Initialize(core.Broadcast.player, function(self, level, menuList)
@@ -190,7 +190,7 @@ function MonDKP_BroadcastFull_Init()
 			filterName.func = self.SetValue
 			for i=ranges[menuList], ranges[menuList]+19 do
 				if PlayerList[i] then
-					local c = MonDKP:GetCColors(PlayerList[i].class)
+					local c = DWP:GetCColors(PlayerList[i].class)
 
 					filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = "|cff"..c.hex..PlayerList[i].player.."|r", PlayerList[i].player, "|cff"..c.hex..PlayerList[i].player.."|r", PlayerList[i].player == player, true
 					UIDropDownMenu_AddButton(filterName, level)
@@ -210,38 +210,38 @@ function MonDKP_BroadcastFull_Init()
 		local tempTable
 		
 		if core.Broadcast.mergeCheckbox:GetChecked() == false and core.Broadcast.fullCheckbox:GetChecked() == false then
-			MonDKP:Print(L["BROADCASTWHICHDATA"])
+			DWP:Print(L["BROADCASTWHICHDATA"])
 			return
 		end
 
 		if core.Broadcast.playerCheckbox:GetChecked() == true and player == nil then
-			MonDKP:Print(L["PLAYERVALIDATE"])
+			DWP:Print(L["PLAYERVALIDATE"])
 			return
 		end
 
 		if core.Broadcast.fullCheckbox:GetChecked() == true then
-			tempTable = { DKPTable=MonDKP_DKPTable, DKP=MonDKP_DKPHistory, Loot=MonDKP_Loot, Archive=MonDKP_Archive }
+			tempTable = { DKPTable=DWPlus_RPTable, DKP=DWPlus_RPHistory, Loot=DWPlus_Loot, Archive=DWPlus_Archive }
 		elseif core.Broadcast.mergeCheckbox:GetChecked() == true then
-			tempTable = MonDKP_MergeTable_Create()
+			tempTable = DWP_MergeTable_Create()
 		end
 
 		if core.Broadcast.playerCheckbox:GetChecked() == true and player ~= nil then
 			if core.Broadcast.mergeCheckbox:GetChecked() == true then
-			 	MonDKP.Sync:SendData("MonDKPMerge", tempTable, player)
-			 	MonDKP_SyncDeleted()
+			 	DWP.Sync:SendData("DWPMerge", tempTable, player)
+			 	DWP_SyncDeleted()
 				core.Broadcast:Hide()
-				MonDKP_BroadcastFull_Status()
+				DWP_BroadcastFull_Status()
 			elseif core.Broadcast.fullCheckbox:GetChecked() == true then
 				StaticPopupDialogs["FULL_TABS_ALERT"] = {
 					text = "|CFFFF0000"..L["WARNING"].."|r: "..L["OVERWRITETABLES"],
 					button1 = L["YES"],
 					button2 = L["NO"],
 					OnAccept = function()
-						MonDKP.Sync:SendData("MonDKPAllTabs", tempTable, player)
+						DWP.Sync:SendData("DWPAllTabs", tempTable, player)
 						core.Broadcast:Hide()
-						MonDKP_DKPHistory.seed = 0
-						MonDKP_Loot.seed = 0
-						MonDKP_BroadcastFull_Status()
+						DWPlus_RPHistory.seed = 0
+						DWPlus_Loot.seed = 0
+						DWP_BroadcastFull_Status()
 					end,
 					timeout = 0,
 					whileDead = true,
@@ -252,21 +252,21 @@ function MonDKP_BroadcastFull_Init()
 			end
 		elseif core.Broadcast.guildCheckbox:GetChecked() == true then
 			if core.Broadcast.mergeCheckbox:GetChecked() == true then
-				MonDKP.Sync:SendData("MonDKPMerge", tempTable)
-				MonDKP_SyncDeleted()
+				DWP.Sync:SendData("DWPMerge", tempTable)
+				DWP_SyncDeleted()
 				core.Broadcast:Hide()
-				MonDKP_BroadcastFull_Status()
+				DWP_BroadcastFull_Status()
 			elseif core.Broadcast.fullCheckbox:GetChecked() == true then
 				StaticPopupDialogs["FULL_TABS_ALERT"] = {
 					text = "|CFFFF0000"..L["WARNING"].."|r: "..L["OVERWRITETABLES"],
 					button1 = L["YES"],
 					button2 = L["NO"],
 					OnAccept = function()
-						MonDKP.Sync:SendData("MonDKPAllTabs", tempTable, player)
+						DWP.Sync:SendData("DWPAllTabs", tempTable, player)
 						core.Broadcast:Hide()
-						MonDKP_DKPHistory.seed = 0
-						MonDKP_Loot.seed = 0
-						MonDKP_BroadcastFull_Status()
+						DWPlus_RPHistory.seed = 0
+						DWPlus_Loot.seed = 0
+						DWP_BroadcastFull_Status()
 					end,
 					timeout = 0,
 					whileDead = true,
@@ -283,7 +283,7 @@ function MonDKP_BroadcastFull_Init()
 	end)
 end
 
-function MonDKP_BroadcastFull_Callback(arg1, arg2, arg3)
+function DWP_BroadcastFull_Callback(arg1, arg2, arg3)
 	bytesSent = arg2
 	bytesTotal = arg3
 
@@ -293,8 +293,8 @@ function MonDKP_BroadcastFull_Callback(arg1, arg2, arg3)
 	end
 end
 
-function MonDKP_BroadcastFull_Create()
-	local f = CreateFrame("Frame", "MonDKP_FullBroadcastWindow", UIParent, "ShadowOverlaySmallTemplate");
+function DWP_BroadcastFull_Create()
+	local f = CreateFrame("Frame", "DWP_FullBroadcastWindow", UIParent, "ShadowOverlaySmallTemplate");
 
 	f:SetPoint("TOP", UIParent, "TOP", 0, -200);
 	f:SetSize(300, 260);
@@ -316,7 +316,7 @@ function MonDKP_BroadcastFull_Create()
 	f:Hide()
 
 	-- Close Button
-	f.closeContainer = CreateFrame("Frame", "MonDKPTitle", f)
+	f.closeContainer = CreateFrame("Frame", "DWPTitle", f)
 	f.closeContainer:SetPoint("CENTER", f, "TOPRIGHT", -4, 0)
 	f.closeContainer:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
@@ -331,17 +331,17 @@ function MonDKP_BroadcastFull_Create()
 	tinsert(UISpecialFrames, f:GetName()); -- Sets frame to close on "Escape"
 
 	f.bcastHeader = f:CreateFontString(nil, "OVERLAY")
-	f.bcastHeader:SetFontObject("MonDKPLargeLeft");
+	f.bcastHeader:SetFontObject("DWPLargeLeft");
 	f.bcastHeader:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -15);
 	f.bcastHeader:SetText(L["BROADCASTTABLES"])
 
-	f.tocontainer = MonDKP:CreateContainer(f, "MonDKP_Broadcast_tocontainer", "Broadcast to:")
+	f.tocontainer = DWP:CreateContainer(f, "DWP_Broadcast_tocontainer", "Broadcast to:")
     f.tocontainer:SetPoint("TOPLEFT", f.bcastHeader, "BOTTOMLEFT", 10, -20)
     f.tocontainer:SetSize(250, 64)
 
 		-- to player
 		f.playerHeader = f:CreateFontString(nil, "OVERLAY")
-		f.playerHeader:SetFontObject("MonDKPLargeLeft");
+		f.playerHeader:SetFontObject("DWPLargeLeft");
 		f.playerHeader:SetScale(0.6)
 		f.playerHeader:SetPoint("TOPLEFT", f.tocontainer, "TOPLEFT", 40, -25);
 		f.playerHeader:SetText(L["PLAYER"])
@@ -368,7 +368,7 @@ function MonDKP_BroadcastFull_Create()
 			GameTooltip:Hide()
 		end)
 
-		f.player = CreateFrame("FRAME", "MonDKPAwardConfirmPlayerDropDown", f, "DWPlusUIDropDownMenuTemplate")
+		f.player = CreateFrame("FRAME", "DWPAwardConfirmPlayerDropDown", f, "DWPlusUIDropDownMenuTemplate")
 		f.player:SetPoint("TOPRIGHT", f.tocontainer, "TOPRIGHT", 5, -7)
 		UIDropDownMenu_SetWidth(f.player, 150)
 		UIDropDownMenu_JustifyText(f.player, "LEFT")
@@ -376,7 +376,7 @@ function MonDKP_BroadcastFull_Create()
 
 		-- to guild
 		f.guildHeader = f:CreateFontString(nil, "OVERLAY")
-		f.guildHeader:SetFontObject("MonDKPLargeLeft");
+		f.guildHeader:SetFontObject("DWPLargeLeft");
 		f.guildHeader:SetScale(0.6)
 		f.guildHeader:SetPoint("TOPLEFT", f.playerHeader, "BOTTOMLEFT", 0, -15);
 		f.guildHeader:SetText(L["GUILD"])
@@ -401,12 +401,12 @@ function MonDKP_BroadcastFull_Create()
 			GameTooltip:Hide()
 		end)
 
-	f.datacontainer = MonDKP:CreateContainer(f, "MonDKP_Broadcast_tocontainer", "Data:")
+	f.datacontainer = DWP:CreateContainer(f, "DWP_Broadcast_tocontainer", "Data:")
     f.datacontainer:SetPoint("TOPLEFT", f.tocontainer, "BOTTOMLEFT", 0, -10)
     f.datacontainer:SetSize(250, 64)
 
     	f.mergeHeader = f:CreateFontString(nil, "OVERLAY")
-		f.mergeHeader:SetFontObject("MonDKPLargeLeft");
+		f.mergeHeader:SetFontObject("DWPLargeLeft");
 		f.mergeHeader:SetScale(0.6)
 		f.mergeHeader:SetPoint("TOPLEFT", f.datacontainer, "TOPLEFT", 40, -25);
 		f.mergeHeader:SetText(L["MERGE2WEEKS"])
@@ -432,7 +432,7 @@ function MonDKP_BroadcastFull_Create()
 		end)
 
 		f.fullHeader = f:CreateFontString(nil, "OVERLAY")
-		f.fullHeader:SetFontObject("MonDKPLargeLeft");
+		f.fullHeader:SetFontObject("DWPLargeLeft");
 		f.fullHeader:SetScale(0.6)
 		f.fullHeader:SetPoint("TOPLEFT", f.mergeHeader, "BOTTOMLEFT", 0, -15);
 		f.fullHeader:SetText(L["FULLBROADCAST"])
@@ -457,49 +457,49 @@ function MonDKP_BroadcastFull_Create()
 			GameTooltip:Hide()
 		end)
 
-	f.confirmButton = MonDKP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 15, L["BROADCAST"]);
-	f.cancelButton = MonDKP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -20, 15, L["CANCEL"]);
+	f.confirmButton = DWP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 15, L["BROADCAST"]);
+	f.cancelButton = DWP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -20, 15, L["CANCEL"]);
 
 	return f
 end
 
-function MonDKP_SyncDeleted()
+function DWP_SyncDeleted()
 	local deleted = {}
 
-	for k,v in pairs(MonDKP_Archive) do
-		if MonDKP_Archive[k].deleted then
+	for k,v in pairs(DWPlus_Archive) do
+		if DWPlus_Archive[k].deleted then
 			table.insert(deleted, { player=k, deleted=v.deleted, edited=v.edited })
 		end
 	end
 
 	if #deleted > 0 then
-		MonDKP.Sync:SendData("MonDKPDelUsers", deleted)
+		DWP.Sync:SendData("DWPDelUsers", deleted)
 	end
 end
 
-function MonDKP_MergeTable_Create()
+function DWP_MergeTable_Create()
 	local tempDKP = {}
 	local tempLoot = {}
 	local profiles = {}
 
-	for i=1, #MonDKP_DKPHistory do
-		if MonDKP_DKPHistory[i].date > (time() - 1209600) and MonDKP_DKPHistory[i].date > MonDKP_DB.defaults.installed210 then
-			table.insert(tempDKP, MonDKP_DKPHistory[i])
+	for i=1, #DWPlus_RPHistory do
+		if DWPlus_RPHistory[i].date > (time() - 1209600) and DWPlus_RPHistory[i].date > DWPlus_DB.defaults.installed210 then
+			table.insert(tempDKP, DWPlus_RPHistory[i])
 		else
 			break
 		end
 	end
 
-	for i=1, #MonDKP_Loot do
-		if MonDKP_Loot[i].date > (time() - 1209600) and MonDKP_Loot[i].date > MonDKP_DB.defaults.installed210 then
-			table.insert(tempLoot, MonDKP_Loot[i])
+	for i=1, #DWPlus_Loot do
+		if DWPlus_Loot[i].date > (time() - 1209600) and DWPlus_Loot[i].date > DWPlus_DB.defaults.installed210 then
+			table.insert(tempLoot, DWPlus_Loot[i])
 		else
 			break
 		end
 	end
 
-	for i=1, #MonDKP_DKPTable do
-		table.insert(profiles, { player=MonDKP_DKPTable[i].player, class=MonDKP_DKPTable[i].class })
+	for i=1, #DWPlus_RPTable do
+		table.insert(profiles, { player=DWPlus_RPTable[i].player, class=DWPlus_RPTable[i].class })
 	end
 
 	local tempTable = { DKP=tempDKP, Loot=tempLoot, Profiles=profiles }

@@ -1,6 +1,6 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 local function AwardItem(player, cost, boss, zone, loot, reassign)
@@ -11,30 +11,30 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 	local curBoss = boss;
 	local loot = loot;
 	local BidsEntry = {};
-	local mode = MonDKP_DB.modes.mode;
+	local mode = DWPlus_DB.modes.mode;
 	local curOfficer = UnitName("player")
 	local bids;
 	local search_reassign;
 
-	MonDKP:StatusVerify_Update()
+	DWP:StatusVerify_Update()
 
 	if core.IsOfficer then
-		if MonDKP_DB.modes.costvalue == "Percent" then
-			local search = MonDKP:Table_Search(MonDKP_DKPTable, winner);
+		if DWPlus_DB.modes.costvalue == "Percent" then
+			local search = DWP:Table_Search(DWPlus_RPTable, winner);
 
-			if MonDKP_DB.modes.mode == "Roll Based Bidding" then
+			if DWPlus_DB.modes.mode == "Roll Based Bidding" then
 				if search then
-					cost = MonDKP_DKPTable[search[1][1]].dkp * (cost / 100)
-					cost = MonDKP_round(cost, MonDKP_DB.modes.rounding);
+					cost = DWPlus_RPTable[search[1][1]].dkp * (cost / 100)
+					cost = DWP_round(cost, DWPlus_DB.modes.rounding);
 				else
 					print(L["ERROR"])
 				end
 			else
-				cost = MonDKP_DKPTable[search[1][1]].dkp * (cost / 100)
-				cost = MonDKP_round(cost, MonDKP_DB.modes.rounding);
+				cost = DWPlus_RPTable[search[1][1]].dkp * (cost / 100)
+				cost = DWP_round(cost, DWPlus_DB.modes.rounding);
 			end
 		else
-			cost = MonDKP_round(cost, MonDKP_DB.modes.rounding)
+			cost = DWP_round(cost, DWPlus_DB.modes.rounding)
 		end
 
 		if cost > 0 then
@@ -42,11 +42,11 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 		end
 
 		if reassign then
-			search_reassign = MonDKP:Table_Search(MonDKP_Loot, reassign, "index")
+			search_reassign = DWP:Table_Search(DWPlus_Loot, reassign, "index")
 
 			if search_reassign then
-				local deleted = CopyTable(MonDKP_Loot[search_reassign[1][1]])
-				local reimburse = MonDKP:Table_Search(MonDKP_DKPTable, deleted.player, "player")
+				local deleted = CopyTable(DWPlus_Loot[search_reassign[1][1]])
+				local reimburse = DWP:Table_Search(DWPlus_RPTable, deleted.player, "player")
 				local newIndex = curOfficer.."-"..curTime-3
 				deleted.cost = deleted.cost * -1
 				deleted.deletes = reassign
@@ -56,15 +56,15 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 					bids = CopyTable(deleted.bids);
 					deleted.bids = nil;
 				end
-				MonDKP_Loot[search_reassign[1][1]].deletedby = newIndex
-				MonDKP_DKPTable[reimburse[1][1]].dkp = MonDKP_DKPTable[reimburse[1][1]].dkp + deleted.cost
-				table.insert(MonDKP_Loot, 1, deleted)
-				MonDKP.Sync:SendData("MonDKPDelLoot", MonDKP_Loot[1])
+				DWPlus_Loot[search_reassign[1][1]].deletedby = newIndex
+				DWPlus_RPTable[reimburse[1][1]].dkp = DWPlus_RPTable[reimburse[1][1]].dkp + deleted.cost
+				table.insert(DWPlus_Loot, 1, deleted)
+				DWP.Sync:SendData("DWPDelLoot", DWPlus_Loot[1])
 			end
 		end
 
-		if MonDKP_DB.modes.StoreBids and not reassign then
-			local Bids_Submitted = MonDKP:BidsSubmitted_Get();
+		if DWPlus_DB.modes.StoreBids and not reassign then
+			local Bids_Submitted = DWP:BidsSubmitted_Get();
 			local newIndex = curOfficer.."-"..curTime
 
 			for i=1, #Bids_Submitted do
@@ -78,90 +78,90 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 			end
 			if Bids_Submitted[1] then
 				if Bids_Submitted[1].bid then
-					tinsert(MonDKP_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex, bids={ }})
+					tinsert(DWPlus_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex, bids={ }})
 					for k,v in pairs(BidsEntry) do
-						table.insert(MonDKP_Loot[1].bids, {bidder=k, bid=v});
+						table.insert(DWPlus_Loot[1].bids, {bidder=k, bid=v});
 					end
 				elseif Bids_Submitted[1].dkp then
-					tinsert(MonDKP_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex, dkp={ }})
+					tinsert(DWPlus_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex, dkp={ }})
 					for k,v in pairs(BidsEntry) do
-						table.insert(MonDKP_Loot[1].dkp, {bidder=k, dkp=v});
+						table.insert(DWPlus_Loot[1].dkp, {bidder=k, dkp=v});
 					end
 				elseif Bids_Submitted[1].roll then
-					tinsert(MonDKP_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex, rolls={ }})
+					tinsert(DWPlus_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex, rolls={ }})
 					for k,v in pairs(BidsEntry) do
-						table.insert(MonDKP_Loot[1].rolls, {bidder=k, roll=v});
+						table.insert(DWPlus_Loot[1].rolls, {bidder=k, roll=v});
 					end
 				end
 			else
-				tinsert(MonDKP_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex})
+				tinsert(DWPlus_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex})
 			end
 		else
 			local newIndex = curOfficer.."-"..curTime
-			tinsert(MonDKP_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex})
+			tinsert(DWPlus_Loot, 1, {player=winner, loot=loot, zone=curZone, date=curTime, boss=curBoss, cost=cost, index=newIndex})
 			if reassign then
-				local search = MonDKP:Table_Search(MonDKP_Loot, reassign, "index")
+				local search = DWP:Table_Search(DWPlus_Loot, reassign, "index")
 
-				if search and MonDKP_Loot[search[1][1]].player ~= winner then
-					MonDKP_Loot[1].reassigned = true
+				if search and DWPlus_Loot[search[1][1]].player ~= winner then
+					DWPlus_Loot[1].reassigned = true
 				end
 			end 
 			if type(bids) == "table" then
-				MonDKP_Loot[1].bids = bids
+				DWPlus_Loot[1].bids = bids
 			end
 		end
 		
-		MonDKP:BidsSubmitted_Clear()
-		MonDKP.Sync:SendData("MonDKPLootDist", MonDKP_Loot[1])
-		MonDKP:DKPTable_Set(winner, "dkp", MonDKP_round(cost, MonDKP_DB.modes.rounding), true)
-		MonDKP:LootHistory_Reset();
-		MonDKP:LootHistory_Update(L["NOFILTER"])
+		DWP:BidsSubmitted_Clear()
+		DWP.Sync:SendData("DWPLootDist", DWPlus_Loot[1])
+		DWP:DKPTable_Set(winner, "dkp", DWP_round(cost, DWPlus_DB.modes.rounding), true)
+		DWP:LootHistory_Reset();
+		DWP:LootHistory_Update(L["NOFILTER"])
 
 		if core.BiddingWindow and core.BiddingWindow:IsShown() then  -- runs below if award is through bidding window (update minbids and zerosum bank)
-			if _G["MonDKPBiddingStartBiddingButton"] then
-				_G["MonDKPBiddingStartBiddingButton"]:SetText(L["STARTBIDDING"])
-				_G["MonDKPBiddingStartBiddingButton"]:SetScript("OnClick", function (self)
+			if _G["DWPBiddingStartBiddingButton"] then
+				_G["DWPBiddingStartBiddingButton"]:SetText(L["STARTBIDDING"])
+				_G["DWPBiddingStartBiddingButton"]:SetScript("OnClick", function (self)
 					ToggleTimerBtn(self)
 				end)
 				timerToggle = 0;
 			end
 
 			core.BidInProgress = false;
-			MonDKP:BroadcastStopBidTimer()
+			DWP:BroadcastStopBidTimer()
 			
-			if MonDKP_DB.modes.AnnounceAward then
+			if DWPlus_DB.modes.AnnounceAward then
 				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..-cost.." "..L["DKP"], "GUILD")
 			else
 				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..-cost.." "..L["DKP"], "RAID_WARNING")
 			end
 				
-			if mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and MonDKP_DB.modes.ZeroSumBidType == "Static") then
-				local search = MonDKP:Table_Search(MonDKP_MinBids, core.BiddingWindow.itemName:GetText())
-				local val = MonDKP:GetMinBid(loot);
+			if mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
+				local search = DWP:Table_Search(DWPlus_MinBids, core.BiddingWindow.itemName:GetText())
+				local val = DWP:GetMinBid(loot);
 
 				if not search and core.BiddingWindow.cost:GetNumber() ~= tonumber(val) then
-					tinsert(MonDKP_MinBids, {item=core.BiddingWindow.itemName:GetText(), minbid=core.BiddingWindow.cost:GetNumber()})
+					tinsert(DWPlus_MinBids, {item=core.BiddingWindow.itemName:GetText(), minbid=core.BiddingWindow.cost:GetNumber()})
 					core.BiddingWindow.CustomMinBid:SetShown(true);
 					core.BiddingWindow.CustomMinBid:SetChecked(true);
 				elseif search and core.BiddingWindow.cost:GetNumber() ~= tonumber(val) and core.BiddingWindow.CustomMinBid:GetChecked() == true then
-					if MonDKP_MinBids[search[1][1]].minbid ~= core.BiddingWindow.cost:GetText() then
-					MonDKP_MinBids[search[1][1]].minbid = MonDKP_round(core.BiddingWindow.cost:GetNumber(), MonDKP_DB.modes.rounding);
+					if DWPlus_MinBids[search[1][1]].minbid ~= core.BiddingWindow.cost:GetText() then
+					DWPlus_MinBids[search[1][1]].minbid = DWP_round(core.BiddingWindow.cost:GetNumber(), DWPlus_DB.modes.rounding);
 					core.BiddingWindow.CustomMinBid:SetShown(true);
 					core.BiddingWindow.CustomMinBid:SetChecked(true);
 				end
 			end
 
 			if search and core.BiddingWindow.CustomMinBid:GetChecked() == false then
-				table.remove(MonDKP_MinBids, search[1][1])
+				table.remove(DWPlus_MinBids, search[1][1])
 				core.BiddingWindow.CustomMinBid:SetShown(false);
 			end
 				end
 				
 			if mode == "Zero Sum" and not reassign then
-				MonDKP_DB.modes.ZeroSumBank.balance = MonDKP_DB.modes.ZeroSumBank.balance + -tonumber(cost)
-				table.insert(MonDKP_DB.modes.ZeroSumBank, { loot = loot, cost = -tonumber(cost) })
-				MonDKP:ZeroSumBank_Update()
-				MonDKP.Sync:SendData("MonDKPZSumBank", MonDKP_DB.modes.ZeroSumBank)
+				DWPlus_DB.modes.ZeroSumBank.balance = DWPlus_DB.modes.ZeroSumBank.balance + -tonumber(cost)
+				table.insert(DWPlus_DB.modes.ZeroSumBank, { loot = loot, cost = -tonumber(cost) })
+				DWP:ZeroSumBank_Update()
+				DWP.Sync:SendData("DWPZSumBank", DWPlus_DB.modes.ZeroSumBank)
 			end
 			core.BiddingWindow:Hide()
 			ClearBidWindow()
@@ -170,7 +170,7 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 end
 
 local function AwardConfirm_Create()
-	local f = CreateFrame("Frame", "MonDKP_AwardWindowConfirm", UIParent, "ShadowOverlaySmallTemplate");
+	local f = CreateFrame("Frame", "DWP_AwardWindowConfirm", UIParent, "ShadowOverlaySmallTemplate");
 
 	f:SetPoint("TOP", UIParent, "TOP", 0, -200);
 	f:SetSize(400, 230);
@@ -187,30 +187,30 @@ local function AwardConfirm_Create()
 	f:Hide()
 
 	f.confirmHeader = f:CreateFontString(nil, "OVERLAY")
-	f.confirmHeader:SetFontObject("MonDKPLargeRight");
+	f.confirmHeader:SetFontObject("DWPLargeRight");
 	f.confirmHeader:SetScale(0.9)
 	f.confirmHeader:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -15);
 	f.confirmHeader:SetText(L["CONFAWARD"])
 
 	f.playerHeader = f:CreateFontString(nil, "OVERLAY")
-	f.playerHeader:SetFontObject("MonDKPLargeRight");
+	f.playerHeader:SetFontObject("DWPLargeRight");
 	f.playerHeader:SetScale(0.7)
 	f.playerHeader:SetPoint("TOPLEFT", f, "TOPLEFT", 120, -60);
 	f.playerHeader:SetText(L["PLAYER"]..":")
 
-	f.player = CreateFrame("FRAME", "MonDKPAwardConfirmPlayerDropDown", f, "DWPlusUIDropDownMenuTemplate")
+	f.player = CreateFrame("FRAME", "DWPAwardConfirmPlayerDropDown", f, "DWPlusUIDropDownMenuTemplate")
 	f.player:SetPoint("LEFT", f.playerHeader, "RIGHT", -15, 0)
 	UIDropDownMenu_SetWidth(f.player, 150)
 	UIDropDownMenu_JustifyText(f.player, "LEFT")
 
 
 	--[[f.player = f:CreateFontString(nil, "OVERLAY")
-	f.player:SetFontObject("MonDKPNormalLeft");
+	f.player:SetFontObject("DWPNormalLeft");
 	f.player:SetPoint("LEFT", f.playerHeader, "RIGHT", 5, 1);
 	f.player:SetSize(200, 28);--]]
 
 	f.lootHeader = f:CreateFontString(nil, "OVERLAY")
-	f.lootHeader:SetFontObject("MonDKPLargeRight");
+	f.lootHeader:SetFontObject("DWPLargeRight");
 	f.lootHeader:SetScale(0.7)
 	f.lootHeader:SetPoint("TOPRIGHT", f.playerHeader, "BOTTOMRIGHT", 0, -10);
 	f.lootHeader:SetText(L["ITEM"]..":")
@@ -221,12 +221,12 @@ local function AwardConfirm_Create()
 	f.lootIcon:SetSize(20, 20);
 
 	f.loot = f:CreateFontString(nil, "OVERLAY")
-	f.loot:SetFontObject("MonDKPNormalLeft");
+	f.loot:SetFontObject("DWPNormalLeft");
 	f.loot:SetPoint("LEFT", f.lootIcon, "RIGHT", 5, 1);
 	f.loot:SetSize(200, 28);
 
 	f.costHeader = f:CreateFontString(nil, "OVERLAY")
-	f.costHeader:SetFontObject("MonDKPLargeRight");
+	f.costHeader:SetFontObject("DWPLargeRight");
 	f.costHeader:SetScale(0.7)
 	f.costHeader:SetPoint("TOPRIGHT", f.lootHeader, "BOTTOMRIGHT", 0, -10);
 	f.costHeader:SetText(L["ITEMCOST"]..":")
@@ -244,7 +244,7 @@ local function AwardConfirm_Create()
 	f.cost:SetBackdropBorderColor(0.12, 0.12, 0.34, 1)
 	f.cost:SetMaxLetters(10)
 	f.cost:SetTextColor(1, 1, 1, 1)
-	f.cost:SetFontObject("MonDKPSmallRight")
+	f.cost:SetFontObject("DWPSmallRight")
 	f.cost:SetTextInsets(10,10,0,0)
 	f.cost:SetScript("OnEscapePressed", function(self)    -- clears focus on esc
 		self:ClearFocus()
@@ -257,39 +257,39 @@ local function AwardConfirm_Create()
 	end)
 
 	f.costFooter = f:CreateFontString(nil, "OVERLAY")
-	f.costFooter:SetFontObject("MonDKPNormalLeft");
+	f.costFooter:SetFontObject("DWPNormalLeft");
 	f.costFooter:SetPoint("LEFT", f.cost, "RIGHT", 5, 0);
 	f.costFooter:SetSize(200, 28);
 
 	f.bossHeader = f:CreateFontString(nil, "OVERLAY")
-	f.bossHeader:SetFontObject("MonDKPLargeRight");
+	f.bossHeader:SetFontObject("DWPLargeRight");
 	f.bossHeader:SetScale(0.7)
 	f.bossHeader:SetPoint("TOPRIGHT", f.costHeader, "BOTTOMRIGHT", 0, -10);
 	f.bossHeader:SetText(L["BOSS"]..":")
 
-	f.bossDropDown = CreateFrame("FRAME", "MonDKPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")
+	f.bossDropDown = CreateFrame("FRAME", "DWPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")
 	f.bossDropDown:SetPoint("LEFT", f.bossHeader, "RIGHT", -15, -2)
 	UIDropDownMenu_SetWidth(f.bossDropDown, 150)
 	UIDropDownMenu_JustifyText(f.bossDropDown, "LEFT")
 
 	f.zoneHeader = f:CreateFontString(nil, "OVERLAY")
-	f.zoneHeader:SetFontObject("MonDKPLargeRight");
+	f.zoneHeader:SetFontObject("DWPLargeRight");
 	f.zoneHeader:SetScale(0.7)
 	f.zoneHeader:SetPoint("TOPRIGHT", f.bossHeader, "BOTTOMRIGHT", 0, -10);
 	f.zoneHeader:SetText(L["ZONE"]..":")
 
-	f.zoneDropDown = CreateFrame("FRAME", "MonDKPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")
+	f.zoneDropDown = CreateFrame("FRAME", "DWPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")
 	f.zoneDropDown:SetPoint("LEFT", f.zoneHeader, "RIGHT", -15, -2)
 	UIDropDownMenu_SetWidth(f.zoneDropDown, 150)
 	UIDropDownMenu_JustifyText(f.zoneDropDown, "LEFT")
 
-	f.yesButton = MonDKP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 15, L["CONFIRM"]);
-	f.noButton = MonDKP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -20, 15, L["CANCEL"]);
+	f.yesButton = DWP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 15, L["CONFIRM"]);
+	f.noButton = DWP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -20, 15, L["CANCEL"]);
 
 	return f;
 end
 
-function MonDKP:AwardConfirm(player, cost, boss, zone, loot, reassign)
+function DWP:AwardConfirm(player, cost, boss, zone, loot, reassign)
 	local _,itemLink,_,_,_,_,_,_,_,itemIcon = GetItemInfo(loot)
 	local curBoss, curZone, player, cost = boss, zone, player, cost
 	local class, search;
@@ -297,16 +297,16 @@ function MonDKP:AwardConfirm(player, cost, boss, zone, loot, reassign)
 	local curSelected = 0;
 
 	if cost == 0 then
-		cost = MonDKP:GetMinBid(itemLink)
+		cost = DWP:GetMinBid(itemLink)
 	end
 	
 	if player then
-		search = MonDKP:Table_Search(MonDKP_DKPTable, player)
-		class = MonDKP:GetCColors(MonDKP_DKPTable[search[1][1]].class)
+		search = DWP:Table_Search(DWPlus_RPTable, player)
+		class = DWP:GetCColors(DWPlus_RPTable[search[1][1]].class)
 	end
 
-	for i=1, #MonDKP_DKPTable do
-		table.insert(PlayerList, MonDKP_DKPTable[i].player)
+	for i=1, #DWPlus_RPTable do
+		table.insert(PlayerList, DWPlus_RPTable[i].player)
 	end
 	table.sort(PlayerList, function(a, b)
 		return a < b
@@ -355,11 +355,11 @@ function MonDKP:AwardConfirm(player, cost, boss, zone, loot, reassign)
 			filterName.func = self.SetValue
 			for i=ranges[menuList], ranges[menuList]+19 do
 				if PlayerList[i] then
-					local classSearch = MonDKP:Table_Search(MonDKP_DKPTable, PlayerList[i])
+					local classSearch = DWP:Table_Search(DWPlus_RPTable, PlayerList[i])
 				    local c;
 
 				    if classSearch then
-				     	c = MonDKP:GetCColors(MonDKP_DKPTable[classSearch[1][1]].class)
+				     	c = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
 				    else
 				     	c = { hex="444444" }
 				    end
@@ -380,14 +380,14 @@ function MonDKP:AwardConfirm(player, cost, boss, zone, loot, reassign)
 		table.insert(tempNPCs, core.LastKilledBoss)
 
 		for k,v in pairs(core.LastKilledNPC) do             -- eliminates duplicate zones
-			if not MonDKP:Table_Search(tempNPCs, v) then
+			if not DWP:Table_Search(tempNPCs, v) then
 				table.insert(tempNPCs, v)
 			end
 		end
 
 		reason.func = self.SetValue
 
-		if not MonDKP:Table_Search(tempNPCs, curBoss) then
+		if not DWP:Table_Search(tempNPCs, curBoss) then
 			reason.text, reason.arg1, reason.checked, reason.isNotRadio = curBoss, curBoss, curBoss == curBoss, true
 			UIDropDownMenu_AddButton(reason)
 		end
@@ -408,7 +408,7 @@ function MonDKP:AwardConfirm(player, cost, boss, zone, loot, reassign)
 		table.insert(tempZones, core.CurrentRaidZone)
 
 		for k,v in pairs(core.RecentZones) do             -- eliminates duplicate zones
-			if not MonDKP:Table_Search(tempZones, v) then
+			if not DWP:Table_Search(tempZones, v) then
 				table.insert(tempZones, v)
 			end
 		end

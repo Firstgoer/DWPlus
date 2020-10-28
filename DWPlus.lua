@@ -1,76 +1,76 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 local OptionsLoaded = false;
 
-function MonDKP_RestoreFilterOptions()  		-- restores default filter selections
-	MonDKP.UIConfig.search:SetText(L["SEARCH"])
-	MonDKP.UIConfig.search:SetTextColor(0.3, 0.3, 0.3, 1)
-	MonDKP.UIConfig.search:ClearFocus()
-	core.WorkingTable = CopyTable(MonDKP_DKPTable)
+function DWP_RestoreFilterOptions()  		-- restores default filter selections
+	DWP.UIConfig.search:SetText(L["SEARCH"])
+	DWP.UIConfig.search:SetTextColor(0.3, 0.3, 0.3, 1)
+	DWP.UIConfig.search:ClearFocus()
+	core.WorkingTable = CopyTable(DWPlus_RPTable)
 	core.CurView = "all"
 	core.CurSubView = "all"
 	for i=1, 9 do
-		MonDKP.ConfigTab1.checkBtn[i]:SetChecked(true)
+		DWP.ConfigTab1.checkBtn[i]:SetChecked(true)
 	end
-	MonDKP.ConfigTab1.checkBtn[10]:SetChecked(false)
-	MonDKP.ConfigTab1.checkBtn[11]:SetChecked(false)
-	MonDKP.ConfigTab1.checkBtn[12]:SetChecked(false)
-	MonDKPFilterChecks(MonDKP.ConfigTab1.checkBtn[1])
+	DWP.ConfigTab1.checkBtn[10]:SetChecked(false)
+	DWP.ConfigTab1.checkBtn[11]:SetChecked(false)
+	DWP.ConfigTab1.checkBtn[12]:SetChecked(false)
+	DWPFilterChecks(DWP.ConfigTab1.checkBtn[1])
 end
 
-function MonDKP:Toggle()        -- toggles IsShown() state of MonDKP.UIConfig, the entire addon window
-	core.MonDKPUI = MonDKP.UIConfig or MonDKP:CreateMenu();
-	core.MonDKPUI:SetShown(not core.MonDKPUI:IsShown())
-	MonDKP.UIConfig:SetFrameLevel(10)
-	MonDKP.UIConfig:SetClampedToScreen(true)
+function DWP:Toggle()        -- toggles IsShown() state of DWP.UIConfig, the entire addon window
+	core.DWPUI = DWP.UIConfig or DWP:CreateMenu();
+	core.DWPUI:SetShown(not core.DWPUI:IsShown())
+	DWP.UIConfig:SetFrameLevel(10)
+	DWP.UIConfig:SetClampedToScreen(true)
 	if core.BiddingWindow then core.BiddingWindow:SetFrameLevel(6) end
 	if core.ModesWindow then core.ModesWindow:SetFrameLevel(2) end
 		
 	if core.IsOfficer == nil then
-		MonDKP:CheckOfficer()
+		DWP:CheckOfficer()
 	end
 	--core.IsOfficer = C_GuildInfo.CanEditOfficerNote()  -- seemingly removed from classic API
 	if core.IsOfficer == false then
 		for i=2, 3 do
-			_G["MonDKPMonDKP.ConfigTabMenuTab"..i]:Hide();
+			_G["DWP.ConfigTabMenuTab"..i]:Hide();
 		end
-		_G["MonDKPMonDKP.ConfigTabMenuTab4"]:SetPoint("TOPLEFT", _G["MonDKPMonDKP.ConfigTabMenuTab1"], "TOPRIGHT", -14, 0)
-		_G["MonDKPMonDKP.ConfigTabMenuTab5"]:SetPoint("TOPLEFT", _G["MonDKPMonDKP.ConfigTabMenuTab4"], "TOPRIGHT", -14, 0)
-		_G["MonDKPMonDKP.ConfigTabMenuTab6"]:SetPoint("TOPLEFT", _G["MonDKPMonDKP.ConfigTabMenuTab5"], "TOPRIGHT", -14, 0)
+		_G["DWP.ConfigTabMenuTab4"]:SetPoint("TOPLEFT", _G["DWP.ConfigTabMenuTab1"], "TOPRIGHT", -14, 0)
+		_G["DWP.ConfigTabMenuTab5"]:SetPoint("TOPLEFT", _G["DWP.ConfigTabMenuTab4"], "TOPRIGHT", -14, 0)
+		_G["DWP.ConfigTabMenuTab6"]:SetPoint("TOPLEFT", _G["DWP.ConfigTabMenuTab5"], "TOPRIGHT", -14, 0)
 	end
 
 	if not OptionsLoaded then
-		core.MonDKPOptions = core.MonDKPOptions or MonDKP:Options()
+		core.DWPOptions = core.DWPOptions or DWP:Options()
 		OptionsLoaded = true;
 	end
 
-	if #MonDKP_Whitelist > 0 and core.IsOfficer then
-		MonDKP.Sync:SendData("MonDKPWhitelist", MonDKP_Whitelist)   -- broadcasts whitelist any time the window is opened if one exists (help ensure everyone has the information even if they were offline when it was created)
+	if #DWPlus_Whitelist > 0 and core.IsOfficer then
+		DWP.Sync:SendData("DWPWhitelist", DWPlus_Whitelist)   -- broadcasts whitelist any time the window is opened if one exists (help ensure everyone has the information even if they were offline when it was created)
 	end
 
 	if core.CurSubView == "raid" then
-		MonDKP:ViewLimited(true)
+		DWP:ViewLimited(true)
 	elseif core.CurSubView == "standby" then
-		MonDKP:ViewLimited(false, true)
+		DWP:ViewLimited(false, true)
 	elseif core.CurSubView == "raid and standby" then
-		MonDKP:ViewLimited(true, true)
+		DWP:ViewLimited(true, true)
 	elseif core.CurSubView == "core" then
-		MonDKP:ViewLimited(false, false, true)
+		DWP:ViewLimited(false, false, true)
 	elseif core.CurSubView == "all" then
-		MonDKP:ViewLimited()
+		DWP:ViewLimited()
 	end
 
-	core.MonDKPUI:SetScale(MonDKP_DB.defaults.MonDKPScaleSize)
-	if MonDKP.ConfigTab6.history and MonDKP.ConfigTab6:IsShown() then
-		MonDKP:DKPHistory_Update(true)
-	elseif MonDKP.ConfigTab5 and MonDKP.ConfigTab5:IsShown() then
-		MonDKP:LootHistory_Update(L["NOFILTER"]);
+	core.DWPUI:SetScale(DWPlus_DB.defaults.DWPScaleSize)
+	if DWP.ConfigTab6.history and DWP.ConfigTab6:IsShown() then
+		DWP:DKPHistory_Update(true)
+	elseif DWP.ConfigTab5 and DWP.ConfigTab5:IsShown() then
+		DWP:LootHistory_Update(L["NOFILTER"]);
 	end
 
-	MonDKP:StatusVerify_Update()
+	DWP:StatusVerify_Update()
 	DKPTable_Update()
 end
 
@@ -79,26 +79,26 @@ end
 ---------------------------------------
 local SortButtons = {}
 
-function MonDKP:FilterDKPTable(sort, reset)          -- filters core.WorkingTable based on classes in classFiltered table. core.currentSort should be used in most cases
+function DWP:FilterDKPTable(sort, reset)          -- filters core.WorkingTable based on classes in classFiltered table. core.currentSort should be used in most cases
 	local parentTable;
 
-	if not MonDKP.UIConfig then 
+	if not DWP.UIConfig then
 		return
 	end
 
 	if core.CurSubView ~= "all" then
 		if core.CurSubView == "raid" then
-			MonDKP:ViewLimited(true)
+			DWP:ViewLimited(true)
 		elseif core.CurSubView == "standby" then
-			MonDKP:ViewLimited(false, true)
+			DWP:ViewLimited(false, true)
 		elseif core.CurSubView == "raid and standby" then
-			MonDKP:ViewLimited(true, true)
+			DWP:ViewLimited(true, true)
 		elseif core.CurSubView == "core" then
-			MonDKP:ViewLimited(false, false, true)
+			DWP:ViewLimited(false, false, true)
 		end
 		parentTable = core.WorkingTable;
 	else
-		parentTable = MonDKP_DKPTable;
+		parentTable = DWPlus_RPTable;
 	end
 
 	core.WorkingTable = {}
@@ -108,15 +108,15 @@ function MonDKP:FilterDKPTable(sort, reset)          -- filters core.WorkingTabl
 		local InRaid = false;
 		local searchFilter = true
 
-		if MonDKP.UIConfig.search:GetText() ~= L["SEARCH"] and MonDKP.UIConfig.search:GetText() ~= "" then
-			if not strfind(string.upper(v.player), string.upper(MonDKP.UIConfig.search:GetText())) and not strfind(string.upper(v.class), string.upper(MonDKP.UIConfig.search:GetText()))
-			and not strfind(string.upper(v.role), string.upper(MonDKP.UIConfig.search:GetText())) and not strfind(string.upper(v.rankName), string.upper(MonDKP.UIConfig.search:GetText())) 
-			and not strfind(string.upper(v.spec), string.upper(MonDKP.UIConfig.search:GetText())) then
+		if DWP.UIConfig.search:GetText() ~= L["SEARCH"] and DWP.UIConfig.search:GetText() ~= "" then
+			if not strfind(string.upper(v.player), string.upper(DWP.UIConfig.search:GetText())) and not strfind(string.upper(v.class), string.upper(DWP.UIConfig.search:GetText()))
+			and not strfind(string.upper(v.role), string.upper(DWP.UIConfig.search:GetText())) and not strfind(string.upper(v.rankName), string.upper(DWP.UIConfig.search:GetText()))
+			and not strfind(string.upper(v.spec), string.upper(DWP.UIConfig.search:GetText())) then
 				searchFilter = false;
 			end
 		end
 		
-		if MonDKP.ConfigTab1.checkBtn[11]:GetChecked() then
+		if DWP.ConfigTab1.checkBtn[11]:GetChecked() then
 			local guildSize,_,_ = GetNumGuildMembers();
 			for i=1, guildSize do
 				local name,_,_,_,_,_,_,_,online = GetGuildRosterInfo(i)
@@ -129,22 +129,22 @@ function MonDKP:FilterDKPTable(sort, reset)          -- filters core.WorkingTabl
 			end
 		end
 		if(core.classFiltered[parentTable[k]["class"]] == true) and searchFilter == true then
-			if MonDKP.ConfigTab1.checkBtn[10]:GetChecked() or MonDKP.ConfigTab1.checkBtn[12]:GetChecked() then
+			if DWP.ConfigTab1.checkBtn[10]:GetChecked() or DWP.ConfigTab1.checkBtn[12]:GetChecked() then
 				for i=1, 40 do
 					tempName,_,_,_,_,tempClass = GetRaidRosterInfo(i)
-					if tempName and tempName == v.player and MonDKP.ConfigTab1.checkBtn[10]:GetChecked() then
+					if tempName and tempName == v.player and DWP.ConfigTab1.checkBtn[10]:GetChecked() then
 						tinsert(core.WorkingTable, v)
-					elseif tempName and tempName == v.player and MonDKP.ConfigTab1.checkBtn[12]:GetChecked() then
+					elseif tempName and tempName == v.player and DWP.ConfigTab1.checkBtn[12]:GetChecked() then
 						InRaid = true;
 					end
 				end
 			else
-				if ((MonDKP.ConfigTab1.checkBtn[11]:GetChecked() and IsOnline) or not MonDKP.ConfigTab1.checkBtn[11]:GetChecked()) then
+				if ((DWP.ConfigTab1.checkBtn[11]:GetChecked() and IsOnline) or not DWP.ConfigTab1.checkBtn[11]:GetChecked()) then
 					tinsert(core.WorkingTable, v)
 				end
 			end
-			if MonDKP.ConfigTab1.checkBtn[12]:GetChecked() and InRaid == false then
-				if MonDKP.ConfigTab1.checkBtn[11]:GetChecked() then
+			if DWP.ConfigTab1.checkBtn[12]:GetChecked() and InRaid == false then
+				if DWP.ConfigTab1.checkBtn[11]:GetChecked() then
 					if IsOnline then
 						tinsert(core.WorkingTable, v)
 					end
@@ -157,14 +157,14 @@ function MonDKP:FilterDKPTable(sort, reset)          -- filters core.WorkingTabl
 	end
 
 	if #core.WorkingTable == 0 then  		-- removes all filter settings if the filter combination results in an empty table
-		--MonDKP_RestoreFilterOptions()
-		MonDKP.DKPTable.Rows[1].DKPInfo[1]:SetText("|cffff0000No Entries Returned.|r")
-		MonDKP.DKPTable.Rows[1]:Show()
+		--DWP_RestoreFilterOptions()
+		DWP.DKPTable.Rows[1].DKPInfo[1]:SetText("|cffff0000No Entries Returned.|r")
+		DWP.DKPTable.Rows[1]:Show()
 	end
-	MonDKP:SortDKPTable(sort, reset);
+	DWP:SortDKPTable(sort, reset);
 end
 
-function MonDKP:SortDKPTable(id, reset)        -- reorganizes core.WorkingTable based on id passed. Avail IDs are "class", "player" and "dkp"
+function DWP:SortDKPTable(id, reset)        -- reorganizes core.WorkingTable based on id passed. Avail IDs are "class", "player" and "dkp"
 	local button;                                 -- passing "reset" forces it to do initial sort (A to Z repeatedly instead of A to Z then Z to A toggled)
 
 	if id == "class" or id == "rank" or id == "role" or id == "spec" then
@@ -197,77 +197,77 @@ function MonDKP:SortDKPTable(id, reset)        -- reorganizes core.WorkingTable 
 	DKPTable_Update()
 end
 
-function MonDKP:CreateMenu()
-	MonDKP.UIConfig = CreateFrame("Frame", "MonDKPConfig", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
-	MonDKP.UIConfig:SetPoint("CENTER", UIParent, "CENTER", -250, 100);
-	MonDKP.UIConfig:SetSize(550, 590);
-	MonDKP.UIConfig:SetBackdrop({
+function DWP:CreateMenu()
+	DWP.UIConfig = CreateFrame("Frame", "DWPConfig", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
+	DWP.UIConfig:SetPoint("CENTER", UIParent, "CENTER", -250, 100);
+	DWP.UIConfig:SetSize(550, 590);
+	DWP.UIConfig:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 	});
-	MonDKP.UIConfig:SetBackdropColor(0,0,0,0.8);
-	MonDKP.UIConfig:SetMovable(true);
-	MonDKP.UIConfig:EnableMouse(true);
-	--MonDKP.UIConfig:SetResizable(true);
-	--MonDKP.UIConfig:SetMaxResize(1400, 875)
-	--MonDKP.UIConfig:SetMinResize(1000, 590)
-	MonDKP.UIConfig:RegisterForDrag("LeftButton");
-	MonDKP.UIConfig:SetScript("OnDragStart", MonDKP.UIConfig.StartMoving);
-	MonDKP.UIConfig:SetScript("OnDragStop", MonDKP.UIConfig.StopMovingOrSizing);
-	MonDKP.UIConfig:SetFrameStrata("DIALOG")
-	MonDKP.UIConfig:SetFrameLevel(10)
-	MonDKP.UIConfig:SetScript("OnMouseDown", function(self)
+	DWP.UIConfig:SetBackdropColor(0,0,0,0.8);
+	DWP.UIConfig:SetMovable(true);
+	DWP.UIConfig:EnableMouse(true);
+	--DWP.UIConfig:SetResizable(true);
+	--DWP.UIConfig:SetMaxResize(1400, 875)
+	--DWP.UIConfig:SetMinResize(1000, 590)
+	DWP.UIConfig:RegisterForDrag("LeftButton");
+	DWP.UIConfig:SetScript("OnDragStart", DWP.UIConfig.StartMoving);
+	DWP.UIConfig:SetScript("OnDragStop", DWP.UIConfig.StopMovingOrSizing);
+	DWP.UIConfig:SetFrameStrata("DIALOG")
+	DWP.UIConfig:SetFrameLevel(10)
+	DWP.UIConfig:SetScript("OnMouseDown", function(self)
 		self:SetFrameLevel(10)
 		if core.ModesWindow then core.ModesWindow:SetFrameLevel(6) end
 		if core.BiddingWindow then core.BiddingWindow:SetFrameLevel(2) end
 	end)
 
 	-- Close Button
-	MonDKP.UIConfig.closeContainer = CreateFrame("Frame", "MonDKPTitle", MonDKP.UIConfig)
-	MonDKP.UIConfig.closeContainer:SetPoint("CENTER", MonDKP.UIConfig, "TOPRIGHT", -4, 0)
-	MonDKP.UIConfig.closeContainer:SetBackdrop({
+	DWP.UIConfig.closeContainer = CreateFrame("Frame", "DWPTitle", DWP.UIConfig)
+	DWP.UIConfig.closeContainer:SetPoint("CENTER", DWP.UIConfig, "TOPRIGHT", -4, 0)
+	DWP.UIConfig.closeContainer:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 	});
-	MonDKP.UIConfig.closeContainer:SetBackdropColor(0,0,0,0.9)
-	MonDKP.UIConfig.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
-	MonDKP.UIConfig.closeContainer:SetSize(28, 28)
+	DWP.UIConfig.closeContainer:SetBackdropColor(0,0,0,0.9)
+	DWP.UIConfig.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
+	DWP.UIConfig.closeContainer:SetSize(28, 28)
 
-	MonDKP.UIConfig.closeBtn = CreateFrame("Button", nil, MonDKP.UIConfig, "UIPanelCloseButton")
-	MonDKP.UIConfig.closeBtn:SetPoint("CENTER", MonDKP.UIConfig.closeContainer, "TOPRIGHT", -14, -14)
-	tinsert(UISpecialFrames, MonDKP.UIConfig:GetName()); -- Sets frame to close on "Escape"
+	DWP.UIConfig.closeBtn = CreateFrame("Button", nil, DWP.UIConfig, "UIPanelCloseButton")
+	DWP.UIConfig.closeBtn:SetPoint("CENTER", DWP.UIConfig.closeContainer, "TOPRIGHT", -14, -14)
+	tinsert(UISpecialFrames, DWP.UIConfig:GetName()); -- Sets frame to close on "Escape"
 
 	---------------------------------------
 	-- Create and Populate Tab Menu and DKP Table
 	---------------------------------------
 
-	MonDKP.TabMenu = MonDKP:ConfigMenuTabs();        -- Create and populate Config Menu Tabs
-	MonDKP:DKPTable_Create();                        -- Create DKPTable and populate rows
-	MonDKP.UIConfig.TabMenu:Hide()                   -- Hide menu until expanded
+	DWP.TabMenu = DWP:ConfigMenuTabs();        -- Create and populate Config Menu Tabs
+	DWP:DKPTable_Create();                        -- Create DKPTable and populate rows
+	DWP.UIConfig.TabMenu:Hide()                   -- Hide menu until expanded
 	---------------------------------------
 	-- DKP Table Header and Sort Buttons
 	---------------------------------------
 
-	MonDKP.DKPTable_Headers = CreateFrame("Frame", "MonDKPDKPTableHeaders", MonDKP.UIConfig)
-	MonDKP.DKPTable_Headers:SetSize(500, 22)
-	MonDKP.DKPTable_Headers:SetPoint("BOTTOMLEFT", MonDKP.DKPTable, "TOPLEFT", 0, 1)
-	MonDKP.DKPTable_Headers:SetBackdrop({
+	DWP.DKPTable_Headers = CreateFrame("Frame", "DWPDKPTableHeaders", DWP.UIConfig)
+	DWP.DKPTable_Headers:SetSize(500, 22)
+	DWP.DKPTable_Headers:SetPoint("BOTTOMLEFT", DWP.DKPTable, "TOPLEFT", 0, 1)
+	DWP.DKPTable_Headers:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 	});
-	MonDKP.DKPTable_Headers:SetBackdropColor(0,0,0,0.8);
-	MonDKP.DKPTable_Headers:SetBackdropBorderColor(1,1,1,0.5)
-	MonDKP.DKPTable_Headers:Show()
+	DWP.DKPTable_Headers:SetBackdropColor(0,0,0,0.8);
+	DWP.DKPTable_Headers:SetBackdropBorderColor(1,1,1,0.5)
+	DWP.DKPTable_Headers:Show()
 
 	---------------------------------------
 	-- Sort Buttons
 	--------------------------------------- 
 
-	SortButtons.player = CreateFrame("Button", "$ParentSortButtonPlayer", MonDKP.DKPTable_Headers)
-	SortButtons.class = CreateFrame("Button", "$ParentSortButtonClass", MonDKP.DKPTable_Headers)
-	SortButtons.dkp = CreateFrame("Button", "$ParentSortButtonDkp", MonDKP.DKPTable_Headers)
+	SortButtons.player = CreateFrame("Button", "$ParentSortButtonPlayer", DWP.DKPTable_Headers)
+	SortButtons.class = CreateFrame("Button", "$ParentSortButtonClass", DWP.DKPTable_Headers)
+	SortButtons.dkp = CreateFrame("Button", "$ParentSortButtonDkp", DWP.DKPTable_Headers)
 	 
-	SortButtons.class:SetPoint("BOTTOM", MonDKP.DKPTable_Headers, "BOTTOM", 0, 2)
+	SortButtons.class:SetPoint("BOTTOM", DWP.DKPTable_Headers, "BOTTOM", 0, 2)
 	SortButtons.player:SetPoint("RIGHT", SortButtons.class, "LEFT")
 	SortButtons.dkp:SetPoint("LEFT", SortButtons.class, "RIGHT")
 	 
@@ -276,9 +276,9 @@ function MonDKP:CreateMenu()
 		v:SetHighlightTexture("Interface\\BUTTONS\\BlueGrad64_faded.blp");
 		v:SetSize((core.TableWidth/3)-1, core.TableRowHeight)
 		if v.Id == "class" then
-			v:SetScript("OnClick", function(self) MonDKP:SortDKPTable(core.CenterSort, "Clear") end)
+			v:SetScript("OnClick", function(self) DWP:SortDKPTable(core.CenterSort, "Clear") end)
 		else
-			v:SetScript("OnClick", function(self) MonDKP:SortDKPTable(self.Id, "Clear") end)
+			v:SetScript("OnClick", function(self) DWP:SortDKPTable(self.Id, "Clear") end)
 		end
 	end
 
@@ -287,19 +287,19 @@ function MonDKP:CreateMenu()
 	SortButtons.dkp:SetSize((core.TableWidth*0.4)-1, core.TableRowHeight)
 
 	SortButtons.player.t = SortButtons.player:CreateFontString(nil, "OVERLAY")
-	SortButtons.player.t:SetFontObject("MonDKPNormal")
+	SortButtons.player.t:SetFontObject("DWPNormal")
 	SortButtons.player.t:SetTextColor(1, 1, 1, 1);
 	SortButtons.player.t:SetPoint("LEFT", SortButtons.player, "LEFT", 50, 0);
 	SortButtons.player.t:SetText(L["PLAYER"]); 
 
 	--[[SortButtons.class.t = SortButtons.class:CreateFontString(nil, "OVERLAY")
-	SortButtons.class.t:SetFontObject("MonDKPNormal");
+	SortButtons.class.t:SetFontObject("DWPNormal");
 	SortButtons.class.t:SetTextColor(1, 1, 1, 1);
 	SortButtons.class.t:SetPoint("CENTER", SortButtons.class, "CENTER", 0, 0);
 	SortButtons.class.t:SetText(L["CLASS"]); --]]
 
 	-- center column dropdown (class, rank, spec etc..)
-	SortButtons.class.t = CreateFrame("FRAME", "MonDKPSortColDropdown", SortButtons.class, "DWPlusTableHeaderDropDownMenuTemplate")
+	SortButtons.class.t = CreateFrame("FRAME", "DWPSortColDropdown", SortButtons.class, "DWPlusTableHeaderDropDownMenuTemplate")
 	SortButtons.class.t:SetPoint("CENTER", SortButtons.class, "CENTER", 4, -3)
 	UIDropDownMenu_JustifyText(SortButtons.class.t, "CENTER")
 	UIDropDownMenu_SetWidth(SortButtons.class.t, 80)
@@ -308,7 +308,7 @@ function MonDKP:CreateMenu()
 	UIDropDownMenu_Initialize(SortButtons.class.t, function(self, level, menuList)
 	local reason = UIDropDownMenu_CreateInfo()
 		reason.func = self.SetValue
-		reason.fontObject = "MonDKPSmallCenter"
+		reason.fontObject = "DWPSmallCenter"
 		reason.text, reason.arg1, reason.arg2, reason.checked, reason.isNotRadio = L["CLASS"], "class", L["CLASS"], "class" == core.CenterSort, true
 		UIDropDownMenu_AddButton(reason)
 		reason.text, reason.arg1, reason.arg2, reason.checked, reason.isNotRadio = L["SPEC"], "spec", L["SPEC"], "spec" == core.CenterSort, true
@@ -325,20 +325,20 @@ function MonDKP:CreateMenu()
 		core.CenterSort = newValue
 		SortButtons.class.Id = newValue;
 		UIDropDownMenu_SetText(SortButtons.class.t, arg2)
-		MonDKP:SortDKPTable(newValue, "reset")
+		DWP:SortDKPTable(newValue, "reset")
 		core.currentSort = newValue;
 		CloseDropDownMenus()
 	end
 
 	SortButtons.dkp.t = SortButtons.dkp:CreateFontString(nil, "OVERLAY")
-	SortButtons.dkp.t:SetFontObject("MonDKPNormal")
+	SortButtons.dkp.t:SetFontObject("DWPNormal")
 	SortButtons.dkp.t:SetTextColor(1, 1, 1, 1);
-	if MonDKP_DB.modes.mode == "Roll Based Bidding" then
+	if DWPlus_DB.modes.mode == "Roll Based Bidding" then
 		SortButtons.dkp.t:SetPoint("RIGHT", SortButtons.dkp, "RIGHT", -50, 0);
 		SortButtons.dkp.t:SetText(L["TOTALDKP"]);
 
 		SortButtons.dkp.roll = SortButtons.dkp:CreateFontString(nil, "OVERLAY");
-		SortButtons.dkp.roll:SetFontObject("MonDKPNormal")
+		SortButtons.dkp.roll:SetFontObject("DWPNormal")
 		SortButtons.dkp.roll:SetScale("0.8")
 		SortButtons.dkp.roll:SetTextColor(1, 1, 1, 1);
 		SortButtons.dkp.roll:SetPoint("LEFT", SortButtons.dkp, "LEFT", 20, -1);
@@ -349,61 +349,61 @@ function MonDKP:CreateMenu()
 	end
 
 	----- Counter below DKP Table
-	MonDKP.DKPTable.counter = CreateFrame("Frame", "MonDKPDisplayFrameCounter", MonDKP.UIConfig);
-	MonDKP.DKPTable.counter:SetPoint("TOP", MonDKP.DKPTable, "BOTTOM", 0, 0)
-	MonDKP.DKPTable.counter:SetSize(400, 30)
+	DWP.DKPTable.counter = CreateFrame("Frame", "DWPDisplayFrameCounter", DWP.UIConfig);
+	DWP.DKPTable.counter:SetPoint("TOP", DWP.DKPTable, "BOTTOM", 0, 0)
+	DWP.DKPTable.counter:SetSize(400, 30)
 
-	MonDKP.DKPTable.counter.t = MonDKP.DKPTable.counter:CreateFontString(nil, "OVERLAY")
-	MonDKP.DKPTable.counter.t:SetFontObject("MonDKPNormal");
-	MonDKP.DKPTable.counter.t:SetTextColor(1, 1, 1, 0.7);
-	MonDKP.DKPTable.counter.t:SetPoint("CENTER", MonDKP.DKPTable.counter, "CENTER");
+	DWP.DKPTable.counter.t = DWP.DKPTable.counter:CreateFontString(nil, "OVERLAY")
+	DWP.DKPTable.counter.t:SetFontObject("DWPNormal");
+	DWP.DKPTable.counter.t:SetTextColor(1, 1, 1, 0.7);
+	DWP.DKPTable.counter.t:SetPoint("CENTER", DWP.DKPTable.counter, "CENTER");
 
-	MonDKP.DKPTable.counter.s = MonDKP.DKPTable.counter:CreateFontString(nil, "OVERLAY")
-	MonDKP.DKPTable.counter.s:SetFontObject("MonDKPTiny");
-	MonDKP.DKPTable.counter.s:SetTextColor(1, 1, 1, 0.7);
-	MonDKP.DKPTable.counter.s:SetPoint("CENTER", MonDKP.DKPTable.counter, "CENTER", 0, -15);
+	DWP.DKPTable.counter.s = DWP.DKPTable.counter:CreateFontString(nil, "OVERLAY")
+	DWP.DKPTable.counter.s:SetFontObject("DWPTiny");
+	DWP.DKPTable.counter.s:SetTextColor(1, 1, 1, 0.7);
+	DWP.DKPTable.counter.s:SetPoint("CENTER", DWP.DKPTable.counter, "CENTER", 0, -15);
 
 	------------------------------
 	-- Search Box
 	------------------------------
 
-	MonDKP.UIConfig.search = CreateFrame("EditBox", nil, MonDKP.UIConfig)
-	MonDKP.UIConfig.search:SetPoint("BOTTOMLEFT", MonDKP.UIConfig, "BOTTOMLEFT", 50, 18)
-	MonDKP.UIConfig.search:SetAutoFocus(false)
-	MonDKP.UIConfig.search:SetMultiLine(false)
-	MonDKP.UIConfig.search:SetSize(140, 24)
-	MonDKP.UIConfig.search:SetBackdrop({
+	DWP.UIConfig.search = CreateFrame("EditBox", nil, DWP.UIConfig)
+	DWP.UIConfig.search:SetPoint("BOTTOMLEFT", DWP.UIConfig, "BOTTOMLEFT", 50, 18)
+	DWP.UIConfig.search:SetAutoFocus(false)
+	DWP.UIConfig.search:SetMultiLine(false)
+	DWP.UIConfig.search:SetSize(140, 24)
+	DWP.UIConfig.search:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 	});
-	MonDKP.UIConfig.search:SetBackdropColor(0,0,0,0.9)
-	MonDKP.UIConfig.search:SetBackdropBorderColor(1,1,1,0.6)
-	MonDKP.UIConfig.search:SetMaxLetters(50)
-	MonDKP.UIConfig.search:SetTextColor(0.4, 0.4, 0.4, 1)
-	MonDKP.UIConfig.search:SetFontObject("MonDKPNormalLeft")
-	MonDKP.UIConfig.search:SetTextInsets(10, 10, 5, 5)
-	MonDKP.UIConfig.search:SetText(L["SEARCH"])
-	MonDKP.UIConfig.search:SetScript("OnKeyUp", function(self)    -- clears text and focus on esc
-		if (MonDKP.UIConfig.search:GetText():match("[%^%$%(%)%%%.%[%]%*%+%-%?]")) then
-			MonDKP.UIConfig.search:SetText(string.gsub(MonDKP.UIConfig.search:GetText(), "[%^%$%(%)%%%.%[%]%*%+%-%?]", ""))
-			--MonDKP.UIConfig.search:SetText(strsub(MonDKP.UIConfig.search:GetText(), 1, -2))
+	DWP.UIConfig.search:SetBackdropColor(0,0,0,0.9)
+	DWP.UIConfig.search:SetBackdropBorderColor(1,1,1,0.6)
+	DWP.UIConfig.search:SetMaxLetters(50)
+	DWP.UIConfig.search:SetTextColor(0.4, 0.4, 0.4, 1)
+	DWP.UIConfig.search:SetFontObject("DWPNormalLeft")
+	DWP.UIConfig.search:SetTextInsets(10, 10, 5, 5)
+	DWP.UIConfig.search:SetText(L["SEARCH"])
+	DWP.UIConfig.search:SetScript("OnKeyUp", function(self)    -- clears text and focus on esc
+		if (DWP.UIConfig.search:GetText():match("[%^%$%(%)%%%.%[%]%*%+%-%?]")) then
+			DWP.UIConfig.search:SetText(string.gsub(DWP.UIConfig.search:GetText(), "[%^%$%(%)%%%.%[%]%*%+%-%?]", ""))
+			--DWP.UIConfig.search:SetText(strsub(DWP.UIConfig.search:GetText(), 1, -2))
 		else
-			MonDKP:FilterDKPTable(core.currentSort, "reset")
+			DWP:FilterDKPTable(core.currentSort, "reset")
 		end
 	end)
-	MonDKP.UIConfig.search:SetScript("OnEscapePressed", function(self)    -- clears text and focus on esc
+	DWP.UIConfig.search:SetScript("OnEscapePressed", function(self)    -- clears text and focus on esc
 		self:SetText(L["SEARCH"])
 		self:SetTextColor(0.3, 0.3, 0.3, 1)
 		self:ClearFocus()
-		MonDKP:FilterDKPTable(core.currentSort, "reset")
+		DWP:FilterDKPTable(core.currentSort, "reset")
 	end)
-	MonDKP.UIConfig.search:SetScript("OnEnterPressed", function(self)    -- clears text and focus on enter
+	DWP.UIConfig.search:SetScript("OnEnterPressed", function(self)    -- clears text and focus on enter
 		self:ClearFocus()
 	end)
-	MonDKP.UIConfig.search:SetScript("OnTabPressed", function(self)    -- clears text and focus on tab
+	DWP.UIConfig.search:SetScript("OnTabPressed", function(self)    -- clears text and focus on tab
 		self:ClearFocus()
 	end)
-	MonDKP.UIConfig.search:SetScript("OnEditFocusGained", function(self)
+	DWP.UIConfig.search:SetScript("OnEditFocusGained", function(self)
 		if (self:GetText() ==  L["SEARCH"]) then
 			self:SetText("");
 			self:SetTextColor(1, 1, 1, 1)
@@ -411,19 +411,19 @@ function MonDKP:CreateMenu()
 			self:HighlightText();
 		end
 	end)
-	MonDKP.UIConfig.search:SetScript("OnEditFocusLost", function(self)
+	DWP.UIConfig.search:SetScript("OnEditFocusLost", function(self)
 		if (self:GetText() == "") then
 			self:SetText(L["SEARCH"])
 			self:SetTextColor(0.3, 0.3, 0.3, 1)
 		end
 	end)
-	MonDKP.UIConfig.search:SetScript("OnEnter", function(self)
+	DWP.UIConfig.search:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 		GameTooltip:SetText(L["SEARCH"], 0.25, 0.75, 0.90, 1, true);
 		GameTooltip:AddLine(L["SEARCHDESC"], 1.0, 1.0, 1.0, true);
 		GameTooltip:Show();
 	end)
-	MonDKP.UIConfig.search:SetScript("OnLeave", function(self)
+	DWP.UIConfig.search:SetScript("OnLeave", function(self)
 		GameTooltip:Hide();
 	end)
 
@@ -431,158 +431,158 @@ function MonDKP:CreateMenu()
 	-- Expand / Collapse Arrow
 	---------------------------------------
 
-	MonDKP.UIConfig.expand = CreateFrame("Frame", "MonDKPTitle", MonDKP.UIConfig)
-	MonDKP.UIConfig.expand:SetPoint("LEFT", MonDKP.UIConfig, "RIGHT", 0, 0)
-	MonDKP.UIConfig.expand:SetBackdrop({
+	DWP.UIConfig.expand = CreateFrame("Frame", "DWPTitle", DWP.UIConfig)
+	DWP.UIConfig.expand:SetPoint("LEFT", DWP.UIConfig, "RIGHT", 0, 0)
+	DWP.UIConfig.expand:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
 	});
-	MonDKP.UIConfig.expand:SetBackdropColor(0,0,0,0.7)
-	MonDKP.UIConfig.expand:SetSize(15, 60)
+	DWP.UIConfig.expand:SetBackdropColor(0,0,0,0.7)
+	DWP.UIConfig.expand:SetSize(15, 60)
 	
-	MonDKP.UIConfig.expandtab = MonDKP.UIConfig.expand:CreateTexture(nil, "OVERLAY", nil);
-	MonDKP.UIConfig.expandtab:SetColorTexture(0, 0, 0, 1)
-	MonDKP.UIConfig.expandtab:SetPoint("CENTER", MonDKP.UIConfig.expand, "CENTER");
-	MonDKP.UIConfig.expandtab:SetSize(15, 60);
-	MonDKP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\expand-arrow.tga");
+	DWP.UIConfig.expandtab = DWP.UIConfig.expand:CreateTexture(nil, "OVERLAY", nil);
+	DWP.UIConfig.expandtab:SetColorTexture(0, 0, 0, 1)
+	DWP.UIConfig.expandtab:SetPoint("CENTER", DWP.UIConfig.expand, "CENTER");
+	DWP.UIConfig.expandtab:SetSize(15, 60);
+	DWP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\expand-arrow.tga");
 
-	MonDKP.UIConfig.expand.trigger = CreateFrame("Button", "$ParentCollapseExpandButton", MonDKP.UIConfig.expand)
-	MonDKP.UIConfig.expand.trigger:SetSize(15, 60)
-	MonDKP.UIConfig.expand.trigger:SetPoint("CENTER", MonDKP.UIConfig.expand, "CENTER", 0, 0)
-	MonDKP.UIConfig.expand.trigger:SetScript("OnClick", function(self) 
+	DWP.UIConfig.expand.trigger = CreateFrame("Button", "$ParentCollapseExpandButton", DWP.UIConfig.expand)
+	DWP.UIConfig.expand.trigger:SetSize(15, 60)
+	DWP.UIConfig.expand.trigger:SetPoint("CENTER", DWP.UIConfig.expand, "CENTER", 0, 0)
+	DWP.UIConfig.expand.trigger:SetScript("OnClick", function(self)
 		if core.ShowState == false then
-			MonDKP.UIConfig:SetWidth(1050)
-			MonDKP.UIConfig.TabMenu:Show()
-			MonDKP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\collapse-arrow");
+			DWP.UIConfig:SetWidth(1050)
+			DWP.UIConfig.TabMenu:Show()
+			DWP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\collapse-arrow");
 		else
-			MonDKP.UIConfig:SetWidth(550)
-			MonDKP.UIConfig.TabMenu:Hide()
-			MonDKP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\expand-arrow");
+			DWP.UIConfig:SetWidth(550)
+			DWP.UIConfig.TabMenu:Hide()
+			DWP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\expand-arrow");
 		end
 		PlaySound(62540)
 		core.ShowState = not core.ShowState
 	end)
 
 	-- Title Frame (top/center)
-	MonDKP.UIConfig.TitleBar = CreateFrame("Frame", "MonDKPTitle", MonDKP.UIConfig, "ShadowOverlaySmallTemplate")
-	MonDKP.UIConfig.TitleBar:SetPoint("BOTTOM", SortButtons.class, "TOP", 0, 10)
-	MonDKP.UIConfig.TitleBar:SetBackdrop({
+	DWP.UIConfig.TitleBar = CreateFrame("Frame", "DWPTitle", DWP.UIConfig, "ShadowOverlaySmallTemplate")
+	DWP.UIConfig.TitleBar:SetPoint("BOTTOM", SortButtons.class, "TOP", 0, 10)
+	DWP.UIConfig.TitleBar:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 	});
-	MonDKP.UIConfig.TitleBar:SetBackdropColor(0,0,0,0.9)
-	MonDKP.UIConfig.TitleBar:SetSize(166, 54)
+	DWP.UIConfig.TitleBar:SetBackdropColor(0,0,0,0.9)
+	DWP.UIConfig.TitleBar:SetSize(166, 54)
 
 	-- Addon Title
-	MonDKP.UIConfig.Title = MonDKP.UIConfig.TitleBar:CreateTexture(nil, "OVERLAY", nil);   -- Title Bar Texture
-	MonDKP.UIConfig.Title:SetColorTexture(0, 0, 0, 1)
-	MonDKP.UIConfig.Title:SetPoint("CENTER", MonDKP.UIConfig.TitleBar, "CENTER");
-	MonDKP.UIConfig.Title:SetSize(160, 48);
-	MonDKP.UIConfig.Title:SetTexture("Interface\\AddOns\\MonolithDKP\\Media\\Textures\\dw-plus-tracker.tga");
+	DWP.UIConfig.Title = DWP.UIConfig.TitleBar:CreateTexture(nil, "OVERLAY", nil);   -- Title Bar Texture
+	DWP.UIConfig.Title:SetColorTexture(0, 0, 0, 1)
+	DWP.UIConfig.Title:SetPoint("CENTER", DWP.UIConfig.TitleBar, "CENTER");
+	DWP.UIConfig.Title:SetSize(160, 48);
+	DWP.UIConfig.Title:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\dw-plus-tracker.tga");
 
 	---------------------------------------
 	-- CHANGE LOG WINDOW
 	---------------------------------------
-	if MonDKP_DB.defaults.HideChangeLogs < core.BuildNumber then
-		MonDKP.ChangeLogDisplay = CreateFrame("Frame", "MonDKP_ChangeLogDisplay", UIParent, "ShadowOverlaySmallTemplate");
+	if DWPlus_DB.defaults.HideChangeLogs < core.BuildNumber then
+		DWP.ChangeLogDisplay = CreateFrame("Frame", "DWP_ChangeLogDisplay", UIParent, "ShadowOverlaySmallTemplate");
 
-		MonDKP.ChangeLogDisplay:SetPoint("TOP", UIParent, "TOP", 0, -200);
-		MonDKP.ChangeLogDisplay:SetSize(800, 100);
-		MonDKP.ChangeLogDisplay:SetBackdrop( {
+		DWP.ChangeLogDisplay:SetPoint("TOP", UIParent, "TOP", 0, -200);
+		DWP.ChangeLogDisplay:SetSize(800, 100);
+		DWP.ChangeLogDisplay:SetBackdrop( {
 			bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
 			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 			insets = { left = 0, right = 0, top = 0, bottom = 0 }
 		});
-		MonDKP.ChangeLogDisplay:SetBackdropColor(0,0,0,0.9);
-		MonDKP.ChangeLogDisplay:SetBackdropBorderColor(1,1,1,1)
-		MonDKP.ChangeLogDisplay:SetFrameStrata("DIALOG")
-		MonDKP.ChangeLogDisplay:SetFrameLevel(1)
-		MonDKP.ChangeLogDisplay:SetMovable(true);
-		MonDKP.ChangeLogDisplay:EnableMouse(true);
-		MonDKP.ChangeLogDisplay:RegisterForDrag("LeftButton");
-		MonDKP.ChangeLogDisplay:SetScript("OnDragStart", MonDKP.ChangeLogDisplay.StartMoving);
-		MonDKP.ChangeLogDisplay:SetScript("OnDragStop", MonDKP.ChangeLogDisplay.StopMovingOrSizing);
+		DWP.ChangeLogDisplay:SetBackdropColor(0,0,0,0.9);
+		DWP.ChangeLogDisplay:SetBackdropBorderColor(1,1,1,1)
+		DWP.ChangeLogDisplay:SetFrameStrata("DIALOG")
+		DWP.ChangeLogDisplay:SetFrameLevel(1)
+		DWP.ChangeLogDisplay:SetMovable(true);
+		DWP.ChangeLogDisplay:EnableMouse(true);
+		DWP.ChangeLogDisplay:RegisterForDrag("LeftButton");
+		DWP.ChangeLogDisplay:SetScript("OnDragStart", DWP.ChangeLogDisplay.StartMoving);
+		DWP.ChangeLogDisplay:SetScript("OnDragStop", DWP.ChangeLogDisplay.StopMovingOrSizing);
 
-		MonDKP.ChangeLogDisplay.ChangeLogHeader = MonDKP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		MonDKP.ChangeLogDisplay.ChangeLogHeader:ClearAllPoints();
-		MonDKP.ChangeLogDisplay.ChangeLogHeader:SetFontObject("MonDKPLargeLeft")
-		MonDKP.ChangeLogDisplay.ChangeLogHeader:SetPoint("TOPLEFT", MonDKP.ChangeLogDisplay, "TOPLEFT", 10, -10);
-		MonDKP.ChangeLogDisplay.ChangeLogHeader:SetText("Monolith DKP Change Log");
+		DWP.ChangeLogDisplay.ChangeLogHeader = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+		DWP.ChangeLogDisplay.ChangeLogHeader:ClearAllPoints();
+		DWP.ChangeLogDisplay.ChangeLogHeader:SetFontObject("DWPLargeLeft")
+		DWP.ChangeLogDisplay.ChangeLogHeader:SetPoint("TOPLEFT", DWP.ChangeLogDisplay, "TOPLEFT", 10, -10);
+		DWP.ChangeLogDisplay.ChangeLogHeader:SetText("Monolith DKP Change Log");
 
-		MonDKP.ChangeLogDisplay.Notes = MonDKP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		MonDKP.ChangeLogDisplay.Notes:ClearAllPoints();
-		MonDKP.ChangeLogDisplay.Notes:SetWidth(780)
-		MonDKP.ChangeLogDisplay.Notes:SetFontObject("MonDKPNormalLeft")
-		MonDKP.ChangeLogDisplay.Notes:SetPoint("TOPLEFT", MonDKP.ChangeLogDisplay.ChangeLogHeader, "BOTTOMLEFT", 0, -10);
+		DWP.ChangeLogDisplay.Notes = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+		DWP.ChangeLogDisplay.Notes:ClearAllPoints();
+		DWP.ChangeLogDisplay.Notes:SetWidth(780)
+		DWP.ChangeLogDisplay.Notes:SetFontObject("DWPNormalLeft")
+		DWP.ChangeLogDisplay.Notes:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "BOTTOMLEFT", 0, -10);
 
-		MonDKP.ChangeLogDisplay.VerNumber = MonDKP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		MonDKP.ChangeLogDisplay.VerNumber:ClearAllPoints();
-		MonDKP.ChangeLogDisplay.VerNumber:SetWidth(780)
-		MonDKP.ChangeLogDisplay.VerNumber:SetScale(0.8)
-		MonDKP.ChangeLogDisplay.VerNumber:SetFontObject("MonDKPLargeLeft")
-		MonDKP.ChangeLogDisplay.VerNumber:SetPoint("TOPLEFT", MonDKP.ChangeLogDisplay.Notes, "BOTTOMLEFT", 35, -10);
+		DWP.ChangeLogDisplay.VerNumber = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+		DWP.ChangeLogDisplay.VerNumber:ClearAllPoints();
+		DWP.ChangeLogDisplay.VerNumber:SetWidth(780)
+		DWP.ChangeLogDisplay.VerNumber:SetScale(0.8)
+		DWP.ChangeLogDisplay.VerNumber:SetFontObject("DWPLargeLeft")
+		DWP.ChangeLogDisplay.VerNumber:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.Notes, "BOTTOMLEFT", 35, -10);
 
-		MonDKP.ChangeLogDisplay.ChangeLogText = MonDKP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		MonDKP.ChangeLogDisplay.ChangeLogText:ClearAllPoints();
-		MonDKP.ChangeLogDisplay.ChangeLogText:SetWidth(740)
-		MonDKP.ChangeLogDisplay.ChangeLogText:SetFontObject("MonDKPNormalLeft")
-		MonDKP.ChangeLogDisplay.ChangeLogText:SetPoint("TOPLEFT", MonDKP.ChangeLogDisplay.VerNumber, "BOTTOMLEFT", -15, -0);
+		DWP.ChangeLogDisplay.ChangeLogText = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+		DWP.ChangeLogDisplay.ChangeLogText:ClearAllPoints();
+		DWP.ChangeLogDisplay.ChangeLogText:SetWidth(740)
+		DWP.ChangeLogDisplay.ChangeLogText:SetFontObject("DWPNormalLeft")
+		DWP.ChangeLogDisplay.ChangeLogText:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.VerNumber, "BOTTOMLEFT", -15, -0);
 
 		-- Change Log Close Button
-		MonDKP.ChangeLogDisplay.closeContainer = CreateFrame("Frame", "MonDKPChangeLogClose", MonDKP.ChangeLogDisplay)
-		MonDKP.ChangeLogDisplay.closeContainer:SetPoint("CENTER", MonDKP.ChangeLogDisplay, "TOPRIGHT", -4, 0)
-		MonDKP.ChangeLogDisplay.closeContainer:SetBackdrop({
+		DWP.ChangeLogDisplay.closeContainer = CreateFrame("Frame", "DWPChangeLogClose", DWP.ChangeLogDisplay)
+		DWP.ChangeLogDisplay.closeContainer:SetPoint("CENTER", DWP.ChangeLogDisplay, "TOPRIGHT", -4, 0)
+		DWP.ChangeLogDisplay.closeContainer:SetBackdrop({
 			bgFile   = "Textures\\white.blp", tile = true,
 			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
 		});
-		MonDKP.ChangeLogDisplay.closeContainer:SetBackdropColor(0,0,0,0.9)
-		MonDKP.ChangeLogDisplay.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
-		MonDKP.ChangeLogDisplay.closeContainer:SetSize(28, 28)
+		DWP.ChangeLogDisplay.closeContainer:SetBackdropColor(0,0,0,0.9)
+		DWP.ChangeLogDisplay.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
+		DWP.ChangeLogDisplay.closeContainer:SetSize(28, 28)
 
-		MonDKP.ChangeLogDisplay.closeBtn = CreateFrame("Button", nil, MonDKP.ChangeLogDisplay, "UIPanelCloseButton")
-		MonDKP.ChangeLogDisplay.closeBtn:SetPoint("CENTER", MonDKP.ChangeLogDisplay.closeContainer, "TOPRIGHT", -14, -14)
+		DWP.ChangeLogDisplay.closeBtn = CreateFrame("Button", nil, DWP.ChangeLogDisplay, "UIPanelCloseButton")
+		DWP.ChangeLogDisplay.closeBtn:SetPoint("CENTER", DWP.ChangeLogDisplay.closeContainer, "TOPRIGHT", -14, -14)
 
-		MonDKP.ChangeLogDisplay.DontShowCheck = CreateFrame("CheckButton", nil, MonDKP.ChangeLogDisplay, "UICheckButtonTemplate");
-		MonDKP.ChangeLogDisplay.DontShowCheck:SetChecked(false)
-		MonDKP.ChangeLogDisplay.DontShowCheck:SetScale(0.6);
-		MonDKP.ChangeLogDisplay.DontShowCheck.text:SetText("  |cff5151de"..L["DONTSHOW"].."|r");
-		MonDKP.ChangeLogDisplay.DontShowCheck.text:SetScale(1.5);
-		MonDKP.ChangeLogDisplay.DontShowCheck.text:SetFontObject("MonDKPSmallLeft")
-		MonDKP.ChangeLogDisplay.DontShowCheck:SetPoint("LEFT", MonDKP.ChangeLogDisplay.ChangeLogHeader, "RIGHT", 10, 0);
-		MonDKP.ChangeLogDisplay.DontShowCheck:SetScript("OnClick", function(self)
+		DWP.ChangeLogDisplay.DontShowCheck = CreateFrame("CheckButton", nil, DWP.ChangeLogDisplay, "UICheckButtonTemplate");
+		DWP.ChangeLogDisplay.DontShowCheck:SetChecked(false)
+		DWP.ChangeLogDisplay.DontShowCheck:SetScale(0.6);
+		DWP.ChangeLogDisplay.DontShowCheck.text:SetText("  |cff5151de"..L["DONTSHOW"].."|r");
+		DWP.ChangeLogDisplay.DontShowCheck.text:SetScale(1.5);
+		DWP.ChangeLogDisplay.DontShowCheck.text:SetFontObject("DWPSmallLeft")
+		DWP.ChangeLogDisplay.DontShowCheck:SetPoint("LEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "RIGHT", 10, 0);
+		DWP.ChangeLogDisplay.DontShowCheck:SetScript("OnClick", function(self)
 			if self:GetChecked() then
-				MonDKP_DB.defaults.HideChangeLogs = core.BuildNumber
+				DWPlus_DB.defaults.HideChangeLogs = core.BuildNumber
 			else
-				MonDKP_DB.defaults.HideChangeLogs = 0
+				DWPlus_DB.defaults.HideChangeLogs = 0
 			end
 		end)
 
-		MonDKP.ChangeLogDisplay.Notes:SetText("|CFFAEAEDD"..L["BESTPRACTICES"].."|r")
-		MonDKP.ChangeLogDisplay.VerNumber:SetText(core.MonVersion)
+		DWP.ChangeLogDisplay.Notes:SetText("|CFFAEAEDD"..L["BESTPRACTICES"].."|r")
+		DWP.ChangeLogDisplay.VerNumber:SetText(core.MonVersion)
 
 		--------------------------------------
 		-- ChangeLog variable calls (bottom of localization files)
 		--------------------------------------
-		MonDKP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"].."\n\n"..L["CHANGELOG9"].."\n\n"..L["CHANGELOG10"]);
+		DWP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"].."\n\n"..L["CHANGELOG9"].."\n\n"..L["CHANGELOG10"]);
 
-		local logHeight = MonDKP.ChangeLogDisplay.ChangeLogHeader:GetHeight() + MonDKP.ChangeLogDisplay.Notes:GetHeight() + MonDKP.ChangeLogDisplay.VerNumber:GetHeight() + MonDKP.ChangeLogDisplay.ChangeLogText:GetHeight();
-		MonDKP.ChangeLogDisplay:SetSize(800, logHeight);  -- resize container
+		local logHeight = DWP.ChangeLogDisplay.ChangeLogHeader:GetHeight() + DWP.ChangeLogDisplay.Notes:GetHeight() + DWP.ChangeLogDisplay.VerNumber:GetHeight() + DWP.ChangeLogDisplay.ChangeLogText:GetHeight();
+		DWP.ChangeLogDisplay:SetSize(800, logHeight);  -- resize container
 	end
 
 	---------------------------------------
 	-- VERSION IDENTIFIER
 	---------------------------------------
-	local c = MonDKP:GetThemeColor();
-	MonDKP.UIConfig.Version = MonDKP.UIConfig.TitleBar:CreateFontString(nil, "OVERLAY")   -- not in a function so requires CreateFontString
-	MonDKP.UIConfig.Version:ClearAllPoints();
-	MonDKP.UIConfig.Version:SetFontObject("MonDKPSmallCenter");
-	MonDKP.UIConfig.Version:SetScale("0.9")
-	MonDKP.UIConfig.Version:SetTextColor(c[1].r, c[1].g, c[1].b, 0.5);
-	MonDKP.UIConfig.Version:SetPoint("BOTTOMRIGHT", MonDKP.UIConfig.TitleBar, "BOTTOMRIGHT", -8, 4);
-	MonDKP.UIConfig.Version:SetText(core.MonVersion); 
+	local c = DWP:GetThemeColor();
+	DWP.UIConfig.Version = DWP.UIConfig.TitleBar:CreateFontString(nil, "OVERLAY")   -- not in a function so requires CreateFontString
+	DWP.UIConfig.Version:ClearAllPoints();
+	DWP.UIConfig.Version:SetFontObject("DWPSmallCenter");
+	DWP.UIConfig.Version:SetScale("0.9")
+	DWP.UIConfig.Version:SetTextColor(c[1].r, c[1].g, c[1].b, 0.5);
+	DWP.UIConfig.Version:SetPoint("BOTTOMRIGHT", DWP.UIConfig.TitleBar, "BOTTOMRIGHT", -8, 4);
+	DWP.UIConfig.Version:SetText(core.MonVersion);
 
-	MonDKP.UIConfig:Hide(); -- hide menu after creation until called.
-	MonDKP:FilterDKPTable(core.currentSort)   -- initial sort and populates data values in DKPTable.Rows{} MonDKP:FilterDKPTable() -> MonDKP:SortDKPTable() -> DKPTable_Update()
+	DWP.UIConfig:Hide(); -- hide menu after creation until called.
+	DWP:FilterDKPTable(core.currentSort)   -- initial sort and populates data values in DKPTable.Rows{} DWP:FilterDKPTable() -> DWP:SortDKPTable() -> DKPTable_Update()
 	core.Initialized = true
 	
-	return MonDKP.UIConfig;
+	return DWP.UIConfig;
 end

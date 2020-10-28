@@ -5,8 +5,8 @@
  	<Texture name="DWPlusButtonHighlightTexture" file="Interface\AddOns\DWPlus\Media\Textures\DWPlus-Button-Highlight" alphaMode="ADD" virtual="true">
 		<TexCoords left="0" right="0.625" top="0" bottom="0.6875"/>
 	</Texture>
-	<!-- MonDKP Fonts -->
-	<FontFamily  name="MonDKPTiny" virtual="true">
+	<!-- DWP Fonts -->
+	<FontFamily  name="DWPTiny" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Interface\AddOns\DWPlus\Media\Fonts\homizio_bold.ttf" height="10"/>
 		</Member>
@@ -23,7 +23,7 @@
 			<Font font="Fonts\ARIALN.TTF" height="10" outline="NORMAL"/>
 		</Member>
 	</FontFamily>
-	<FontFamily  name="MonDKPTinyOutline" virtual="true">
+	<FontFamily  name="DWPTinyOutline" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Interface\AddOns\DWPlus\Media\Fonts\homizio_bold.ttf" height="10" outline="NORMAL"/>
 		</Member>
@@ -40,7 +40,7 @@
 			<Font font="Fonts\ARIALN.TTF" height="10" outline="NORMAL"/>
 		</Member>
 	</FontFamily>
-	<FontFamily  name="MonDKPSmall" virtual="true">
+	<FontFamily  name="DWPSmall" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Interface\AddOns\DWPlus\Media\Fonts\homizio_bold.ttf" height="12"/>
 		</Member>
@@ -57,7 +57,7 @@
 			<Font font="Fonts\ARIALN.TTF" height="12" outline="NORMAL"/>
 		</Member>
 	</FontFamily>
-	<FontFamily  name="MonDKPSmallOutline" virtual="true">
+	<FontFamily  name="DWPSmallOutline" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Interface\AddOns\DWPlus\Media\Fonts\homizio_bold.ttf" height="12" outline="NORMAL"/>
 		</Member>
@@ -74,7 +74,7 @@
 			<Font font="Fonts\ARIALN.TTF" height="12" outline="NORMAL"/>
 		</Member>
 	</FontFamily>
-	<FontFamily  name="MonDKPNormal" virtual="true">
+	<FontFamily  name="DWPNormal" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Interface\AddOns\DWPlus\Media\Fonts\homizio_bold.ttf" height="13"/>
 		</Member>
@@ -91,7 +91,7 @@
 			<Font font="Fonts\ARIALN.TTF" height="13" outline="NORMAL"/>
 		</Member>
 	</FontFamily>
-	<FontFamily  name="MonDKPNormalOutline" virtual="true">
+	<FontFamily  name="DWPNormalOutline" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Interface\AddOns\DWPlus\Media\Fonts\homizio_bold.ttf" height="13" outline="NORMAL"/>
 		</Member>
@@ -108,7 +108,7 @@
 			<Font font="Fonts\ARIALN.TTF" height="13" outline="NORMAL"/>
 		</Member>
 	</FontFamily>
-	<FontFamily  name="MonDKPLarge" virtual="true">
+	<FontFamily  name="DWPLarge" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Interface\AddOns\DWPlus\Media\Fonts\uf_font.ttf" height="24"/>
 		</Member>
@@ -125,30 +125,30 @@
 			<Font font="Fonts\ARIALN.TTF" height="24" outline="NORMAL"/>
 		</Member>
 	</FontFamily>
-	<Font name="MonDKPLarge" virtual="true">
+	<Font name="DWPLarge" virtual="true">
 		<Color r="0.8" g="0.65" b="0"/>
 	</Font>
-	<Font name="MonDKPTinyCenter" inherits="MonDKPTiny" justifyH="CENTER" virtual="true"/>
-	<Font name="MonDKPTinyLeft" inherits="MonDKPTiny" justifyH="LEFT" virtual="true"/>
-	<Font name="MonDKPTinyRight" inherits="MonDKPTiny" justifyH="RIGHT" virtual="true"/>
-	<Font name="MonDKPTinyOutlineCenter" inherits="MonDKPTinyOutline" justifyH="CENTER" virtual="true"/>
-	<Font name="MonDKPTinyOutlineLeft" inherits="MonDKPTinyOutline" justifyH="LEFT" virtual="true"/>
-	<Font name="MonDKPTinyOutlineRight" inherits="MonDKPTinyOutline" justifyH="RIGHT" virtual="true"/>
-	<Font name="MonDKPSmallCenter" inherits="MonDKPSmall" justifyH="CENTER" virtual="true"/>
-	<Font name="MonDKPSmallLeft" inherits="MonDKPSmall" justifyH="LEFT" virtual="true"/>
-	<Font name="MonDKPSmallRight" inherits="MonDKPSmall" justifyH="RIGHT" virtual="true"/>
-	<Font name="MonDKPSmallOutlineCenter" inherits="MonDKPSmallOutline" justifyH="CENTER" virtual="true"/>
-	<Font name="MonDKPSmallOutlineLeft" inherits="MonDKPSmallOutline" justifyH="LEFT" virtual="true"/>
-	<Font name="MonDKPSmallOutlineRight" inherits="MonDKPSmallOutline" justifyH="RIGHT" virtual="true"/>
-	<Font name="MonDKPNormalCenter" inherits="MonDKPNormal" justifyH="CENTER" virtual="true"/>
-	<Font name="MonDKPNormalLeft" inherits="MonDKPNormal" justifyH="LEFT" virtual="true"/>
-	<Font name="MonDKPNormalRight" inherits="MonDKPNormal" justifyH="RIGHT" virtual="true"/>
-	<Font name="MonDKPNormalOutlineCenter" inherits="MonDKPNormalOutline" justifyH="CENTER" virtual="true"/>
-	<Font name="MonDKPNormalOutlineLeft" inherits="MonDKPNormalOutline" justifyH="LEFT" virtual="true"/>
-	<Font name="MonDKPNormalOutlineRight" inherits="MonDKPNormalOutline" justifyH="RIGHT" virtual="true"/>
-	<Font name="MonDKPLargeCenter" inherits="MonDKPLarge" justifyH="CENTER" virtual="true"/>
-	<Font name="MonDKPLargeLeft" inherits="MonDKPLarge" justifyH="LEFT" virtual="true"/>
-	<Font name="MonDKPLargeRight" inherits="MonDKPLarge" justifyH="RIGHT" virtual="true"/>
+	<Font name="DWPTinyCenter" inherits="DWPTiny" justifyH="CENTER" virtual="true"/>
+	<Font name="DWPTinyLeft" inherits="DWPTiny" justifyH="LEFT" virtual="true"/>
+	<Font name="DWPTinyRight" inherits="DWPTiny" justifyH="RIGHT" virtual="true"/>
+	<Font name="DWPTinyOutlineCenter" inherits="DWPTinyOutline" justifyH="CENTER" virtual="true"/>
+	<Font name="DWPTinyOutlineLeft" inherits="DWPTinyOutline" justifyH="LEFT" virtual="true"/>
+	<Font name="DWPTinyOutlineRight" inherits="DWPTinyOutline" justifyH="RIGHT" virtual="true"/>
+	<Font name="DWPSmallCenter" inherits="DWPSmall" justifyH="CENTER" virtual="true"/>
+	<Font name="DWPSmallLeft" inherits="DWPSmall" justifyH="LEFT" virtual="true"/>
+	<Font name="DWPSmallRight" inherits="DWPSmall" justifyH="RIGHT" virtual="true"/>
+	<Font name="DWPSmallOutlineCenter" inherits="DWPSmallOutline" justifyH="CENTER" virtual="true"/>
+	<Font name="DWPSmallOutlineLeft" inherits="DWPSmallOutline" justifyH="LEFT" virtual="true"/>
+	<Font name="DWPSmallOutlineRight" inherits="DWPSmallOutline" justifyH="RIGHT" virtual="true"/>
+	<Font name="DWPNormalCenter" inherits="DWPNormal" justifyH="CENTER" virtual="true"/>
+	<Font name="DWPNormalLeft" inherits="DWPNormal" justifyH="LEFT" virtual="true"/>
+	<Font name="DWPNormalRight" inherits="DWPNormal" justifyH="RIGHT" virtual="true"/>
+	<Font name="DWPNormalOutlineCenter" inherits="DWPNormalOutline" justifyH="CENTER" virtual="true"/>
+	<Font name="DWPNormalOutlineLeft" inherits="DWPNormalOutline" justifyH="LEFT" virtual="true"/>
+	<Font name="DWPNormalOutlineRight" inherits="DWPNormalOutline" justifyH="RIGHT" virtual="true"/>
+	<Font name="DWPLargeCenter" inherits="DWPLarge" justifyH="CENTER" virtual="true"/>
+	<Font name="DWPLargeLeft" inherits="DWPLarge" justifyH="LEFT" virtual="true"/>
+	<Font name="DWPLargeRight" inherits="DWPLarge" justifyH="RIGHT" virtual="true"/>
  	<!-- Button Frame Template -->
  	<Button name="DWPlusUIPanelButtonNoTooltipTemplate" virtual="true">
 		<Size x="40" y="22"/>
@@ -210,7 +210,7 @@
 		</Size>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture name="$parentLeft" parentKey="Left" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Dropdown-Frame">
+				<Texture name="$parentLeft" parentKey="Left" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Dropdown-Frame">
 					<Size>
 						<AbsDimension x="25" y="64"/>
 					</Size>
@@ -223,7 +223,7 @@
 					</Anchors>
 					<TexCoords left="0" right="0.1953125" top="0" bottom="1"/>
 				</Texture>
-				<Texture name="$parentMiddle" parentKey="Middle" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Dropdown-Frame">
+				<Texture name="$parentMiddle" parentKey="Middle" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Dropdown-Frame">
 					<Size>
 						<AbsDimension x="115" y="64"/>
 					</Size>
@@ -232,7 +232,7 @@
 					</Anchors>
 					<TexCoords left="0.1953125" right="0.8046875" top="0" bottom="1"/>
 				</Texture>
-				<Texture name="$parentRight" parentKey="Right" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Dropdown-Frame">
+				<Texture name="$parentRight" parentKey="Right" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Dropdown-Frame">
 					<Size>
 						<AbsDimension x="25" y="64"/>
 					</Size>
@@ -347,7 +347,7 @@
 		</Size>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture name="$parentLeft" parentKey="Left" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Dropdown-Frame-Header">
+				<Texture name="$parentLeft" parentKey="Left" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Dropdown-Frame-Header">
 					<Size>
 						<AbsDimension x="25" y="64"/>
 					</Size>
@@ -360,7 +360,7 @@
 					</Anchors>
 					<TexCoords left="0" right="0.1953125" top="0" bottom="1"/>
 				</Texture>
-				<Texture name="$parentMiddle" parentKey="Middle" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Dropdown-Frame-Header">
+				<Texture name="$parentMiddle" parentKey="Middle" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Dropdown-Frame-Header">
 					<Size>
 						<AbsDimension x="115" y="64"/>
 					</Size>
@@ -369,7 +369,7 @@
 					</Anchors>
 					<TexCoords left="0.1953125" right="0.8046875" top="0" bottom="1"/>
 				</Texture>
-				<Texture name="$parentRight" parentKey="Right" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Dropdown-Frame-Header">
+				<Texture name="$parentRight" parentKey="Right" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Dropdown-Frame-Header">
 					<Size>
 						<AbsDimension x="25" y="64"/>
 					</Size>
@@ -477,13 +477,13 @@
 		</Scripts>
 	</Frame>
 
-	<Button name="MonDKPTabButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
+	<Button name="DWPTabButtonTemplate" motionScriptsWhileDisabled="true" virtual="true">
         <Size>
             <AbsDimension x="10" y="32"/>
         </Size>
         <Layers>
         	<Layer level="BACKGROUND">
-        		<Texture name="$parentLeftDisabled" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Active-Tab">
+        		<Texture name="$parentLeftDisabled" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Active-Tab">
         			<Size>
         				<AbsDimension x="20" y="35"/>
         			</Size>
@@ -496,7 +496,7 @@
         			</Anchors>
 					<TexCoords left="0" right="0.15625" top="0" bottom="0.546875"/>
         		</Texture>
-				<Texture name="$parentMiddleDisabled" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Active-Tab">
+				<Texture name="$parentMiddleDisabled" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Active-Tab">
         			<Size>
         				<AbsDimension x="88" y="35"/>
         			</Size>
@@ -505,7 +505,7 @@
         			</Anchors>
 					<TexCoords left="0.15625" right="0.84375" top="0" bottom="0.546875"/>
         		</Texture>
-				<Texture name="$parentRightDisabled" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Active-Tab">
+				<Texture name="$parentRightDisabled" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Active-Tab">
         			<Size>
         				<AbsDimension x="20" y="35"/>
         			</Size>
@@ -514,7 +514,7 @@
         			</Anchors>
 					<TexCoords left="0.84375" right="1.0" top="0" bottom="0.546875"/>
         		</Texture>
-				<Texture name="$parentLeft" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Inactive-Tab">
+				<Texture name="$parentLeft" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Inactive-Tab">
         			<Size>
         				<AbsDimension x="20" y="47"/>
         			</Size>
@@ -523,7 +523,7 @@
         			</Anchors>
 					<TexCoords left="0" right="0.15625" top="0" bottom="1.0"/>
         		</Texture>
-				<Texture name="$parentMiddle" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Inactive-Tab">
+				<Texture name="$parentMiddle" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Inactive-Tab">
         			<Size>
         				<AbsDimension x="88" y="47"/>
         			</Size>
@@ -532,7 +532,7 @@
 					</Anchors>
 					<TexCoords left="0.15625" right="0.84375" top="0" bottom="1.0"/>
         		</Texture>
-				<Texture name="$parentRight" file="Interface\AddOns\DWPlus\Media\Textures\MonDKP-Inactive-Tab">
+				<Texture name="$parentRight" file="Interface\AddOns\DWPlus\Media\Textures\DWP-Inactive-Tab">
         			<Size>
         				<AbsDimension x="20" y="47"/>
         			</Size>
@@ -561,7 +561,7 @@
 				PanelTemplates_TabResize(self, 0, nil, 36, 57); <!--self:GetParent().maxTabWidth or 88 -->
 				CharacterFrame_TabBoundsCheck(self);
 
-				if (self:GetName() == "MonDKPMonDKP.ConfigTabMenuTab2" or self:GetName() == "MonDKPMonDKP.ConfigTabMenuTab5" or self:GetName() == "MonDKPMonDKP.ConfigTabMenuTab6") and GetLocale() == "enUS" then
+				if (self:GetName() == "DWP.ConfigTabMenuTab2" or self:GetName() == "DWP.ConfigTabMenuTab5" or self:GetName() == "DWP.ConfigTabMenuTab6") and GetLocale() == "enUS" then
 					PanelTemplates_TabResize(self, 0, nil, 36, self:GetParent().maxTabWidth or 88);			<!-- Corrects width on tabs for English Client -->
 				end
 			</OnShow>
@@ -588,9 +588,9 @@
 				</Anchor>
 			</Anchors>
 		</ButtonText>
-		<NormalFont style="MonDKPSmallOutlineCenter"/>
-		<HighlightFont style="MonDKPSmallOutlineCenter"/>
-		<DisabledFont style="MonDKPSmallOutlineCenter"/>
+		<NormalFont style="DWPSmallOutlineCenter"/>
+		<HighlightFont style="DWPSmallOutlineCenter"/>
+		<DisabledFont style="DWPSmallOutlineCenter"/>
 		<HighlightTexture name="$parentHighlightTexture" file="Interface\PaperDollInfoFrame\UI-Character-Tab-RealHighlight" alphaMode="ADD">
 			<Anchors>
 				<Anchor point="TOPLEFT">
@@ -606,7 +606,7 @@
 			</Anchors>
 		</HighlightTexture>
     </Button>
-    <Slider name="MonDKPSliderTemplate" orientation="HORIZONTAL" enableMouse="true" virtual="true">
+    <Slider name="DWPSliderTemplate" orientation="HORIZONTAL" enableMouse="true" virtual="true">
 		<HitRectInsets>
 			<AbsInset left="0" right="0" top="-10" bottom="-10"/>
 		</HitRectInsets>
@@ -620,7 +620,7 @@
 			<Size x="16" y="16"/>
 		</ThumbTexture>
 	</Slider>
-	<Slider name="MonDKPOptionsSliderTemplate" inherits="MonDKPSliderTemplate" virtual="true">
+	<Slider name="DWPOptionsSliderTemplate" inherits="DWPSliderTemplate" virtual="true">
 		<KeyValues>
 			<KeyValue key="type" value="CONTROLTYPE_SLIDER" type="global"/>
 		</KeyValues>

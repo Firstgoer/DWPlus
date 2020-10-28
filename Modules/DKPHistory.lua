@@ -1,6 +1,6 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 local players;
@@ -23,20 +23,20 @@ local currentRow = 0;
 local btnText = 10;
 local curDate;
 local history = {};
-local menuFrame = CreateFrame("Frame", "MonDKPDeleteDKPMenuFrame", UIParent, "UIDropDownMenuTemplate")
+local menuFrame = CreateFrame("Frame", "DWPDeleteDKPMenuFrame", UIParent, "UIDropDownMenuTemplate")
 
-function MonDKP:SortDKPHistoryTable()             -- sorts the DKP History Table by date/time
-  table.sort(MonDKP_DKPHistory, function(a, b)
+function DWP:SortDKPHistoryTable()             -- sorts the DKP History Table by date/time
+  table.sort(DWPlus_RPHistory, function(a, b)
     return a["date"] > b["date"]
   end)
 end
 
 local function GetSortOptions()
 	local PlayerList = {}
-	for i=1, #MonDKP_DKPTable do
-		local playerSearch = MonDKP:Table_Search(PlayerList, MonDKP_DKPTable[i].player)
+	for i=1, #DWPlus_RPTable do
+		local playerSearch = DWP:Table_Search(PlayerList, DWPlus_RPTable[i].player)
 		if not playerSearch then
-			tinsert(PlayerList, MonDKP_DKPTable[i].player)
+			tinsert(PlayerList, DWPlus_RPTable[i].player)
 		end
 	end
 	table.sort(PlayerList, function(a, b)
@@ -45,27 +45,27 @@ local function GetSortOptions()
 	return PlayerList;
 end
 
-function MonDKP:DKPHistory_Reset()
-	if not MonDKP.ConfigTab6 then return end
+function DWP:DKPHistory_Reset()
+	if not DWP.ConfigTab6 then return end
 	currentRow = 0
 	currentLength = maxDisplayed;
 	curDate = nil;
 	btnText = maxDisplayed;
-	if MonDKP.ConfigTab6.loadMoreBtn then
-		MonDKP.ConfigTab6.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
+	if DWP.ConfigTab6.loadMoreBtn then
+		DWP.ConfigTab6.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
 	end
 
-	if MonDKP.ConfigTab6.history then
-		for i=1, #MonDKP.ConfigTab6.history do
-			if MonDKP.ConfigTab6.history[i] then
-				MonDKP.ConfigTab6.history[i].h:SetText("")
-				MonDKP.ConfigTab6.history[i].h:Hide()
-				MonDKP.ConfigTab6.history[i].d:SetText("")
-				MonDKP.ConfigTab6.history[i].d:Hide()
-				MonDKP.ConfigTab6.history[i].s:SetText("")
-				MonDKP.ConfigTab6.history[i].s:Hide()
-				MonDKP.ConfigTab6.history[i]:SetHeight(10)
-				MonDKP.ConfigTab6.history[i]:Hide()
+	if DWP.ConfigTab6.history then
+		for i=1, #DWP.ConfigTab6.history do
+			if DWP.ConfigTab6.history[i] then
+				DWP.ConfigTab6.history[i].h:SetText("")
+				DWP.ConfigTab6.history[i].h:Hide()
+				DWP.ConfigTab6.history[i].d:SetText("")
+				DWP.ConfigTab6.history[i].d:Hide()
+				DWP.ConfigTab6.history[i].s:SetText("")
+				DWP.ConfigTab6.history[i].s:Hide()
+				DWP.ConfigTab6.history[i]:SetHeight(10)
+				DWP.ConfigTab6.history[i]:Hide()
 			end
 		end
 	end
@@ -77,7 +77,7 @@ function DKPHistoryFilterBox_Create()
 
 	-- Create the dropdown, and configure its appearance
 	if not filterDropdown then
-		filterDropdown = CreateFrame("FRAME", "MonDKPDKPHistoryFilterNameDropDown", MonDKP.ConfigTab6, "DWPlusUIDropDownMenuTemplate")
+		filterDropdown = CreateFrame("FRAME", "DWPDKPHistoryFilterNameDropDown", DWP.ConfigTab6, "DWPlusUIDropDownMenuTemplate")
 	end
 
 	-- Create and bind the initialization function to the dropdown menu
@@ -107,11 +107,11 @@ function DKPHistoryFilterBox_Create()
 			filterName.func = self.FilterSetValue
 			for i=ranges[menuList], ranges[menuList]+19 do
 				if PlayerList[i] then
-					local classSearch = MonDKP:Table_Search(MonDKP_DKPTable, PlayerList[i])
+					local classSearch = DWP:Table_Search(DWPlus_RPTable, PlayerList[i])
 				    local c;
 
 				    if classSearch then
-				     	c = MonDKP:GetCColors(MonDKP_DKPTable[classSearch[1][1]].class)
+				     	c = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
 				    else
 				     	c = { hex="444444" }
 				    end
@@ -122,7 +122,7 @@ function DKPHistoryFilterBox_Create()
 		end
 	end)
 
-	filterDropdown:SetPoint("TOPRIGHT", MonDKP.ConfigTab6, "TOPRIGHT", -13, -11)
+	filterDropdown:SetPoint("TOPRIGHT", DWP.ConfigTab6, "TOPRIGHT", -13, -11)
 
 	UIDropDownMenu_SetWidth(filterDropdown, 150)
 	UIDropDownMenu_SetText(filterDropdown, curfilterName or L["NOFILTER"])
@@ -143,19 +143,19 @@ function DKPHistoryFilterBox_Create()
     else
 	    filter = newValue;
 	    maxDisplayed = 30;
-	    local search = MonDKP:Table_Search(PlayerList, newValue)
+	    local search = DWP:Table_Search(PlayerList, newValue)
 	    curSelected = search[1]
     end
 
-    MonDKP:DKPHistory_Update(true)
+    DWP:DKPHistory_Update(true)
     CloseDropDownMenus()
   end
 end
 
-local function MonDKPDeleteDKPEntry(index, timestamp, item)  -- index = entry index (Roeshambo-1), item = # of the entry on DKP History tab; may be different than the key of DKPHistory if hidden fields exist
-	-- pop confirmation. If yes, cycles through MonDKP_DKPHistory.players and every name it finds, it refunds them (or strips them of) dkp.
+local function DWPDeleteDKPEntry(index, timestamp, item)  -- index = entry index , item = # of the entry on DKP History tab; may be different than the key of DKPHistory if hidden fields exist
+	-- pop confirmation. If yes, cycles through DWPlus_RPHistory.players and every name it finds, it refunds them (or strips them of) dkp.
 	-- if deleted is the weekly decay,     curdkp * (100 / (100 - decayvalue))
-	local reason_header = MonDKP.ConfigTab6.history[item].d:GetText();
+	local reason_header = DWP.ConfigTab6.history[item].d:GetText();
 	if strfind(reason_header, L["OTHER"].."- ") then reason_header = reason_header:gsub(L["OTHER"].." -- ", "") end
 	if strfind(reason_header, "%%") then
 		reason_header = gsub(reason_header, "%%", "%%%%")
@@ -171,31 +171,31 @@ local function MonDKPDeleteDKPEntry(index, timestamp, item)  -- index = entry in
 
 		-- add new entry and add "delted_by" field to entry being "deleted". make new entry exact opposite of "deleted" entry
 		-- new entry gets "deletes", old entry gets "deleted_by", deletes = deleted_by index. and vice versa
-			local search = MonDKP:Table_Search(MonDKP_DKPHistory, index, "index")
+			local search = DWP:Table_Search(DWPlus_RPHistory, index, "index")
 
 			if search then
-				local players = {strsplit(",", strsub(MonDKP_DKPHistory[search[1][1]].players, 1, -2))} 	-- cuts off last "," from string to avoid creating an empty value
+				local players = {strsplit(",", strsub(DWPlus_RPHistory[search[1][1]].players, 1, -2))} 	-- cuts off last "," from string to avoid creating an empty value
 				local dkp, mod;
 				local dkpString = "";
 				local curOfficer = UnitName("player")
 				local curTime = time()
 				local newIndex = curOfficer.."-"..curTime
 
-				if strfind(MonDKP_DKPHistory[search[1][1]].dkp, "%-%d*%.?%d+%%") then 		-- determines if it's a mass decay
-					dkp = {strsplit(",", MonDKP_DKPHistory[search[1][1]].dkp)}
+				if strfind(DWPlus_RPHistory[search[1][1]].dkp, "%-%d*%.?%d+%%") then 		-- determines if it's a mass decay
+					dkp = {strsplit(",", DWPlus_RPHistory[search[1][1]].dkp)}
 					mod = "perc";
 				else
-					dkp = MonDKP_DKPHistory[search[1][1]].dkp
+					dkp = DWPlus_RPHistory[search[1][1]].dkp
 					mod = "whole"
 				end
 
 				for i=1, #players do
 					if mod == "perc" then
-						local search = MonDKP:Table_Search(MonDKP_DKPTable, players[i])
+						local search = DWP:Table_Search(DWPlus_RPTable, players[i])
 
 						if search then
 							local inverted = tonumber(dkp[i]) * -1
-							MonDKP_DKPTable[search[1][1]].dkp = MonDKP_DKPTable[search[1][1]].dkp + inverted
+							DWPlus_RPTable[search[1][1]].dkp = DWPlus_RPTable[search[1][1]].dkp + inverted
 							dkpString = dkpString..inverted..",";
 
 							if i == #players then
@@ -203,15 +203,15 @@ local function MonDKPDeleteDKPEntry(index, timestamp, item)  -- index = entry in
 							end
 						end
 					else
-						local search = MonDKP:Table_Search(MonDKP_DKPTable, players[i])
+						local search = DWP:Table_Search(DWPlus_RPTable, players[i])
 
 						if search then
 							local inverted = tonumber(dkp) * -1
 
-							MonDKP_DKPTable[search[1][1]].dkp = MonDKP_DKPTable[search[1][1]].dkp + inverted
+							DWPlus_RPTable[search[1][1]].dkp = DWPlus_RPTable[search[1][1]].dkp + inverted
 
 							if tonumber(dkp) > 0 then
-								MonDKP_DKPTable[search[1][1]].lifetime_gained = MonDKP_DKPTable[search[1][1]].lifetime_gained + inverted
+								DWPlus_RPTable[search[1][1]].lifetime_gained = DWPlus_RPTable[search[1][1]].lifetime_gained + inverted
 							end
 							
 							dkpString = inverted;
@@ -219,15 +219,15 @@ local function MonDKPDeleteDKPEntry(index, timestamp, item)  -- index = entry in
 					end
 				end
 				
-				MonDKP_DKPHistory[search[1][1]].deletedby = newIndex
-				table.insert(MonDKP_DKPHistory, 1, { players=MonDKP_DKPHistory[search[1][1]].players, dkp=dkpString, date=curTime, reason="Delete Entry", index=newIndex, deletes=index })
-				MonDKP.Sync:SendData("MonDKPDelSync", MonDKP_DKPHistory[1])
+				DWPlus_RPHistory[search[1][1]].deletedby = newIndex
+				table.insert(DWPlus_RPHistory, 1, { players=DWPlus_RPHistory[search[1][1]].players, dkp=dkpString, date=curTime, reason="Delete Entry", index=newIndex, deletes=index })
+				DWP.Sync:SendData("DWPDelSync", DWPlus_RPHistory[1])
 
-				if MonDKP.ConfigTab6.history and MonDKP.ConfigTab6:IsShown() then
-					MonDKP:DKPHistory_Update(true)
+				if DWP.ConfigTab6.history and DWP.ConfigTab6:IsShown() then
+					DWP:DKPHistory_Update(true)
 				end
 
-				MonDKP:StatusVerify_Update()
+				DWP:StatusVerify_Update()
 				DKPTable_Update()
 			end
 		end,
@@ -241,52 +241,52 @@ end
 
 local function RightClickDKPMenu(self, index, timestamp, item)
 	local header
-	local search = MonDKP:Table_Search(MonDKP_DKPHistory, index, "index")
+	local search = DWP:Table_Search(DWPlus_RPHistory, index, "index")
 
 	if search then
 		menu = {
-		{ text = MonDKP.ConfigTab6.history[item].d:GetText():gsub(L["OTHER"].." -- ", ""), isTitle = true},
+		{ text = DWP.ConfigTab6.history[item].d:GetText():gsub(L["OTHER"].." -- ", ""), isTitle = true},
 		{ text = L["DELETEDKPENTRY"], func = function()
-			MonDKPDeleteDKPEntry(index, timestamp, item)
+			DWPDeleteDKPEntry(index, timestamp, item)
 		end },
 		}
 		EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU", 2);
 	end
 end
 
-function MonDKP:DKPHistory_Update(reset)
+function DWP:DKPHistory_Update(reset)
 	local DKPHistory = {}
-	MonDKP:SortDKPHistoryTable()
+	DWP:SortDKPHistoryTable()
 
-	if not MonDKP.UIConfig:IsShown() then 			-- prevents history update from firing if the DKP window is not opened (eliminate lag). Update run when opened
+	if not DWP.UIConfig:IsShown() then 			-- prevents history update from firing if the DKP window is not opened (eliminate lag). Update run when opened
 		return;
 	end
 
 	if reset then
-		MonDKP:DKPHistory_Reset()
+		DWP:DKPHistory_Reset()
 	end
 
 	if filter and filter ~= L["DELETEDENTRY"] then
-		for i=1, #MonDKP_DKPHistory do
-			if not MonDKP_DKPHistory[i].deletes and not MonDKP_DKPHistory[i].deletedby and MonDKP_DKPHistory[i].reason ~= "Migration Correction" and (strfind(MonDKP_DKPHistory[i].players, ","..filter..",") or strfind(MonDKP_DKPHistory[i].players, filter..",") == 1) then
-				table.insert(DKPHistory, MonDKP_DKPHistory[i])
+		for i=1, #DWPlus_RPHistory do
+			if not DWPlus_RPHistory[i].deletes and not DWPlus_RPHistory[i].deletedby and DWPlus_RPHistory[i].reason ~= "Migration Correction" and (strfind(DWPlus_RPHistory[i].players, ","..filter..",") or strfind(DWPlus_RPHistory[i].players, filter..",") == 1) then
+				table.insert(DKPHistory, DWPlus_RPHistory[i])
 			end
 		end
 	elseif filter and filter == L["DELETEDENTRY"] then
-		for i=1, #MonDKP_DKPHistory do
-			if MonDKP_DKPHistory[i].deletes then
-				table.insert(DKPHistory, MonDKP_DKPHistory[i])
+		for i=1, #DWPlus_RPHistory do
+			if DWPlus_RPHistory[i].deletes then
+				table.insert(DKPHistory, DWPlus_RPHistory[i])
 			end
 		end
 	elseif not filter then
-		for i=1, #MonDKP_DKPHistory do
-			if not MonDKP_DKPHistory[i].deletes and not MonDKP_DKPHistory[i].hidden and not MonDKP_DKPHistory[i].deletedby then
-				table.insert(DKPHistory, MonDKP_DKPHistory[i])
+		for i=1, #DWPlus_RPHistory do
+			if not DWPlus_RPHistory[i].deletes and not DWPlus_RPHistory[i].hidden and not DWPlus_RPHistory[i].deletedby then
+				table.insert(DKPHistory, DWPlus_RPHistory[i])
 			end
 		end
 	end
 	
-	MonDKP.ConfigTab6.history = history;
+	DWP.ConfigTab6.history = history;
 
 	if currentLength > #DKPHistory then currentLength = #DKPHistory end
 
@@ -300,8 +300,8 @@ function MonDKP:DKPHistory_Update(reset)
 			local i = j
 			processing = true
 
-			if MonDKP.ConfigTab6.loadMoreBtn then
-				MonDKP.ConfigTab6.loadMoreBtn:Hide()
+			if DWP.ConfigTab6.loadMoreBtn then
+				DWP.ConfigTab6.loadMoreBtn:Hide()
 			end
 
 			local curOfficer, curIndex
@@ -312,33 +312,33 @@ function MonDKP:DKPHistory_Update(reset)
 				curOfficer = "Unknown"
 			end
 
-			if not MonDKP.ConfigTab6.history[i] then
+			if not DWP.ConfigTab6.history[i] then
 				if i==1 then
-					MonDKP.ConfigTab6.history[i] = CreateFrame("Frame", "MonDKP_DKPHistoryTab", MonDKP.ConfigTab6);
-					MonDKP.ConfigTab6.history[i]:SetPoint("TOPLEFT", MonDKP.ConfigTab6, "TOPLEFT", 0, -45)
-					MonDKP.ConfigTab6.history[i]:SetWidth(400)
+					DWP.ConfigTab6.history[i] = CreateFrame("Frame", "DWPlus_RPHistoryTab", DWP.ConfigTab6);
+					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 0, -45)
+					DWP.ConfigTab6.history[i]:SetWidth(400)
 				else
-					MonDKP.ConfigTab6.history[i] = CreateFrame("Frame", "MonDKP_DKPHistoryTab", MonDKP.ConfigTab6);
-					MonDKP.ConfigTab6.history[i]:SetPoint("TOPLEFT", MonDKP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, 0)
-					MonDKP.ConfigTab6.history[i]:SetWidth(400)
+					DWP.ConfigTab6.history[i] = CreateFrame("Frame", "DWPlus_RPHistoryTab", DWP.ConfigTab6);
+					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, 0)
+					DWP.ConfigTab6.history[i]:SetWidth(400)
 				end
 
-				MonDKP.ConfigTab6.history[i].h = MonDKP.ConfigTab6:CreateFontString(nil, "OVERLAY") 		-- entry header
-				MonDKP.ConfigTab6.history[i].h:SetFontObject("MonDKPNormalLeft");
-				MonDKP.ConfigTab6.history[i].h:SetPoint("TOPLEFT", MonDKP.ConfigTab6.history[i], "TOPLEFT", 15, 0);
-				MonDKP.ConfigTab6.history[i].h:SetWidth(400)
+				DWP.ConfigTab6.history[i].h = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY") 		-- entry header
+				DWP.ConfigTab6.history[i].h:SetFontObject("DWPNormalLeft");
+				DWP.ConfigTab6.history[i].h:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i], "TOPLEFT", 15, 0);
+				DWP.ConfigTab6.history[i].h:SetWidth(400)
 
-				MonDKP.ConfigTab6.history[i].d = MonDKP.ConfigTab6:CreateFontString(nil, "OVERLAY") 		-- entry description
-				MonDKP.ConfigTab6.history[i].d:SetFontObject("MonDKPSmallLeft");
-				MonDKP.ConfigTab6.history[i].d:SetPoint("TOPLEFT", MonDKP.ConfigTab6.history[i].h, "BOTTOMLEFT", 5, -2);
-				MonDKP.ConfigTab6.history[i].d:SetWidth(400)
+				DWP.ConfigTab6.history[i].d = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY") 		-- entry description
+				DWP.ConfigTab6.history[i].d:SetFontObject("DWPSmallLeft");
+				DWP.ConfigTab6.history[i].d:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i].h, "BOTTOMLEFT", 5, -2);
+				DWP.ConfigTab6.history[i].d:SetWidth(400)
 
-				MonDKP.ConfigTab6.history[i].s = MonDKP.ConfigTab6:CreateFontString(nil, "OVERLAY")			-- entry player string
-				MonDKP.ConfigTab6.history[i].s:SetFontObject("MonDKPTinyLeft");
-				MonDKP.ConfigTab6.history[i].s:SetPoint("TOPLEFT", MonDKP.ConfigTab6.history[i].d, "BOTTOMLEFT", 15, -4);
-				MonDKP.ConfigTab6.history[i].s:SetWidth(400)
+				DWP.ConfigTab6.history[i].s = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")			-- entry player string
+				DWP.ConfigTab6.history[i].s:SetFontObject("DWPTinyLeft");
+				DWP.ConfigTab6.history[i].s:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i].d, "BOTTOMLEFT", 15, -4);
+				DWP.ConfigTab6.history[i].s:SetWidth(400)
 
-				MonDKP.ConfigTab6.history[i]:SetScript("OnMouseDown", function(self, button)
+				DWP.ConfigTab6.history[i]:SetScript("OnMouseDown", function(self, button)
 			    	if button == "RightButton" then
 		   				if core.IsOfficer == true then
 		   					RightClickDKPMenu(self, DKPHistory[i].index, DKPHistory[i].date, i)
@@ -350,19 +350,19 @@ function MonDKP:DKPHistory_Update(reset)
 			local delete_on_date, delete_day, delete_timeofday, delete_year, delete_month, delete_day, delOfficer;
 
 			if filter == L["DELETEDENTRY"] then
-				local search = MonDKP:Table_Search(MonDKP_DKPHistory, DKPHistory[i].deletes, "index")
+				local search = DWP:Table_Search(DWPlus_RPHistory, DKPHistory[i].deletes, "index")
 
 				if search then
-					delOfficer,_ = strsplit("-", MonDKP_DKPHistory[search[1][1]].deletedby)
-					players = MonDKP_DKPHistory[search[1][1]].players;
-					if strfind(MonDKP_DKPHistory[search[1][1]].reason, L["OTHER"].." - ") == 1 then
-						reason = MonDKP_DKPHistory[search[1][1]].reason:gsub(L["OTHER"].." -- ", "");
+					delOfficer,_ = strsplit("-", DWPlus_RPHistory[search[1][1]].deletedby)
+					players = DWPlus_RPHistory[search[1][1]].players;
+					if strfind(DWPlus_RPHistory[search[1][1]].reason, L["OTHER"].." - ") == 1 then
+						reason = DWPlus_RPHistory[search[1][1]].reason:gsub(L["OTHER"].." -- ", "");
 					else
-						reason = MonDKP_DKPHistory[search[1][1]].reason
+						reason = DWPlus_RPHistory[search[1][1]].reason
 					end
-					dkp = MonDKP_DKPHistory[search[1][1]].dkp;
-					date = MonDKP:FormatTime(MonDKP_DKPHistory[search[1][1]].date);
-					delete_on_date = MonDKP:FormatTime(DKPHistory[i].date)
+					dkp = DWPlus_RPHistory[search[1][1]].dkp;
+					date = DWP:FormatTime(DWPlus_RPHistory[search[1][1]].date);
+					delete_on_date = DWP:FormatTime(DKPHistory[i].date)
 					delete_day = strsub(delete_on_date, 1, 8)
 					delete_timeofday = strsub(delete_on_date, 10)
 					delete_year, delete_month, delete_day = strsplit("/", delete_day)
@@ -375,10 +375,10 @@ function MonDKP:DKPHistory_Update(reset)
 					reason = DKPHistory[i].reason
 				end
 				dkp = DKPHistory[i].dkp;
-				date = MonDKP:FormatTime(DKPHistory[i].date);
+				date = DWP:FormatTime(DKPHistory[i].date);
 
-				if MonDKP.ConfigTab6.history[i].b then
-					MonDKP.ConfigTab6.history[i].b:Hide()
+				if DWP.ConfigTab6.history[i].b then
+					DWP.ConfigTab6.history[i].b:Hide()
 				end
 			end
 			
@@ -389,10 +389,10 @@ function MonDKP:DKPHistory_Update(reset)
 			end
 
 			for k=1, #player_table do
-				classSearch = MonDKP:Table_Search(MonDKP_DKPTable, player_table[k])
+				classSearch = DWP:Table_Search(DWPlus_RPTable, player_table[k])
 
 				if classSearch then
-					c = MonDKP:GetCColors(MonDKP_DKPTable[classSearch[1][1]].class)
+					c = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
 					if k < #player_table then
 						playerString = playerString.."|cff"..c.hex..player_table[k].."|r, "
 					elseif k == #player_table then
@@ -401,14 +401,14 @@ function MonDKP:DKPHistory_Update(reset)
 				end
 			end
 
-			MonDKP.ConfigTab6.history[i]:SetScript("OnMouseDown", function(self, button)
+			DWP.ConfigTab6.history[i]:SetScript("OnMouseDown", function(self, button)
 		    	if button == "RightButton" and filter ~= L["DELETEDENTRY"] then
 	   				if core.IsOfficer == true then
 	   					RightClickDKPMenu(self, DKPHistory[i].index, DKPHistory[i].date, i)
 	   				end
 	   			end
 		    end)
-		    MonDKP.ConfigTab6.inst:Show();
+		    DWP.ConfigTab6.inst:Show();
 
 			day = strsub(date, 1, 8)
 			timeofday = strsub(date, 10)
@@ -416,61 +416,61 @@ function MonDKP:DKPHistory_Update(reset)
 
 			if day ~= curDate then
 				if i~=1 then
-					MonDKP.ConfigTab6.history[i]:SetPoint("TOPLEFT", MonDKP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, -20)
+					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, -20)
 				end
-				MonDKP.ConfigTab6.history[i].h:SetText(month.."/"..day.."/"..year);
-				MonDKP.ConfigTab6.history[i].h:Show()
+				DWP.ConfigTab6.history[i].h:SetText(month.."/"..day.."/"..year);
+				DWP.ConfigTab6.history[i].h:Show()
 				curDate = day;
 			else
 				if i~=1 then
-					MonDKP.ConfigTab6.history[i]:SetPoint("TOPLEFT", MonDKP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, 0)
+					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, 0)
 				end
-				MonDKP.ConfigTab6.history[i].h:Hide()
+				DWP.ConfigTab6.history[i].h:Hide()
 			end
 
-			local officer_search = MonDKP:Table_Search(MonDKP_DKPTable, curOfficer, "player")
+			local officer_search = DWP:Table_Search(DWPlus_RPTable, curOfficer, "player")
 	    	if officer_search then
-		     	c = MonDKP:GetCColors(MonDKP_DKPTable[officer_search[1][1]].class)
+		     	c = DWP:GetCColors(DWPlus_RPTable[officer_search[1][1]].class)
 		    else
 		     	c = { hex="444444" }
 		    end
 			
 			if not strfind(dkp, "-") then
-				MonDKP.ConfigTab6.history[i].d:SetText("|cff00ff00"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
+				DWP.ConfigTab6.history[i].d:SetText("|cff00ff00"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
 			else
 				if strfind(reason, L["WEEKLYDECAY"]) or strfind(reason, "Migration Correction") then
 					local decay = {strsplit(",", dkp)}
-					MonDKP.ConfigTab6.history[i].d:SetText("|cffff0000"..decay[#decay].." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
+					DWP.ConfigTab6.history[i].d:SetText("|cffff0000"..decay[#decay].." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
 				else
-					MonDKP.ConfigTab6.history[i].d:SetText("|cffff0000"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
+					DWP.ConfigTab6.history[i].d:SetText("|cffff0000"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
 				end
 			end
 
-			MonDKP.ConfigTab6.history[i].d:Show()
+			DWP.ConfigTab6.history[i].d:Show()
 
 			if not filter or (filter and filter == L["DELETEDENTRY"]) then
-				MonDKP.ConfigTab6.history[i].s:SetText(playerString);
-				MonDKP.ConfigTab6.history[i].s:Show()
+				DWP.ConfigTab6.history[i].s:SetText(playerString);
+				DWP.ConfigTab6.history[i].s:Show()
 			else
-				MonDKP.ConfigTab6.history[i].s:Hide()
+				DWP.ConfigTab6.history[i].s:Hide()
 			end
 
 			if filter and filter ~= L["DELETEDENTRY"] then
-				MonDKP.ConfigTab6.history[i]:SetHeight(MonDKP.ConfigTab6.history[i].s:GetHeight() + MonDKP.ConfigTab6.history[i].h:GetHeight() + MonDKP.ConfigTab6.history[i].d:GetHeight())
+				DWP.ConfigTab6.history[i]:SetHeight(DWP.ConfigTab6.history[i].s:GetHeight() + DWP.ConfigTab6.history[i].h:GetHeight() + DWP.ConfigTab6.history[i].d:GetHeight())
 			else
-				MonDKP.ConfigTab6.history[i]:SetHeight(MonDKP.ConfigTab6.history[i].s:GetHeight() + MonDKP.ConfigTab6.history[i].h:GetHeight() + MonDKP.ConfigTab6.history[i].d:GetHeight() + 10)
+				DWP.ConfigTab6.history[i]:SetHeight(DWP.ConfigTab6.history[i].s:GetHeight() + DWP.ConfigTab6.history[i].h:GetHeight() + DWP.ConfigTab6.history[i].d:GetHeight() + 10)
 				if filter == L["DELETEDENTRY"] then
-					if not MonDKP.ConfigTab6.history[i].b then
-						MonDKP.ConfigTab6.history[i].b = CreateFrame("Button", "RightClickButtonDKPHistory"..i, MonDKP.ConfigTab6.history[i]);
+					if not DWP.ConfigTab6.history[i].b then
+						DWP.ConfigTab6.history[i].b = CreateFrame("Button", "RightClickButtonDKPHistory"..i, DWP.ConfigTab6.history[i]);
 					end
-					MonDKP.ConfigTab6.history[i].b:Show()
-					MonDKP.ConfigTab6.history[i].b:SetPoint("TOPLEFT", MonDKP.ConfigTab6.history[i], "TOPLEFT", 0, 0)
-					MonDKP.ConfigTab6.history[i].b:SetPoint("BOTTOMRIGHT", MonDKP.ConfigTab6.history[i], "BOTTOMRIGHT", 0, 0)
-					MonDKP.ConfigTab6.history[i].b:SetScript("OnEnter", function(self)
+					DWP.ConfigTab6.history[i].b:Show()
+					DWP.ConfigTab6.history[i].b:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i], "TOPLEFT", 0, 0)
+					DWP.ConfigTab6.history[i].b:SetPoint("BOTTOMRIGHT", DWP.ConfigTab6.history[i], "BOTTOMRIGHT", 0, 0)
+					DWP.ConfigTab6.history[i].b:SetScript("OnEnter", function(self)
 				    	local col
-				    	local s = MonDKP:Table_Search(MonDKP_DKPTable, delOfficer, "player")
+				    	local s = DWP:Table_Search(DWPlus_RPTable, delOfficer, "player")
 				    	if s then
-				    		col = MonDKP:GetCColors(MonDKP_DKPTable[s[1][1]].class)
+				    		col = DWP:GetCColors(DWPlus_RPTable[s[1][1]].class)
 				    	else
 				    		col = { hex="444444"}
 				    	end
@@ -479,7 +479,7 @@ function MonDKP:DKPHistory_Update(reset)
 						GameTooltip:AddDoubleLine("|cff"..col.hex..delOfficer.."|r", delete_month.."/"..delete_day.."/"..delete_year.." @ "..delete_timeofday, 1,0,0,1,1,1)
 						GameTooltip:Show()
 					end);
-					MonDKP.ConfigTab6.history[i].b:SetScript("OnLeave", function(self)
+					DWP.ConfigTab6.history[i].b:SetScript("OnLeave", function(self)
 						GameTooltip:Hide();
 					end)
 				end
@@ -488,7 +488,7 @@ function MonDKP:DKPHistory_Update(reset)
 			playerString = ""
 			table.wipe(player_table)
 
-			MonDKP.ConfigTab6.history[i]:Show()
+			DWP.ConfigTab6.history[i]:Show()
 
 			currentRow = currentRow + 1;
 			processing = false
@@ -498,29 +498,29 @@ function MonDKP:DKPHistory_Update(reset)
 			DKPHistTimer:SetScript("OnUpdate", nil)
 			HistTimer = 0
 
-			if not MonDKP.ConfigTab6.loadMoreBtn then
-				MonDKP.ConfigTab6.loadMoreBtn = CreateFrame("Button", nil, MonDKP.ConfigTab6, "DWPlusButtonTemplate")
-				MonDKP.ConfigTab6.loadMoreBtn:SetSize(100, 30);
-				MonDKP.ConfigTab6.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...");
-				MonDKP.ConfigTab6.loadMoreBtn:GetFontString():SetTextColor(1, 1, 1, 1)
-				MonDKP.ConfigTab6.loadMoreBtn:SetNormalFontObject("MonDKPSmallCenter");
-				MonDKP.ConfigTab6.loadMoreBtn:SetHighlightFontObject("MonDKPSmallCenter");
-				MonDKP.ConfigTab6.loadMoreBtn:SetPoint("TOP", MonDKP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10);
-				MonDKP.ConfigTab6.loadMoreBtn:SetScript("OnClick", function(self)
+			if not DWP.ConfigTab6.loadMoreBtn then
+				DWP.ConfigTab6.loadMoreBtn = CreateFrame("Button", nil, DWP.ConfigTab6, "DWPlusButtonTemplate")
+				DWP.ConfigTab6.loadMoreBtn:SetSize(100, 30);
+				DWP.ConfigTab6.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...");
+				DWP.ConfigTab6.loadMoreBtn:GetFontString():SetTextColor(1, 1, 1, 1)
+				DWP.ConfigTab6.loadMoreBtn:SetNormalFontObject("DWPSmallCenter");
+				DWP.ConfigTab6.loadMoreBtn:SetHighlightFontObject("DWPSmallCenter");
+				DWP.ConfigTab6.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10);
+				DWP.ConfigTab6.loadMoreBtn:SetScript("OnClick", function(self)
 					currentLength = currentLength + maxDisplayed;
-					MonDKP:DKPHistory_Update()
-					MonDKP.ConfigTab6.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
-					MonDKP.ConfigTab6.loadMoreBtn:SetPoint("TOP", MonDKP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10)
+					DWP:DKPHistory_Update()
+					DWP.ConfigTab6.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
+					DWP.ConfigTab6.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10)
 				end)
 			end
 
-			if MonDKP.ConfigTab6.loadMoreBtn and currentRow == #DKPHistory then 
-				MonDKP.ConfigTab6.loadMoreBtn:Hide();
-			elseif MonDKP.ConfigTab6.loadMoreBtn and currentRow < #DKPHistory then
+			if DWP.ConfigTab6.loadMoreBtn and currentRow == #DKPHistory then
+				DWP.ConfigTab6.loadMoreBtn:Hide();
+			elseif DWP.ConfigTab6.loadMoreBtn and currentRow < #DKPHistory then
 				if (#DKPHistory - currentRow) < btnText then btnText = (#DKPHistory - currentRow) end
-				MonDKP.ConfigTab6.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...")
-				MonDKP.ConfigTab6.loadMoreBtn:SetPoint("TOP", MonDKP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10);
-				MonDKP.ConfigTab6.loadMoreBtn:Show()
+				DWP.ConfigTab6.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...")
+				DWP.ConfigTab6.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10);
+				DWP.ConfigTab6.loadMoreBtn:Show()
 			end
 		end
 	end)

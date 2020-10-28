@@ -1,6 +1,6 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 
@@ -10,7 +10,7 @@ local function GenerateDKPTables(table, format)
 	local ExportDefinition;
 
 	if format == "HTML" then
-		if table == MonDKP_DKPTable then
+		if table == DWPlus_RPTable then
 			ExportString = "<html>\n<script>\nfunction openTab(tabName) {\n   var i;\n   var x = document.getElementsByClassName(\"tab\");\n   for (i = 0; i < x.length; i++) {\n      x[i].style.display = \"none\";\n   }\n   document.getElementById(tabName).style.display = \"block\";\n}\n</script>\n";
 			ExportString = ExportString.."<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script><script src=\"https://wow.zamimg.com/widgets/power.js\"></script>\n"
 			ExportString = ExportString.."<style>\nhtml { background-color: #000; };\n.divTable{ display: table; float: left; margin: 10px 10px; }\n.divTableRow { display: table-row; background-color: #000}\n.divTableRow:hover { background-color: #222; }\n.divTableHeading { background-color: #EEE; display: table-header-group; }\n.divTableCell, .divTableHead { border: 1px solid #999999; display: table-cell; padding: 3px 10px; }\n";
@@ -21,146 +21,146 @@ local function GenerateDKPTables(table, format)
 
 			ExportString = ExportString.."<div id=\"DKP\" class=\"tab\"><div class=\"divTable\" style=\"width: 30%;border: 1px solid #000;\">\n   <div class=\"divTableBody\">\n      <div class=\"divTableRow\">\n         <div class=\"divPlayerHeader\">Player</div>\n         <div class=\"divClassHeader\">Class</div>\n         <div class=\"divDKPHeader\">DKP</div>\n      </div>\n"
 
-			for i=1, #MonDKP_DKPTable do
-				ExportString = ExportString.."      <div class=\"divTableRow\">\n         <div class=\"divPlayer\">"..MonDKP_DKPTable[i].player.."</div>\n         <div class=\"divClass\" style=\"width: 150px;\"><img src=\"https://wow.zamimg.com/images/wow/icons/large/classicon_"..strlower(MonDKP_DKPTable[i].class)..".jpg\" height=\"24\" width=\"24\" /></div>\n         <div class=\"divDKP\">"..MonDKP_DKPTable[i].dkp.."</div>\n      </div>\n"
+			for i=1, #DWPlus_RPTable do
+				ExportString = ExportString.."      <div class=\"divTableRow\">\n         <div class=\"divPlayer\">"..DWPlus_RPTable[i].player.."</div>\n         <div class=\"divClass\" style=\"width: 150px;\"><img src=\"https://wow.zamimg.com/images/wow/icons/large/classicon_"..strlower(DWPlus_RPTable[i].class)..".jpg\" height=\"24\" width=\"24\" /></div>\n         <div class=\"divDKP\">"..DWPlus_RPTable[i].dkp.."</div>\n      </div>\n"
 			end
 
 			ExportString = ExportString.."   </div>\n</div>\n</div>"
-		elseif table == MonDKP_DKPHistory then
+		elseif table == DWPlus_RPHistory then
 			local numrows;
 
-			if #MonDKP_DKPHistory > 200 then
+			if #DWPlus_RPHistory > 200 then
 				numrows = 200;
 			else
-				numrows = #MonDKP_DKPHistory
+				numrows = #DWPlus_RPHistory
 			end
 
 			ExportString = "<div id=\"DKPHistory\" class=\"tab\" style=\"display:none;\"><div class=\"divTable\" style=\"width: 95%;border: 1px solid #000;\">\n   <div class=\"divTableBody\">\n      <div class=\"divTableRow\">\n         <div class=\"divPlayerHeader\">Players</div>\n         <div class=\"divClassHeader\" style=\"width: 4%;\">DKP</div>\n         <div class=\"divDKPHeader\">Date/Reason</div>\n      </div>\n"
 
 			for i=1, numrows do
-				ExportString = ExportString.."      <div class=\"divTableRow\">\n         <div class=\"divPlayer\" style=\"font-size: 0.7em; width: 71%;\">"..gsub(MonDKP_DKPHistory[i].players, ",", ", ").."</div>\n         <div class=\"divClass\" style=\"width: 4%;\">"..MonDKP_DKPHistory[i].dkp.."</div>\n         <div class=\"divDKP\" style=\"width: 25%; font-size: 0.7em;\">"..MonDKP_DKPHistory[i].reason.."<br />("..date("%m/%d/%y %H:%M:%S", MonDKP_DKPHistory[i].date)..") </div>\n      </div>\n"
+				ExportString = ExportString.."      <div class=\"divTableRow\">\n         <div class=\"divPlayer\" style=\"font-size: 0.7em; width: 71%;\">"..gsub(DWPlus_RPHistory[i].players, ",", ", ").."</div>\n         <div class=\"divClass\" style=\"width: 4%;\">"..DWPlus_RPHistory[i].dkp.."</div>\n         <div class=\"divDKP\" style=\"width: 25%; font-size: 0.7em;\">"..DWPlus_RPHistory[i].reason.."<br />("..date("%m/%d/%y %H:%M:%S", DWPlus_RPHistory[i].date)..") </div>\n      </div>\n"
 			end
 			ExportString = ExportString.."   </div>\n</div>\n</div>"
 
-		elseif table == MonDKP_Loot then
+		elseif table == DWPlus_Loot then
 			local numrows;
 
-			if #MonDKP_Loot > 200 then
+			if #DWPlus_Loot > 200 then
 				numrows = 200;
 			else
-				numrows = #MonDKP_Loot
+				numrows = #DWPlus_Loot
 			end
 			ExportString = "<div id=\"LootHistory\" class=\"tab\" style=\"display:none;\"><div class=\"divTable\" style=\"width: 50%;border: 1px solid #000;\">\n   <div class=\"divTableBody\">\n      <div class=\"divTableRow\">\n         <div class=\"divPlayerHeader\">Loot</div>\n         <div class=\"divClassHeader\">Player</div>\n         <div class=\"divDKPHeader\">From</div>\n      </div>\n"
 			for i=1, numrows do
-				local cur = MonDKP_Loot[i].loot
+				local cur = DWPlus_Loot[i].loot
 				local itemNumber = strsub(cur, string.find(cur, "Hitem:")+6, string.find(cur, ":", string.find(cur, "Hitem:")+6)-1)
-				ExportString = ExportString.."      <div class=\"divTableRow\">\n         <div class=\"divPlayer\" style=\"width: 40%;\"><a href=\"https://classic.wowhead.com/item="..itemNumber.."\" data-wowhead=\"item="..itemNumber.."\"></a> ("..MonDKP_Loot[i].cost.." DKP)</div>\n         <div class=\"divClass\" style=\"width: 20%;\">"..MonDKP_Loot[i].player.."</div>\n         <div class=\"divDKP\" style=\"width: 40%; font-size: 0.7em;\">"..MonDKP_Loot[i].zone..": "..MonDKP_Loot[i].boss.."<br />("..date("%m/%d/%y %H:%M:%S", MonDKP_Loot[i].date)..") </div>\n      </div>\n"
+				ExportString = ExportString.."      <div class=\"divTableRow\">\n         <div class=\"divPlayer\" style=\"width: 40%;\"><a href=\"https://classic.wowhead.com/item="..itemNumber.."\" data-wowhead=\"item="..itemNumber.."\"></a> ("..DWPlus_Loot[i].cost.." DKP)</div>\n         <div class=\"divClass\" style=\"width: 20%;\">"..DWPlus_Loot[i].player.."</div>\n         <div class=\"divDKP\" style=\"width: 40%; font-size: 0.7em;\">"..DWPlus_Loot[i].zone..": "..DWPlus_Loot[i].boss.."<br />("..date("%m/%d/%y %H:%M:%S", DWPlus_Loot[i].date)..") </div>\n      </div>\n"
 			end
 			ExportString = ExportString.."   </div>\n</div>\n</div>\n</html>"
 		end
 	elseif format == "CSV" then
-		if table == MonDKP_DKPTable then
+		if table == DWPlus_RPTable then
 			ExportString = "player, class, DKP, previousDKP, lifetimeGained, lifetimeSpent\n"
-			for i=1, #MonDKP_DKPTable do
-				if i == #MonDKP_DKPTable then
-					ExportString = ExportString..MonDKP_DKPTable[i].player..","..MonDKP_DKPTable[i].class..","..MonDKP_DKPTable[i].dkp..","..MonDKP_DKPTable[i].previous_dkp..","..MonDKP_DKPTable[i].lifetime_gained..","..MonDKP_DKPTable[i].lifetime_spent;
+			for i=1, #DWPlus_RPTable do
+				if i == #DWPlus_RPTable then
+					ExportString = ExportString..DWPlus_RPTable[i].player..","..DWPlus_RPTable[i].class..","..DWPlus_RPTable[i].dkp..","..DWPlus_RPTable[i].previous_dkp..","..DWPlus_RPTable[i].lifetime_gained..","..DWPlus_RPTable[i].lifetime_spent;
 				else
-					ExportString = ExportString..MonDKP_DKPTable[i].player..","..MonDKP_DKPTable[i].class..","..MonDKP_DKPTable[i].dkp..","..MonDKP_DKPTable[i].previous_dkp..","..MonDKP_DKPTable[i].lifetime_gained..","..MonDKP_DKPTable[i].lifetime_spent.."\n";
+					ExportString = ExportString..DWPlus_RPTable[i].player..","..DWPlus_RPTable[i].class..","..DWPlus_RPTable[i].dkp..","..DWPlus_RPTable[i].previous_dkp..","..DWPlus_RPTable[i].lifetime_gained..","..DWPlus_RPTable[i].lifetime_spent.."\n";
 				end
 			end
-		elseif table == MonDKP_DKPHistory then
+		elseif table == DWPlus_RPHistory then
 			local numrows;
 
-			if #MonDKP_DKPHistory > 200 then
+			if #DWPlus_RPHistory > 200 then
 				numrows = 200;
 			else
-				numrows = #MonDKP_DKPHistory
+				numrows = #DWPlus_RPHistory
 			end
 
 			ExportString = "Listed As: PlayerString(separated by -),dkp,date(epoch),reason,...\n"
 			ExportString = ExportString.."DKPHistory = ";
 			for i=1, numrows do
-				local PlayerString = gsub(MonDKP_DKPHistory[i].players, ",", "-")
+				local PlayerString = gsub(DWPlus_RPHistory[i].players, ",", "-")
 				PlayerString = strsub(PlayerString, 1, -2)
 
 				if i == numrows then
-					ExportString = ExportString..PlayerString..","..MonDKP_DKPHistory[i].dkp..","..MonDKP_DKPHistory[i].date..","..MonDKP_DKPHistory[i].reason;
+					ExportString = ExportString..PlayerString..","..DWPlus_RPHistory[i].dkp..","..DWPlus_RPHistory[i].date..","..DWPlus_RPHistory[i].reason;
 				else
-					ExportString = ExportString..PlayerString..","..MonDKP_DKPHistory[i].dkp..","..MonDKP_DKPHistory[i].date..","..MonDKP_DKPHistory[i].reason..",";
+					ExportString = ExportString..PlayerString..","..DWPlus_RPHistory[i].dkp..","..DWPlus_RPHistory[i].date..","..DWPlus_RPHistory[i].reason..",";
 				end
 			end
-		elseif table == MonDKP_Loot then
+		elseif table == DWPlus_Loot then
 			local numrows;
 
-			if #MonDKP_Loot > 200 then
+			if #DWPlus_Loot > 200 then
 				numrows = 200;
 			else
-				numrows = #MonDKP_Loot
+				numrows = #DWPlus_Loot
 			end
 			
 			ExportString = "Listed As: player,itemName,itemNumber,zone,boss,date,cost,...\n"
 			ExportString = ExportString.."LootHistory = ";
 			for i=1, numrows do
-				local cur = MonDKP_Loot[i].loot
+				local cur = DWPlus_Loot[i].loot
 				local itemNumber = strsub(cur, string.find(cur, "Hitem:")+6, string.find(cur, ":", string.find(cur, "Hitem:")+6)-1)
 				local itemName = strsub(cur, string.find(cur, "::|h%[")+5, string.find(cur, "%]", string.find(cur, "::|h%[")+5)-1)
 				
 				if i == numrows then
-					ExportString = ExportString..MonDKP_Loot[i].player..","..itemName..","..itemNumber..","..MonDKP_Loot[i].zone..","..MonDKP_Loot[i].boss..","..MonDKP_Loot[i].date..","..MonDKP_Loot[i].cost;
+					ExportString = ExportString..DWPlus_Loot[i].player..","..itemName..","..itemNumber..","..DWPlus_Loot[i].zone..","..DWPlus_Loot[i].boss..","..DWPlus_Loot[i].date..","..DWPlus_Loot[i].cost;
 				else
-					ExportString = ExportString..MonDKP_Loot[i].player..","..itemName..","..itemNumber..","..MonDKP_Loot[i].zone..","..MonDKP_Loot[i].boss..","..MonDKP_Loot[i].date..","..MonDKP_Loot[i].cost..",";
+					ExportString = ExportString..DWPlus_Loot[i].player..","..itemName..","..itemNumber..","..DWPlus_Loot[i].zone..","..DWPlus_Loot[i].boss..","..DWPlus_Loot[i].date..","..DWPlus_Loot[i].cost..",";
 				end
 			end
 		end
 	elseif format == "XML" then
-		if table == MonDKP_DKPTable then
+		if table == DWPlus_RPTable then
 			ExportString = "<dkptable>\n";
-			for i=1, #MonDKP_DKPTable do
-				ExportString = ExportString.."    <dkpentry>\n        <player>"..MonDKP_DKPTable[i].player.."</player>\n        <class>"..MonDKP_DKPTable[i].class.."</class>\n        <dkp>"..MonDKP_DKPTable[i].dkp.."</dkp>\n        <lifetimegained>"..MonDKP_DKPTable[i].lifetime_gained.."</lifetimegained>\n        <lifetimespent>"..MonDKP_DKPTable[i].lifetime_spent.."</lifetimespent>\n    </dkpentry>\n";
+			for i=1, #DWPlus_RPTable do
+				ExportString = ExportString.."    <dkpentry>\n        <player>"..DWPlus_RPTable[i].player.."</player>\n        <class>"..DWPlus_RPTable[i].class.."</class>\n        <dkp>"..DWPlus_RPTable[i].dkp.."</dkp>\n        <lifetimegained>"..DWPlus_RPTable[i].lifetime_gained.."</lifetimegained>\n        <lifetimespent>"..DWPlus_RPTable[i].lifetime_spent.."</lifetimespent>\n    </dkpentry>\n";
 			end
 			ExportString = ExportString.."</dkptable>"
-		elseif table == MonDKP_DKPHistory then
+		elseif table == DWPlus_RPHistory then
 			local numrows;
 
-			if #MonDKP_DKPHistory > 200 then
+			if #DWPlus_RPHistory > 200 then
 				numrows = 200;
 			else
-				numrows = #MonDKP_DKPHistory
+				numrows = #DWPlus_RPHistory
 			end
 
 			ExportString = "<dkphistory>\n";
 			for i=1, numrows do
-				ExportString = ExportString.."    <historyentry>\n        <playerstring>"..MonDKP_DKPHistory[i].players.."</playerstring>\n        <dkp>"..MonDKP_DKPHistory[i].dkp.."</dkp>\n        <timestamp>"..MonDKP_DKPHistory[i].date.."</timestamp>\n        <reason>"..MonDKP_DKPHistory[i].reason.."</reason>\n    </historyentry>\n";
+				ExportString = ExportString.."    <historyentry>\n        <playerstring>"..DWPlus_RPHistory[i].players.."</playerstring>\n        <dkp>"..DWPlus_RPHistory[i].dkp.."</dkp>\n        <timestamp>"..DWPlus_RPHistory[i].date.."</timestamp>\n        <reason>"..DWPlus_RPHistory[i].reason.."</reason>\n    </historyentry>\n";
 			end
 			ExportString = ExportString.."</dkphistory>";
-		elseif table == MonDKP_Loot then
+		elseif table == DWPlus_Loot then
 			local numrows;
 
-			if #MonDKP_Loot > 200 then
+			if #DWPlus_Loot > 200 then
 				numrows = 200;
 			else
-				numrows = #MonDKP_Loot
+				numrows = #DWPlus_Loot
 			end
 			
 			ExportString = "<loothistory>\n";
 			for i=1, numrows do
-				local cur = MonDKP_Loot[i].loot
+				local cur = DWPlus_Loot[i].loot
 				local itemNumber = strsub(cur, string.find(cur, "Hitem:")+6, string.find(cur, ":", string.find(cur, "Hitem:")+6)-1)
 				local itemName = strsub(cur, string.find(cur, "::|h%[")+5, string.find(cur, "%]", string.find(cur, "::|h%[")+5)-1)
 				
-				ExportString = ExportString.."    <lootentry>\n        <player>"..MonDKP_Loot[i].player.."</player>\n        <itemname>"..itemName.."</itemname>\n        <itemnumber>"..itemNumber.."</itemnumber>\n        <zone>"..MonDKP_Loot[i].zone.."</zone>\n        <boss>"..MonDKP_Loot[i].boss.."</boss>\n        <timestamp>"..MonDKP_Loot[i].date.."</timestamp>\n        <cost>"..MonDKP_Loot[i].cost.."</cost>\n    </lootentry>\n";
+				ExportString = ExportString.."    <lootentry>\n        <player>"..DWPlus_Loot[i].player.."</player>\n        <itemname>"..itemName.."</itemname>\n        <itemnumber>"..itemNumber.."</itemnumber>\n        <zone>"..DWPlus_Loot[i].zone.."</zone>\n        <boss>"..DWPlus_Loot[i].boss.."</boss>\n        <timestamp>"..DWPlus_Loot[i].date.."</timestamp>\n        <cost>"..DWPlus_Loot[i].cost.."</cost>\n    </lootentry>\n";
 			end
 			ExportString = ExportString.."</loothistory>";
 		end
 	end
 
 
-	MonDKPExportBoxEditBox:SetText(ExportString)
+	DWPExportBoxEditBox:SetText(ExportString)
 end
 
-function MonDKPExportBox_Show(text)
-    if not MonDKPExportBox then
-        local f = CreateFrame("Frame", "MonDKPExportBox", UIParent)
+function DWPExportBox_Show(text)
+    if not DWPExportBox then
+        local f = CreateFrame("Frame", "DWPExportBox", UIParent)
         f:SetPoint("CENTER")
         f:SetSize(700, 590)
         
@@ -183,7 +183,7 @@ function MonDKPExportBox_Show(text)
         f:SetScript("OnMouseUp", f.StopMovingOrSizing)
 
         -- Close Button
-		f.closeContainer = CreateFrame("Frame", "MonDKPTitle", f)
+		f.closeContainer = CreateFrame("Frame", "DWPTitle", f)
 		f.closeContainer:SetPoint("CENTER", f, "TOPRIGHT", -4, 0)
 		f.closeContainer:SetBackdrop({
 			bgFile   = "Textures\\white.blp", tile = true,
@@ -198,7 +198,7 @@ function MonDKPExportBox_Show(text)
 		tinsert(UISpecialFrames, f:GetName()); -- Sets frame to close on "Escape"
         
         -- ScrollFrame
-        local sf = CreateFrame("ScrollFrame", "MonDKPExportBoxScrollFrame", MonDKPExportBox, "UIPanelScrollFrameTemplate")
+        local sf = CreateFrame("ScrollFrame", "DWPExportBoxScrollFrame", DWPExportBox, "UIPanelScrollFrameTemplate")
         sf:SetPoint("LEFT", 20, 0)
         sf:SetPoint("RIGHT", -32, 0)
         sf:SetPoint("TOP", 0, -20)
@@ -206,13 +206,13 @@ function MonDKPExportBox_Show(text)
 
         -- Description
         f.desc = f:CreateFontString(nil, "OVERLAY")
-		f.desc:SetFontObject("MonDKPSmallLeft");
+		f.desc:SetFontObject("DWPSmallLeft");
 		f.desc:SetPoint("TOPLEFT", sf, "BOTTOMLEFT", 10, -10);
 		f.desc:SetText("|CFFAEAEDDExport below one at a time in order. Copy all html and paste into local .html file one after the other. RP and Loot History often take a few seconds to generate and will lock your screen briefly. As a result they are limited to the most recent 200 entries for each. All tables will be tabbed for convenience.|r");
 		f.desc:SetWidth(sf:GetWidth()-30)
         
         -- EditBox
-        local eb = CreateFrame("EditBox", "MonDKPExportBoxEditBox", MonDKPExportBoxScrollFrame)
+        local eb = CreateFrame("EditBox", "DWPExportBoxEditBox", DWPExportBoxScrollFrame)
         eb:SetSize(sf:GetSize())
         eb:SetMultiLine(true)
         eb:SetAutoFocus(false) -- dont automatically focus
@@ -224,7 +224,7 @@ function MonDKPExportBox_Show(text)
         f:SetResizable(true)
         f:SetMinResize(650, 500)
         
-        local rb = CreateFrame("Button", "MonDKPExportBoxResizeButton", MonDKPExportBox)
+        local rb = CreateFrame("Button", "DWPExportBoxResizeButton", DWPExportBox)
         rb:SetPoint("BOTTOMRIGHT", -6, 7)
         rb:SetSize(16, 16)
         
@@ -248,7 +248,7 @@ function MonDKPExportBox_Show(text)
         -- Format DROPDOWN box 
         local CurFormat;
 
-		f.FormatDropDown = CreateFrame("FRAME", "MonDKPModeSelectDropDown", f, "DWPlusUIDropDownMenuTemplate")
+		f.FormatDropDown = CreateFrame("FRAME", "DWPModeSelectDropDown", f, "DWPlusUIDropDownMenuTemplate")
 		f.FormatDropDown:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 55)
 		UIDropDownMenu_SetWidth(f.FormatDropDown, 100)
 		UIDropDownMenu_SetText(f.FormatDropDown, "Select Format")
@@ -257,7 +257,7 @@ function MonDKPExportBox_Show(text)
 		UIDropDownMenu_Initialize(f.FormatDropDown, function(self, level, menuList)
 		local Format = UIDropDownMenu_CreateInfo()
 			Format.func = self.SetValue
-			Format.fontObject = "MonDKPSmallCenter"
+			Format.fontObject = "DWPSmallCenter"
 			Format.text, Format.arg1, Format.checked, Format.isNotRadio = "HTML", "HTML", "HTML" == CurFormat, false
 			UIDropDownMenu_AddButton(Format)
 			Format.text, Format.arg1, Format.checked, Format.isNotRadio = "CSV", "CSV", "CSV" == CurFormat, false
@@ -301,50 +301,50 @@ function MonDKPExportBox_Show(text)
 			preferredIndex = 3,
 		}
 
-        f.GenerateDKPButton = MonDKP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -355, 20, "1) "..L["GENDKPTABLE"]);
+        f.GenerateDKPButton = DWP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -355, 20, "1) "..L["GENDKPTABLE"]);
 		f.GenerateDKPButton:SetSize(150, 24)
 		f.GenerateDKPButton:SetScript("OnClick", function()
 			if CurFormat then
-				GenerateDKPTables(MonDKP_DKPTable, CurFormat)
+				GenerateDKPTables(DWPlus_RPTable, CurFormat)
 			else
 				StaticPopup_Show ("NO_FORMAT")
 			end
 		end)
 
-		f.GenerateDKPHistoryButton = MonDKP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -200, 20, "2) "..L["GENDKPHIST"]);
+		f.GenerateDKPHistoryButton = DWP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -200, 20, "2) "..L["GENDKPHIST"]);
 		f.GenerateDKPHistoryButton:SetSize(150, 24)
 		f.GenerateDKPHistoryButton:SetScript("OnClick", function()
 			if CurFormat then
-				GenerateDKPTables(MonDKP_DKPHistory, CurFormat)
+				GenerateDKPTables(DWPlus_RPHistory, CurFormat)
 			else
 				StaticPopup_Show ("NO_FORMAT")
 			end
 		end)
 
-		f.GenerateDKPLootButton = MonDKP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -45, 20, "3) "..L["GENLOOTHIST"]);
+		f.GenerateDKPLootButton = DWP:CreateButton("BOTTOMRIGHT", f, "BOTTOMRIGHT", -45, 20, "3) "..L["GENLOOTHIST"]);
 		f.GenerateDKPLootButton:SetSize(150, 24)
 		f.GenerateDKPLootButton:SetScript("OnClick", function()
 			if CurFormat then
-				GenerateDKPTables(MonDKP_Loot, CurFormat)
+				GenerateDKPTables(DWPlus_Loot, CurFormat)
 			else
 				StaticPopup_Show ("NO_FORMAT")
 			end
 		end)
 
-		f.SelectAllButton = MonDKP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 45, 20, L["SELECTALL"]);
+		f.SelectAllButton = DWP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 45, 20, L["SELECTALL"]);
 		f.SelectAllButton:SetSize(100, 20)
 		f.SelectAllButton:SetScript("OnClick", function()
-			MonDKPExportBoxEditBox:HighlightText()
-			MonDKPExportBoxEditBox:SetFocus()
+			DWPExportBoxEditBox:HighlightText()
+			DWPExportBoxEditBox:SetFocus()
 		end)
     end
     
     if text then
-        MonDKPExportBoxEditBox:SetText(text)
+        DWPExportBoxEditBox:SetText(text)
     end
-    MonDKPExportBox:Show()
+    DWPExportBox:Show()
 end
 
-function MonDKP:ToggleExportWindow()
-	MonDKPExportBox_Show()
+function DWP:ToggleExportWindow()
+	DWPExportBox_Show()
 end

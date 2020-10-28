@@ -1,33 +1,33 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
-function MonDKP:ToggleDKPModesWindow()
+function DWP:ToggleDKPModesWindow()
 	if core.IsOfficer == true then
 		if not core.ModesWindow then
-			core.ModesWindow =  MonDKP:DKPModesFrame_Create();
+			core.ModesWindow =  DWP:DKPModesFrame_Create();
 
 			-- Populate Tabs
-			MonDKP:DKPModes_Main()
-			MonDKP:DKPModes_Misc()
+			DWP:DKPModes_Main()
+			DWP:DKPModes_Misc()
 		end
 	 	core.ModesWindow:SetShown(not core.ModesWindow:IsShown())
 	 	core.ModesWindow:SetFrameLevel(10)
 		if core.BiddingWindow then core.BiddingWindow:SetFrameLevel(6) end
-		if MonDKP.UIConfig then MonDKP.UIConfig:SetFrameLevel(2) end
+		if DWP.UIConfig then DWP.UIConfig:SetFrameLevel(2) end
 	else
-		MonDKP:Print(L["NOPERMISSION"])
+		DWP:Print(L["NOPERMISSION"])
 	end
 end
 
-function MonDKP:DKPModesFrame_Create()
-	local f = CreateFrame("Frame", "MonDKP_DKPModesFrame", UIParent);
-	local ActiveMode = MonDKP_DB.modes.mode;
-	local ActiveCostType = MonDKP_DB.modes.costvalue;
+function DWP:DKPModesFrame_Create()
+	local f = CreateFrame("Frame", "DWP_DKPModesFrame", UIParent);
+	local ActiveMode = DWPlus_DB.modes.mode;
+	local ActiveCostType = DWPlus_DB.modes.costvalue;
 
 	if not core.IsOfficer then
-		MonDKP:Print(L["NOPERMISSION"])
+		DWP:Print(L["NOPERMISSION"])
 		return
 	end
 
@@ -50,7 +50,7 @@ function MonDKP:DKPModesFrame_Create()
 	f:SetScript("OnMouseDown", function(self)
 	self:SetFrameLevel(10)
 	if core.BiddingWindow then core.BiddingWindow:SetFrameLevel(6) end
-	if MonDKP.UIConfig then MonDKP.UIConfig:SetFrameLevel(2) end
+	if DWP.UIConfig then DWP.UIConfig:SetFrameLevel(2) end
 	end)
 	tinsert(UISpecialFrames, f:GetName()); -- Sets frame to close on "Escape"
 
@@ -73,7 +73,7 @@ function MonDKP:DKPModesFrame_Create()
 	f.ScrollFrame.ScrollBar:SetPoint("TOPLEFT", f.ScrollFrame, "TOPRIGHT", -20, -12);
 	f.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", f.ScrollFrame, "BOTTOMRIGHT", -2, 15);
 
-	f.DKPModesMain, f.DKPModesMisc = MonDKP:SetTabs(f, 2, 475, 600, "Modes", "Misc");
+	f.DKPModesMain, f.DKPModesMisc = DWP:SetTabs(f, 2, 475, 600, "Modes", "Misc");
 	tinsert(UISpecialFrames, f:GetName()); -- Sets frame to close on "Escape"
 
 	-- Close Button
@@ -92,11 +92,11 @@ function MonDKP:DKPModesFrame_Create()
 	f:Hide()
 
 	f:SetScript("OnHide", function()
-		MonDKP_DB.modes.rolls.min = f.DKPModesMain.RollContainer.rollMin:GetNumber()
-		MonDKP_DB.modes.rolls.max = f.DKPModesMain.RollContainer.rollMax:GetNumber()
-		MonDKP_DB.modes.rolls.AddToMax = f.DKPModesMain.RollContainer.AddMax:GetNumber()
+		DWPlus_DB.modes.rolls.min = f.DKPModesMain.RollContainer.rollMin:GetNumber()
+		DWPlus_DB.modes.rolls.max = f.DKPModesMain.RollContainer.rollMax:GetNumber()
+		DWPlus_DB.modes.rolls.AddToMax = f.DKPModesMain.RollContainer.AddMax:GetNumber()
 
-		if (MonDKP_DB.modes.rolls.min > MonDKP_DB.modes.rolls.max and MonDKP_DB.modes.rolls.max ~= 0 and MonDKP_DB.modes.rolls.UserPerc == false) or (MonDKP_DB.modes.rolls.UsePerc and (MonDKP_DB.modes.rolls.min < 0 or MonDKP_DB.modes.rolls.max > 100 or MonDKP_DB.modes.rolls.min > MonDKP_DB.modes.rolls.max)) then
+		if (DWPlus_DB.modes.rolls.min > DWPlus_DB.modes.rolls.max and DWPlus_DB.modes.rolls.max ~= 0 and DWPlus_DB.modes.rolls.UserPerc == false) or (DWPlus_DB.modes.rolls.UsePerc and (DWPlus_DB.modes.rolls.min < 0 or DWPlus_DB.modes.rolls.max > 100 or DWPlus_DB.modes.rolls.min > DWPlus_DB.modes.rolls.max)) then
 			StaticPopupDialogs["NOTIFY_ROLLS"] = {
 				text = "|CFFFF0000"..L["WARNING"].."|r: "..L["INVALIDROLLPARAM"],
 				button1 = L["OK"],

@@ -1,6 +1,6 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 --
@@ -21,34 +21,34 @@ local function ScrollFrame_OnMouseWheel(self, delta)          -- scroll function
 	self:SetVerticalScroll(newValue);
 end
 
-function MonDKPFilterChecks(self)         -- sets/unsets check boxes in conjunction with "All" button, then runs MonDKP:FilterDKPTable() above
+function DWPFilterChecks(self)         -- sets/unsets check boxes in conjunction with "All" button, then runs DWP:FilterDKPTable() above
 	local verifyCheck = true; -- switches to false if the below loop finds anything unchecked
-	if (self:GetChecked() == false and not MonDKP.ConfigTab1.checkBtn[10]) then
+	if (self:GetChecked() == false and not DWP.ConfigTab1.checkBtn[10]) then
 		core.CurView = "limited"
 		core.CurSubView = "raid"
-		MonDKP.ConfigTab1.checkBtn[9]:SetChecked(false);
+		DWP.ConfigTab1.checkBtn[9]:SetChecked(false);
 		checkAll = false;
 		verifyCheck = false
 	end
 	for i=1, 8 do             -- checks all boxes to see if all are checked, if so, checks "All" as well
-		if MonDKP.ConfigTab1.checkBtn[i]:GetChecked() == false then
+		if DWP.ConfigTab1.checkBtn[i]:GetChecked() == false then
 			verifyCheck = false;
 		end
 	end
 	if (verifyCheck == true) then
-		MonDKP.ConfigTab1.checkBtn[9]:SetChecked(true);
+		DWP.ConfigTab1.checkBtn[9]:SetChecked(true);
 	else
-		MonDKP.ConfigTab1.checkBtn[9]:SetChecked(false);
+		DWP.ConfigTab1.checkBtn[9]:SetChecked(false);
 	end
 	for k,v in pairs(core.classes) do
-		if (MonDKP.ConfigTab1.checkBtn[k]:GetChecked() == true) then
+		if (DWP.ConfigTab1.checkBtn[k]:GetChecked() == true) then
 			core.classFiltered[v] = true;
 		else
 			core.classFiltered[v] = false;
 		end
 	end
 	PlaySound(808)
-	MonDKP:FilterDKPTable(core.currentSort, "reset");
+	DWP:FilterDKPTable(core.currentSort, "reset");
 end
 
 local function Tab_OnClick(self)
@@ -63,9 +63,9 @@ local function Tab_OnClick(self)
 	end
 
 	if self:GetID() == 5 then
-		MonDKP:LootHistory_Update(L["NOFILTER"]);
+		DWP:LootHistory_Update(L["NOFILTER"]);
 	elseif self:GetID() == 6 then
-		MonDKP:DKPHistory_Update(true)
+		DWP:DKPHistory_Update(true)
 	end
 
 	local scrollChild = self:GetParent().ScrollFrame:GetScrollChild();
@@ -79,17 +79,17 @@ local function Tab_OnClick(self)
 	self:GetParent().ScrollFrame:SetVerticalScroll(0)
 end
 
-function MonDKP:SetTabs(frame, numTabs, width, height, ...)
+function DWP:SetTabs(frame, numTabs, width, height, ...)
 	frame.numTabs = numTabs;
 	
 	local contents = {};
 	local frameName = frame:GetName();
 	
 	for i = 1, numTabs do 
-		local tab = CreateFrame("Button", frameName.."Tab"..i, frame, "MonDKPTabButtonTemplate");
+		local tab = CreateFrame("Button", frameName.."Tab"..i, frame, "DWPTabButtonTemplate");
 		tab:SetID(i);
 		tab:SetText(select(i, ...));
-		tab:GetFontString():SetFontObject("MonDKPSmallOutlineCenter")
+		tab:GetFontString():SetFontObject("DWPSmallOutlineCenter")
 		tab:GetFontString():SetTextColor(0.7, 0.7, 0.86, 1)
 		tab:SetScript("OnClick", Tab_OnClick);
 		
@@ -114,180 +114,180 @@ end
 ---------------------------------------
 -- Populate Tabs 
 ---------------------------------------
-function MonDKP:ConfigMenuTabs()
+function DWP:ConfigMenuTabs()
 	---------------------------------------
 	-- TabMenu
 	---------------------------------------
 
-	MonDKP.UIConfig.TabMenu = CreateFrame("Frame", "MonDKPMonDKP.ConfigTabMenu", MonDKP.UIConfig);
-	MonDKP.UIConfig.TabMenu:SetPoint("TOPRIGHT", MonDKP.UIConfig, "TOPRIGHT", -25, -25);
-	MonDKP.UIConfig.TabMenu:SetSize(477, 510);
-	MonDKP.UIConfig.TabMenu:SetBackdrop( {
+	DWP.UIConfig.TabMenu = CreateFrame("Frame", "DWP.ConfigTabMenu", DWP.UIConfig);
+	DWP.UIConfig.TabMenu:SetPoint("TOPRIGHT", DWP.UIConfig, "TOPRIGHT", -25, -25);
+	DWP.UIConfig.TabMenu:SetSize(477, 510);
+	DWP.UIConfig.TabMenu:SetBackdrop( {
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	});
-	MonDKP.UIConfig.TabMenu:SetBackdropColor(0,0,0,0.9);
-	MonDKP.UIConfig.TabMenu:SetBackdropBorderColor(1,1,1,0.5)
+	DWP.UIConfig.TabMenu:SetBackdropColor(0,0,0,0.9);
+	DWP.UIConfig.TabMenu:SetBackdropBorderColor(1,1,1,0.5)
 
-	MonDKP.UIConfig.TabMenuBG = MonDKP.UIConfig.TabMenu:CreateTexture(nil, "OVERLAY", nil);
-	MonDKP.UIConfig.TabMenuBG:SetColorTexture(0, 0, 0, 1)
-	MonDKP.UIConfig.TabMenuBG:SetPoint("TOPLEFT", MonDKP.UIConfig.TabMenu, "TOPLEFT", 2, -2);
-	MonDKP.UIConfig.TabMenuBG:SetSize(478, 511);
-	MonDKP.UIConfig.TabMenuBG:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\menu-bg");
+	DWP.UIConfig.TabMenuBG = DWP.UIConfig.TabMenu:CreateTexture(nil, "OVERLAY", nil);
+	DWP.UIConfig.TabMenuBG:SetColorTexture(0, 0, 0, 1)
+	DWP.UIConfig.TabMenuBG:SetPoint("TOPLEFT", DWP.UIConfig.TabMenu, "TOPLEFT", 2, -2);
+	DWP.UIConfig.TabMenuBG:SetSize(478, 511);
+	DWP.UIConfig.TabMenuBG:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\menu-bg");
 
 	-- TabMenu ScrollFrame and ScrollBar
-	MonDKP.UIConfig.TabMenu.ScrollFrame = CreateFrame("ScrollFrame", nil, MonDKP.UIConfig.TabMenu, "UIPanelScrollFrameTemplate");
-	MonDKP.UIConfig.TabMenu.ScrollFrame:ClearAllPoints();
-	MonDKP.UIConfig.TabMenu.ScrollFrame:SetPoint("TOPLEFT",  MonDKP.UIConfig.TabMenu, "TOPLEFT", 4, -8);
-	MonDKP.UIConfig.TabMenu.ScrollFrame:SetPoint("BOTTOMRIGHT", MonDKP.UIConfig.TabMenu, "BOTTOMRIGHT", -3, 4);
-	MonDKP.UIConfig.TabMenu.ScrollFrame:SetClipsChildren(false);
-	MonDKP.UIConfig.TabMenu.ScrollFrame:SetScript("OnMouseWheel", ScrollFrame_OnMouseWheel);
+	DWP.UIConfig.TabMenu.ScrollFrame = CreateFrame("ScrollFrame", nil, DWP.UIConfig.TabMenu, "UIPanelScrollFrameTemplate");
+	DWP.UIConfig.TabMenu.ScrollFrame:ClearAllPoints();
+	DWP.UIConfig.TabMenu.ScrollFrame:SetPoint("TOPLEFT",  DWP.UIConfig.TabMenu, "TOPLEFT", 4, -8);
+	DWP.UIConfig.TabMenu.ScrollFrame:SetPoint("BOTTOMRIGHT", DWP.UIConfig.TabMenu, "BOTTOMRIGHT", -3, 4);
+	DWP.UIConfig.TabMenu.ScrollFrame:SetClipsChildren(false);
+	DWP.UIConfig.TabMenu.ScrollFrame:SetScript("OnMouseWheel", ScrollFrame_OnMouseWheel);
 	
-	MonDKP.UIConfig.TabMenu.ScrollFrame.ScrollBar:Hide();
-	MonDKP.UIConfig.TabMenu.ScrollFrame.ScrollBar = CreateFrame("Slider", nil, MonDKP.UIConfig.TabMenu.ScrollFrame, "UIPanelScrollBarTrimTemplate")
-	MonDKP.UIConfig.TabMenu.ScrollFrame.ScrollBar:ClearAllPoints();
-	MonDKP.UIConfig.TabMenu.ScrollFrame.ScrollBar:SetPoint("TOPLEFT", MonDKP.UIConfig.TabMenu.ScrollFrame, "TOPRIGHT", -20, -12);
-	MonDKP.UIConfig.TabMenu.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", MonDKP.UIConfig.TabMenu.ScrollFrame, "BOTTOMRIGHT", -2, 15);
+	DWP.UIConfig.TabMenu.ScrollFrame.ScrollBar:Hide();
+	DWP.UIConfig.TabMenu.ScrollFrame.ScrollBar = CreateFrame("Slider", nil, DWP.UIConfig.TabMenu.ScrollFrame, "UIPanelScrollBarTrimTemplate")
+	DWP.UIConfig.TabMenu.ScrollFrame.ScrollBar:ClearAllPoints();
+	DWP.UIConfig.TabMenu.ScrollFrame.ScrollBar:SetPoint("TOPLEFT", DWP.UIConfig.TabMenu.ScrollFrame, "TOPRIGHT", -20, -12);
+	DWP.UIConfig.TabMenu.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", DWP.UIConfig.TabMenu.ScrollFrame, "BOTTOMRIGHT", -2, 15);
 
-	MonDKP.ConfigTab1, MonDKP.ConfigTab2, MonDKP.ConfigTab3, MonDKP.ConfigTab4, MonDKP.ConfigTab5, MonDKP.ConfigTab6 = MonDKP:SetTabs(MonDKP.UIConfig.TabMenu, 6, 475, 490, L["FILTERS"], L["ADJUSTDKP"], L["MANAGE"], L["OPTIONS"], L["LOOTHISTORY"], L["DKPHISTORY"]);
+	DWP.ConfigTab1, DWP.ConfigTab2, DWP.ConfigTab3, DWP.ConfigTab4, DWP.ConfigTab5, DWP.ConfigTab6 = DWP:SetTabs(DWP.UIConfig.TabMenu, 6, 475, 490, L["FILTERS"], L["ADJUSTDKP"], L["MANAGE"], L["OPTIONS"], L["LOOTHISTORY"], L["DKPHISTORY"]);
 
 	---------------------------------------
 	-- MENU TAB 1
 	---------------------------------------
 
-	MonDKP.ConfigTab1.text = MonDKP.ConfigTab1:CreateFontString(nil, "OVERLAY")   -- Filters header
-	MonDKP.ConfigTab1.text:ClearAllPoints();
-	MonDKP.ConfigTab1.text:SetFontObject("MonDKPLargeCenter")
-	MonDKP.ConfigTab1.text:SetPoint("TOPLEFT", MonDKP.ConfigTab1, "TOPLEFT", 15, -10);
-	MonDKP.ConfigTab1.text:SetText(L["FILTERS"]);
-	MonDKP.ConfigTab1.text:SetScale(1.2)
+	DWP.ConfigTab1.text = DWP.ConfigTab1:CreateFontString(nil, "OVERLAY")   -- Filters header
+	DWP.ConfigTab1.text:ClearAllPoints();
+	DWP.ConfigTab1.text:SetFontObject("DWPLargeCenter")
+	DWP.ConfigTab1.text:SetPoint("TOPLEFT", DWP.ConfigTab1, "TOPLEFT", 15, -10);
+	DWP.ConfigTab1.text:SetText(L["FILTERS"]);
+	DWP.ConfigTab1.text:SetScale(1.2)
 
 	local checkBtn = {}
-	MonDKP.ConfigTab1.checkBtn = checkBtn;
+	DWP.ConfigTab1.checkBtn = checkBtn;
 
 	-- Create CheckBoxes
 	for i=1, 10 do
-		MonDKP.ConfigTab1.checkBtn[i] = CreateFrame("CheckButton", nil, MonDKP.ConfigTab1, "UICheckButtonTemplate");
-		if i <= 9 then MonDKP.ConfigTab1.checkBtn[i]:SetChecked(true) else MonDKP.ConfigTab1.checkBtn[i]:SetChecked(false) end;
-		MonDKP.ConfigTab1.checkBtn[i]:SetID(i)
+		DWP.ConfigTab1.checkBtn[i] = CreateFrame("CheckButton", nil, DWP.ConfigTab1, "UICheckButtonTemplate");
+		if i <= 9 then DWP.ConfigTab1.checkBtn[i]:SetChecked(true) else DWP.ConfigTab1.checkBtn[i]:SetChecked(false) end;
+		DWP.ConfigTab1.checkBtn[i]:SetID(i)
 		if i <= 8 then
-			MonDKP.ConfigTab1.checkBtn[i].text:SetText("|cff5151de"..core.LocalClass[core.classes[i]].."|r");
+			DWP.ConfigTab1.checkBtn[i].text:SetText("|cff5151de"..core.LocalClass[core.classes[i]].."|r");
 		end
 		if i==9 then
-			MonDKP.ConfigTab1.checkBtn[i]:SetScript("OnClick",
+			DWP.ConfigTab1.checkBtn[i]:SetScript("OnClick",
 				function()
 					for j=1, 9 do
 						if (checkAll) then
-							MonDKP.ConfigTab1.checkBtn[j]:SetChecked(false)
+							DWP.ConfigTab1.checkBtn[j]:SetChecked(false)
 						else
-							MonDKP.ConfigTab1.checkBtn[j]:SetChecked(true)
+							DWP.ConfigTab1.checkBtn[j]:SetChecked(true)
 						end
 					end
 					checkAll = not checkAll;
-					MonDKPFilterChecks(MonDKP.ConfigTab1.checkBtn[9]);
+					DWPFilterChecks(DWP.ConfigTab1.checkBtn[9]);
 				end)
 
 			for k,v in pairs(core.classes) do               -- sets core.classFiltered table with all values
-				if (MonDKP.ConfigTab1.checkBtn[k]:GetChecked() == true) then
+				if (DWP.ConfigTab1.checkBtn[k]:GetChecked() == true) then
 					core.classFiltered[v] = true;
 				else
 					core.classFiltered[v] = false;
 				end
 			end
 		elseif i==10 then
-			MonDKP.ConfigTab1.checkBtn[i]:SetScript("OnClick", function(self)
-				MonDKP.ConfigTab1.checkBtn[12]:SetChecked(false);
-				MonDKPFilterChecks(self)
+			DWP.ConfigTab1.checkBtn[i]:SetScript("OnClick", function(self)
+				DWP.ConfigTab1.checkBtn[12]:SetChecked(false);
+				DWPFilterChecks(self)
 			end)
 		else
-			MonDKP.ConfigTab1.checkBtn[i]:SetScript("OnClick", MonDKPFilterChecks)
+			DWP.ConfigTab1.checkBtn[i]:SetScript("OnClick", DWPFilterChecks)
 		end
-		MonDKP.ConfigTab1.checkBtn[i].text:SetFontObject("MonDKPSmall")
+		DWP.ConfigTab1.checkBtn[i].text:SetFontObject("DWPSmall")
 	end
 
 	-- Class Check Buttons:
-	MonDKP.ConfigTab1.checkBtn[1]:SetPoint("TOPLEFT", MonDKP.ConfigTab1, "TOPLEFT", 85, -70);
-	MonDKP.ConfigTab1.checkBtn[2]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[1], "TOPRIGHT", 50, 0);
-	MonDKP.ConfigTab1.checkBtn[3]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[2], "TOPRIGHT", 50, 0);
-	MonDKP.ConfigTab1.checkBtn[4]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[3], "TOPRIGHT", 50, 0);
-	MonDKP.ConfigTab1.checkBtn[5]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[1], "BOTTOMLEFT", 0, -10);
-	MonDKP.ConfigTab1.checkBtn[6]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[2], "BOTTOMLEFT", 0, -10);
-	MonDKP.ConfigTab1.checkBtn[7]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[3], "BOTTOMLEFT", 0, -10);
-	MonDKP.ConfigTab1.checkBtn[8]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[4], "BOTTOMLEFT", 0, -10);
+	DWP.ConfigTab1.checkBtn[1]:SetPoint("TOPLEFT", DWP.ConfigTab1, "TOPLEFT", 85, -70);
+	DWP.ConfigTab1.checkBtn[2]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[1], "TOPRIGHT", 50, 0);
+	DWP.ConfigTab1.checkBtn[3]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[2], "TOPRIGHT", 50, 0);
+	DWP.ConfigTab1.checkBtn[4]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[3], "TOPRIGHT", 50, 0);
+	DWP.ConfigTab1.checkBtn[5]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[1], "BOTTOMLEFT", 0, -10);
+	DWP.ConfigTab1.checkBtn[6]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[2], "BOTTOMLEFT", 0, -10);
+	DWP.ConfigTab1.checkBtn[7]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[3], "BOTTOMLEFT", 0, -10);
+	DWP.ConfigTab1.checkBtn[8]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[4], "BOTTOMLEFT", 0, -10);
 
-	MonDKP.ConfigTab1.checkBtn[9]:SetPoint("BOTTOMRIGHT", MonDKP.ConfigTab1.checkBtn[2], "TOPLEFT", 50, 0);
-	MonDKP.ConfigTab1.checkBtn[9].text:SetText("|cff5151de"..L["ALLCLASSES"].."|r");
-	MonDKP.ConfigTab1.checkBtn[10]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[5], "BOTTOMLEFT", 0, 0);
-	MonDKP.ConfigTab1.checkBtn[10].text:SetText("|cff5151de"..L["INPARTYRAID"].."|r");         -- executed in filterDKPTable (DWPlus.lua)
+	DWP.ConfigTab1.checkBtn[9]:SetPoint("BOTTOMRIGHT", DWP.ConfigTab1.checkBtn[2], "TOPLEFT", 50, 0);
+	DWP.ConfigTab1.checkBtn[9].text:SetText("|cff5151de"..L["ALLCLASSES"].."|r");
+	DWP.ConfigTab1.checkBtn[10]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[5], "BOTTOMLEFT", 0, 0);
+	DWP.ConfigTab1.checkBtn[10].text:SetText("|cff5151de"..L["INPARTYRAID"].."|r");         -- executed in filterDKPTable (DWPlus.lua)
 
-	MonDKP.ConfigTab1.checkBtn[11] = CreateFrame("CheckButton", nil, MonDKP.ConfigTab1, "UICheckButtonTemplate");
-	MonDKP.ConfigTab1.checkBtn[11]:SetID(11)
-	MonDKP.ConfigTab1.checkBtn[11].text:SetText("|cff5151de"..L["ONLINE"].."|r");
-	MonDKP.ConfigTab1.checkBtn[11].text:SetFontObject("MonDKPSmall")
-	MonDKP.ConfigTab1.checkBtn[11]:SetScript("OnClick", MonDKPFilterChecks)
-	MonDKP.ConfigTab1.checkBtn[11]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[10], "TOPRIGHT", 100, 0);
+	DWP.ConfigTab1.checkBtn[11] = CreateFrame("CheckButton", nil, DWP.ConfigTab1, "UICheckButtonTemplate");
+	DWP.ConfigTab1.checkBtn[11]:SetID(11)
+	DWP.ConfigTab1.checkBtn[11].text:SetText("|cff5151de"..L["ONLINE"].."|r");
+	DWP.ConfigTab1.checkBtn[11].text:SetFontObject("DWPSmall")
+	DWP.ConfigTab1.checkBtn[11]:SetScript("OnClick", DWPFilterChecks)
+	DWP.ConfigTab1.checkBtn[11]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[10], "TOPRIGHT", 100, 0);
 
-	MonDKP.ConfigTab1.checkBtn[12] = CreateFrame("CheckButton", nil, MonDKP.ConfigTab1, "UICheckButtonTemplate");
-	MonDKP.ConfigTab1.checkBtn[12]:SetID(12)
-	MonDKP.ConfigTab1.checkBtn[12].text:SetText("|cff5151de"..L["NOTINRAIDFILTER"].."|r");
-	MonDKP.ConfigTab1.checkBtn[12].text:SetFontObject("MonDKPSmall")
-	MonDKP.ConfigTab1.checkBtn[12]:SetScript("OnClick", function(self)
-		MonDKP.ConfigTab1.checkBtn[10]:SetChecked(false);
-		MonDKPFilterChecks(self)
+	DWP.ConfigTab1.checkBtn[12] = CreateFrame("CheckButton", nil, DWP.ConfigTab1, "UICheckButtonTemplate");
+	DWP.ConfigTab1.checkBtn[12]:SetID(12)
+	DWP.ConfigTab1.checkBtn[12].text:SetText("|cff5151de"..L["NOTINRAIDFILTER"].."|r");
+	DWP.ConfigTab1.checkBtn[12].text:SetFontObject("DWPSmall")
+	DWP.ConfigTab1.checkBtn[12]:SetScript("OnClick", function(self)
+		DWP.ConfigTab1.checkBtn[10]:SetChecked(false);
+		DWPFilterChecks(self)
 	end)
-	MonDKP.ConfigTab1.checkBtn[12]:SetPoint("TOPLEFT", MonDKP.ConfigTab1.checkBtn[11], "TOPRIGHT", 65, 0);
+	DWP.ConfigTab1.checkBtn[12]:SetPoint("TOPLEFT", DWP.ConfigTab1.checkBtn[11], "TOPRIGHT", 65, 0);
 
-	core.ClassGraph = MonDKP:ClassGraph()  -- draws class graph on tab1
+	core.ClassGraph = DWP:ClassGraph()  -- draws class graph on tab1
 
 	---------------------------------------
 	-- Adjust DKP TAB
 	---------------------------------------
 
-	MonDKP:AdjustDKPTab_Create()
+	DWP:AdjustDKPTab_Create()
 
 	---------------------------------------
 	-- Manage DKP TAB
 	---------------------------------------
 
-	MonDKP.ConfigTab3.header = MonDKP.ConfigTab3:CreateFontString(nil, "OVERLAY")
-	MonDKP.ConfigTab3.header:ClearAllPoints();
-	MonDKP.ConfigTab3.header:SetFontObject("MonDKPLargeCenter");
-	MonDKP.ConfigTab3.header:SetPoint("TOPLEFT", MonDKP.ConfigTab3, "TOPLEFT", 15, -10);
-	MonDKP.ConfigTab3.header:SetText(L["MANAGEDKP"]); 
-	MonDKP.ConfigTab3.header:SetScale(1.2)
+	DWP.ConfigTab3.header = DWP.ConfigTab3:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab3.header:ClearAllPoints();
+	DWP.ConfigTab3.header:SetFontObject("DWPLargeCenter");
+	DWP.ConfigTab3.header:SetPoint("TOPLEFT", DWP.ConfigTab3, "TOPLEFT", 15, -10);
+	DWP.ConfigTab3.header:SetText(L["MANAGEDKP"]);
+	DWP.ConfigTab3.header:SetScale(1.2)
 
 	-- Populate Manage Tab
-	MonDKP:ManageEntries()
+	DWP:ManageEntries()
 
 	---------------------------------------
 	-- Loot History TAB
 	---------------------------------------
 
-	MonDKP.ConfigTab5.text = MonDKP.ConfigTab5:CreateFontString(nil, "OVERLAY")
-	MonDKP.ConfigTab5.text:ClearAllPoints();
-	MonDKP.ConfigTab5.text:SetFontObject("MonDKPLargeLeft");
-	MonDKP.ConfigTab5.text:SetPoint("TOPLEFT", MonDKP.ConfigTab5, "TOPLEFT", 15, -10);
-	MonDKP.ConfigTab5.text:SetText(L["LOOTHISTORY"]);
-	MonDKP.ConfigTab5.text:SetScale(1.2)
+	DWP.ConfigTab5.text = DWP.ConfigTab5:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab5.text:ClearAllPoints();
+	DWP.ConfigTab5.text:SetFontObject("DWPLargeLeft");
+	DWP.ConfigTab5.text:SetPoint("TOPLEFT", DWP.ConfigTab5, "TOPLEFT", 15, -10);
+	DWP.ConfigTab5.text:SetText(L["LOOTHISTORY"]);
+	DWP.ConfigTab5.text:SetScale(1.2)
 
-	MonDKP.ConfigTab5.inst = MonDKP.ConfigTab5:CreateFontString(nil, "OVERLAY")
-	MonDKP.ConfigTab5.inst:ClearAllPoints();
-	MonDKP.ConfigTab5.inst:SetFontObject("MonDKPSmallRight");
-	MonDKP.ConfigTab5.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
-	MonDKP.ConfigTab5.inst:SetPoint("TOPRIGHT", MonDKP.ConfigTab5, "TOPRIGHT", -40, -43);
-	MonDKP.ConfigTab5.inst:SetText(L["LOOTHISTINST1"]);
+	DWP.ConfigTab5.inst = DWP.ConfigTab5:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab5.inst:ClearAllPoints();
+	DWP.ConfigTab5.inst:SetFontObject("DWPSmallRight");
+	DWP.ConfigTab5.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
+	DWP.ConfigTab5.inst:SetPoint("TOPRIGHT", DWP.ConfigTab5, "TOPRIGHT", -40, -43);
+	DWP.ConfigTab5.inst:SetText(L["LOOTHISTINST1"]);
 
 	-- Populate Loot History (LootHistory.lua)
 	local looter = {}
-	MonDKP.ConfigTab5.looter = looter
+	DWP.ConfigTab5.looter = looter
 	local lootFrame = {}
-	MonDKP.ConfigTab5.lootFrame = lootFrame
-	for i=1, #MonDKP_Loot do
-	MonDKP.ConfigTab5.lootFrame[i] = CreateFrame("Frame", "MonDKPLootHistoryFrame"..i, MonDKP.ConfigTab5);
+	DWP.ConfigTab5.lootFrame = lootFrame
+	for i=1, #DWPlus_Loot do
+	DWP.ConfigTab5.lootFrame[i] = CreateFrame("Frame", "DWPLootHistoryFrame"..i, DWP.ConfigTab5);
 	end
 
-	if #MonDKP_Loot > 0 then
-		MonDKP:LootHistory_Update(L["NOFILTER"])
+	if #DWPlus_Loot > 0 then
+		DWP:LootHistory_Update(L["NOFILTER"])
 		CreateSortBox();
 	end
 
@@ -295,21 +295,21 @@ function MonDKP:ConfigMenuTabs()
 	-- DKP History Tab
 	---------------------------------------
 
-	MonDKP.ConfigTab6.text = MonDKP.ConfigTab6:CreateFontString(nil, "OVERLAY")
-	MonDKP.ConfigTab6.text:ClearAllPoints();
-	MonDKP.ConfigTab6.text:SetFontObject("MonDKPLargeLeft");
-	MonDKP.ConfigTab6.text:SetPoint("TOPLEFT", MonDKP.ConfigTab6, "TOPLEFT", 15, -10);
-	MonDKP.ConfigTab6.text:SetText(L["DKPHISTORY"]);
-	MonDKP.ConfigTab6.text:SetScale(1.2)
+	DWP.ConfigTab6.text = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab6.text:ClearAllPoints();
+	DWP.ConfigTab6.text:SetFontObject("DWPLargeLeft");
+	DWP.ConfigTab6.text:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 15, -10);
+	DWP.ConfigTab6.text:SetText(L["DKPHISTORY"]);
+	DWP.ConfigTab6.text:SetScale(1.2)
 
-	MonDKP.ConfigTab6.inst = MonDKP.ConfigTab6:CreateFontString(nil, "OVERLAY")
-	MonDKP.ConfigTab6.inst:ClearAllPoints();
-	MonDKP.ConfigTab6.inst:SetFontObject("MonDKPSmallRight");
-	MonDKP.ConfigTab6.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
-	MonDKP.ConfigTab6.inst:SetPoint("TOPRIGHT", MonDKP.ConfigTab6, "TOPRIGHT", -40, -43);
+	DWP.ConfigTab6.inst = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab6.inst:ClearAllPoints();
+	DWP.ConfigTab6.inst:SetFontObject("DWPSmallRight");
+	DWP.ConfigTab6.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
+	DWP.ConfigTab6.inst:SetPoint("TOPRIGHT", DWP.ConfigTab6, "TOPRIGHT", -40, -43);
 	
-	if #MonDKP_DKPHistory > 0 then
-		MonDKP:DKPHistory_Update()
+	if #DWPlus_RPHistory > 0 then
+		DWP:DKPHistory_Update()
 	end
 	DKPHistoryFilterBox_Create()
 

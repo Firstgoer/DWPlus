@@ -1,6 +1,6 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 local ConsolidatedTable = {}
@@ -24,7 +24,7 @@ local function ConsolidateTables(keepDKP)
 			processing = true
 
 			if ConsolidatedTable[i].loot then
-				local search = MonDKP:Table_Search(DKPTableTemp, ConsolidatedTable[i].player, "player")
+				local search = DWP:Table_Search(DKPTableTemp, ConsolidatedTable[i].player, "player")
 
 				if search then
 					DKPTableTemp[search[1][1]].dkp = DKPTableTemp[search[1][1]].dkp + tonumber(ConsolidatedTable[i].cost)
@@ -42,11 +42,11 @@ local function ConsolidateTables(keepDKP)
 					local value = tonumber(strsub(ConsolidatedTable[i].dkp, f[1]+1, f[2]-1)) / 100
 
 					for j=1, #players do
-						local search2 = MonDKP:Table_Search(DKPTableTemp, players[j], "player")
+						local search2 = DWP:Table_Search(DKPTableTemp, players[j], "player")
 
 						if search2 and DKPTableTemp[search2[1][1]].dkp > 0 then
 							local deduction = DKPTableTemp[search2[1][1]].dkp * -value;
-							deduction = MonDKP_round(deduction, MonDKP_DB.modes.rounding)
+							deduction = DWP_round(deduction, DWPlus_DB.modes.rounding)
 
 							DKPTableTemp[search2[1][1]].dkp = DKPTableTemp[search2[1][1]].dkp + deduction
 							playerString = playerString..players[j]..","
@@ -64,17 +64,17 @@ local function ConsolidateTables(keepDKP)
 					local perc = value * 100
 					DKPString = DKPString.."-"..perc.."%"
 
-					local EntrySearch = MonDKP:Table_Search(MonDKP_DKPHistory, ConsolidatedTable[i].date, "date")
+					local EntrySearch = DWP:Table_Search(DWPlus_RPHistory, ConsolidatedTable[i].date, "date")
 
 					if EntrySearch then
-						MonDKP_DKPHistory[EntrySearch[1][1]].players = playerString
-						MonDKP_DKPHistory[EntrySearch[1][1]].dkp = DKPString
+						DWPlus_RPHistory[EntrySearch[1][1]].players = playerString
+						DWPlus_RPHistory[EntrySearch[1][1]].dkp = DKPString
 					end
 				else
 					local dkp = tonumber(ConsolidatedTable[i].dkp)
 
 					for j=1, #players do
-						local search = MonDKP:Table_Search(DKPTableTemp, players[j], "player")
+						local search = DWP:Table_Search(DKPTableTemp, players[j], "player")
 
 						if search then
 							DKPTableTemp[search[1][1]].dkp = DKPTableTemp[search[1][1]].dkp + dkp
@@ -97,14 +97,14 @@ local function ConsolidateTables(keepDKP)
 			timer = 0
 			-- Create new DKPHistory entry compensating for difference between history and DKPTable (if some history was lost due to overwriting)
 			if keepDKP then
-				for i=1, #MonDKP_DKPTable do 
-					local search = MonDKP:Table_Search(DKPTableTemp, MonDKP_DKPTable[i].player, "player")
+				for i=1, #DWPlus_RPTable do
+					local search = DWP:Table_Search(DKPTableTemp, DWPlus_RPTable[i].player, "player")
 
 					if search then
-						if MonDKP_DKPTable[i].dkp ~= DKPTableTemp[search[1][1]].dkp then
-							local val = MonDKP_DKPTable[i].dkp - DKPTableTemp[search[1][1]].dkp
-							val = MonDKP_round(val, MonDKP_DB.modes.rounding)
-							PlayerStringTemp = PlayerStringTemp..MonDKP_DKPTable[i].player..","
+						if DWPlus_RPTable[i].dkp ~= DKPTableTemp[search[1][1]].dkp then
+							local val = DWPlus_RPTable[i].dkp - DKPTableTemp[search[1][1]].dkp
+							val = DWP_round(val, DWPlus_DB.modes.rounding)
+							PlayerStringTemp = PlayerStringTemp..DWPlus_RPTable[i].player..","
 							DKPStringTemp = DKPStringTemp..val..","
 						end
 					end
@@ -113,46 +113,46 @@ local function ConsolidateTables(keepDKP)
 				if DKPStringTemp ~= "" and PlayerStringTemp ~= "" then
 					local insert = {
 						players = PlayerStringTemp,
-						index 	= UnitName("player").."-"..MonDKP_DB.defaults.installed210-10,
+						index 	= UnitName("player").."-"..DWPlus_DB.defaults.installed210-10,
 						dkp 	= DKPStringTemp.."-1%",
 						date 	= time(),
 						reason	= "Migration Correction",
 						hidden	= true,
 					}
-					table.insert(MonDKP_DKPHistory, insert)
+					table.insert(DWPlus_RPHistory, insert)
 				end
 			else
-				for i=1, #MonDKP_DKPTable do 
-					local search = MonDKP:Table_Search(DKPTableTemp, MonDKP_DKPTable[i].player, "player")
+				for i=1, #DWPlus_RPTable do
+					local search = DWP:Table_Search(DKPTableTemp, DWPlus_RPTable[i].player, "player")
 
 					if search then
-						MonDKP_DKPTable[i].dkp = DKPTableTemp[search[1][1]].dkp
-						MonDKP_DKPTable[i].lifetime_spent = DKPTableTemp[search[1][1]].lifetime_spent
-						MonDKP_DKPTable[i].lifetime_gained = DKPTableTemp[search[1][1]].lifetime_gained
+						DWPlus_RPTable[i].dkp = DKPTableTemp[search[1][1]].dkp
+						DWPlus_RPTable[i].lifetime_spent = DKPTableTemp[search[1][1]].lifetime_spent
+						DWPlus_RPTable[i].lifetime_gained = DKPTableTemp[search[1][1]].lifetime_gained
 					end
 				end
 			end
 
 			local curTime = time();
 			for i=1, #DKPTableTemp do 	-- finds who had history but was deleted; adds them to archive if so
-				local search = MonDKP:Table_Search(MonDKP_DKPTable, DKPTableTemp[i].player)
+				local search = DWP:Table_Search(DWPlus_RPTable, DKPTableTemp[i].player)
 
 				if not search then
-					MonDKP_Archive[DKPTableTemp[i].player] = { dkp=0, lifetime_spent=0, lifetime_gained=0, deleted=true, edited=curTime } 
+					DWPlus_Archive[DKPTableTemp[i].player] = { dkp=0, lifetime_spent=0, lifetime_gained=0, deleted=true, edited=curTime }
 				end
 			end
 
-			table.sort(MonDKP_Loot, function(a,b)
+			table.sort(DWPlus_Loot, function(a,b)
 				return a["date"] > b["date"]
 			end)
-			table.sort(MonDKP_DKPHistory, function(a,b)
+			table.sort(DWPlus_RPHistory, function(a,b)
 				return a["date"] > b["date"]
 			end)
-			MonDKP_DKPHistory.seed = MonDKP_DKPHistory[1].index;
-			MonDKP_Loot.seed = MonDKP_Loot[1].index
-			MonDKP:FilterDKPTable(core.currentSort, "reset")
+			DWPlus_RPHistory.seed = DWPlus_RPHistory[1].index;
+			DWPlus_Loot.seed = DWPlus_Loot[1].index
+			DWP:FilterDKPTable(core.currentSort, "reset")
 			ValInProgress = false
-			MonDKP:Print(L["REPAIRCOMP"])
+			DWP:Print(L["REPAIRCOMP"])
 		end
 	end)
 end
@@ -167,30 +167,30 @@ local function RepairDKPHistory(keepDKP)
 	local ValidateTimer = ValidateTimer or CreateFrame("StatusBar", nil, UIParent)
 	ValidateTimer:SetScript("OnUpdate", function(self, elapsed)
 		timer = timer + elapsed
-		if timer > 0.01 and i <= #MonDKP_DKPHistory and not processing then
+		if timer > 0.01 and i <= #DWPlus_RPHistory and not processing then
 			processing = true
 			-- delete duplicate entries and correct DKP (DKPHistory table)
-			local search = MonDKP:Table_Search(MonDKP_DKPHistory, MonDKP_DKPHistory[i].date, "date")
+			local search = DWP:Table_Search(DWPlus_RPHistory, DWPlus_RPHistory[i].date, "date")
 			
-			if MonDKP_DKPHistory[i].deletes or MonDKP_DKPHistory[i].deletedby or MonDKP_DKPHistory[i].reason == "Migration Correction" then  -- removes deleted entries/Migration Correction
-				table.remove(MonDKP_DKPHistory, i)
+			if DWPlus_RPHistory[i].deletes or DWPlus_RPHistory[i].deletedby or DWPlus_RPHistory[i].reason == "Migration Correction" then  -- removes deleted entries/Migration Correction
+				table.remove(DWPlus_RPHistory, i)
 			elseif #search > 1 then 		-- removes duplicate entries
 				for j=2, #search do
-					table.remove(MonDKP_DKPHistory, search[j][1])
+					table.remove(DWPlus_RPHistory, search[j][1])
 					deleted_entries = deleted_entries + 1
 				end
 			else
-				local curTime = MonDKP_DKPHistory[i].date
-				MonDKP_DKPHistory[i].index = officer.."-"..curTime
-				if not strfind(MonDKP_DKPHistory[i].dkp, "%-%d*%.?%d+%%") then
-					MonDKP_DKPHistory[i].dkp = tonumber(MonDKP_DKPHistory[i].dkp)
+				local curTime = DWPlus_RPHistory[i].date
+				DWPlus_RPHistory[i].index = officer.."-"..curTime
+				if not strfind(DWPlus_RPHistory[i].dkp, "%-%d*%.?%d+%%") then
+					DWPlus_RPHistory[i].dkp = tonumber(DWPlus_RPHistory[i].dkp)
 				end
-				table.insert(ConsolidatedTable, MonDKP_DKPHistory[i])
+				table.insert(ConsolidatedTable, DWPlus_RPHistory[i])
 				i=i+1
 			end
 			processing = false
 			timer = 0
-		elseif i > #MonDKP_DKPHistory then
+		elseif i > #DWPlus_RPHistory then
 			ValidateTimer:SetScript("OnUpdate", nil)
 			timer = 0
 			ConsolidateTables(keepDKP)
@@ -198,9 +198,9 @@ local function RepairDKPHistory(keepDKP)
 	end)
 end
 
-function MonDKP:RepairTables(keepDKP)  -- Repair starts
+function DWP:RepairTables(keepDKP)  -- Repair starts
 	if ValInProgress then
-		MonDKP:Print(L["VALIDATEINPROG"])
+		DWP:Print(L["VALIDATEINPROG"])
 		return
 	end
 
@@ -210,41 +210,41 @@ function MonDKP:RepairTables(keepDKP)  -- Repair starts
 	local processing = false
 	ValInProgress = true
 	
-	MonDKP:Print(L["REPAIRSTART"])
+	DWP:Print(L["REPAIRSTART"])
 
 	if keepDKP then
-		MonDKP:Print("Keep RP: true")
+		DWP:Print("Keep RP: true")
 	else
-		MonDKP:Print("Keep RP: false")
+		DWP:Print("Keep RP: false")
 	end
 
 	local ValidateTimer = ValidateTimer or CreateFrame("StatusBar", nil, UIParent)
 	ValidateTimer:SetScript("OnUpdate", function(self, elapsed)
 		timer = timer + elapsed
-		if timer > 0.01 and i <= #MonDKP_Loot and not processing then
+		if timer > 0.01 and i <= #DWPlus_Loot and not processing then
 			processing = true
-			local search = MonDKP:Table_Search(MonDKP_Loot, MonDKP_Loot[i].date, "date")
+			local search = DWP:Table_Search(DWPlus_Loot, DWPlus_Loot[i].date, "date")
 			
-			if MonDKP_Loot[i].deletedby or MonDKP_Loot[i].deletes then
-				table.remove(MonDKP_Loot, i)
+			if DWPlus_Loot[i].deletedby or DWPlus_Loot[i].deletes then
+				table.remove(DWPlus_Loot, i)
 			elseif search and #search > 1 then
 				for j=2, #search do
-					if MonDKP_Loot[search[j][1]].loot == MonDKP_Loot[i].loot then
-						table.remove(MonDKP_Loot, search[j][1])
+					if DWPlus_Loot[search[j][1]].loot == DWPlus_Loot[i].loot then
+						table.remove(DWPlus_Loot, search[j][1])
 					end
 				end
 			else
-				local curTime = MonDKP_Loot[i].date
-				MonDKP_Loot[i].index = officer.."-"..curTime
-				if tonumber(MonDKP_Loot[i].cost) > 0 then
-					MonDKP_Loot[i].cost = tonumber(MonDKP_Loot[i].cost) * -1
+				local curTime = DWPlus_Loot[i].date
+				DWPlus_Loot[i].index = officer.."-"..curTime
+				if tonumber(DWPlus_Loot[i].cost) > 0 then
+					DWPlus_Loot[i].cost = tonumber(DWPlus_Loot[i].cost) * -1
 				end
-				table.insert(ConsolidatedTable, MonDKP_Loot[i])
+				table.insert(ConsolidatedTable, DWPlus_Loot[i])
 				i=i+1
 			end
 			processing = false
 			timer = 0
-		elseif i > #MonDKP_Loot then
+		elseif i > #DWPlus_Loot then
 			ValidateTimer:SetScript("OnUpdate", nil)
 			timer = 0
 			RepairDKPHistory(keepDKP)

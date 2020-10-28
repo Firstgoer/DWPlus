@@ -1,29 +1,29 @@
 local _, core = ...;
 local _G = _G;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 local L = core.L;
 
 local function ZeroSumDistribution()
 	if IsInRaid() and core.IsOfficer then
 		local curTime = time();
 		local distribution;
-		local reason = MonDKP_DB.bossargs.CurrentRaidZone..": "..MonDKP_DB.bossargs.LastKilledBoss
+		local reason = DWPlus_DB.bossargs.CurrentRaidZone..": "..DWPlus_DB.bossargs.LastKilledBoss
 		local players = "";
 		local VerifyTable = {};
 		local curOfficer = UnitName("player")
 
-		if MonDKP_DB.modes.ZeroSumStandby then
-			for i=1, #MonDKP_Standby do
-				tinsert(VerifyTable, MonDKP_Standby[i].player)
+		if DWPlus_DB.modes.ZeroSumStandby then
+			for i=1, #DWPlus_Standby do
+				tinsert(VerifyTable, DWPlus_Standby[i].player)
 			end
 		end		
 
 		for i=1, 40 do
 			local tempName, _rank, _subgroup, _level, _class, _fileName, zone, online = GetRaidRosterInfo(i)
-			local search = MonDKP:Table_Search(VerifyTable, tempName)
-			local search2 = MonDKP:Table_Search(MonDKP_DKPTable, tempName)
-			local OnlineOnly = MonDKP_DB.modes.OnlineOnly
-			local limitToZone = MonDKP_DB.modes.SameZoneOnly
+			local search = DWP:Table_Search(VerifyTable, tempName)
+			local search2 = DWP:Table_Search(DWPlus_RPTable, tempName)
+			local OnlineOnly = DWPlus_DB.modes.OnlineOnly
+			local limitToZone = DWPlus_DB.modes.SameZoneOnly
 			local isSameZone = zone == GetRealZoneText()
 
 			if not search and search2 and (not OnlineOnly or online) and (not limitToZone or isSameZone) then
@@ -31,50 +31,50 @@ local function ZeroSumDistribution()
 			end
 		end
 
-		distribution = MonDKP_round(MonDKP_DB.modes.ZeroSumBank.balance / #VerifyTable, MonDKP_DB.modes.rounding) + MonDKP_DB.modes.Inflation
+		distribution = DWP_round(DWPlus_DB.modes.ZeroSumBank.balance / #VerifyTable, DWPlus_DB.modes.rounding) + DWPlus_DB.modes.Inflation
 
 		for i=1, #VerifyTable do
 			local name = VerifyTable[i]
-			local search = MonDKP:Table_Search(MonDKP_DKPTable, name)
+			local search = DWP:Table_Search(DWPlus_RPTable, name)
 
 			if search then
-				MonDKP_DKPTable[search[1][1]].dkp = MonDKP_DKPTable[search[1][1]].dkp + distribution
+				DWPlus_RPTable[search[1][1]].dkp = DWPlus_RPTable[search[1][1]].dkp + distribution
 				players = players..name..","
 			end
 		end
 		
 		local newIndex = curOfficer.."-"..curTime
-		tinsert(MonDKP_DKPHistory, 1, {players=players, dkp=distribution, reason=reason, date=curTime, index=newIndex})
-		if MonDKP.ConfigTab6.history then
-			MonDKP:DKPHistory_Update(true)
+		tinsert(DWPlus_RPHistory, 1, {players=players, dkp=distribution, reason=reason, date=curTime, index=newIndex})
+		if DWP.ConfigTab6.history then
+			DWP:DKPHistory_Update(true)
 		end
 
-		MonDKP.Sync:SendData("MonDKPDKPDist", MonDKP_DKPHistory[1])
-		MonDKP.Sync:SendData("MonDKPBCastMsg", L["RAIDDKPADJUSTBY"].." "..distribution.." "..L["AMONG"].." "..#VerifyTable.." "..L["PLAYERSFORREASON"]..": "..reason)
-		MonDKP:Print("Raid RP Adjusted by "..distribution.." "..L["AMONG"].." "..#VerifyTable.." "..L["PLAYERSFORREASON"]..": "..reason)
+		DWP.Sync:SendData("DWPDKPDist", DWPlus_RPHistory[1])
+		DWP.Sync:SendData("DWPBCastMsg", L["RAIDDKPADJUSTBY"].." "..distribution.." "..L["AMONG"].." "..#VerifyTable.." "..L["PLAYERSFORREASON"]..": "..reason)
+		DWP:Print("Raid RP Adjusted by "..distribution.." "..L["AMONG"].." "..#VerifyTable.." "..L["PLAYERSFORREASON"]..": "..reason)
 		
 		table.wipe(VerifyTable)
-		table.wipe(MonDKP_DB.modes.ZeroSumBank)
-		MonDKP_DB.modes.ZeroSumBank.balance = 0
+		table.wipe(DWPlus_DB.modes.ZeroSumBank)
+		DWPlus_DB.modes.ZeroSumBank.balance = 0
 		core.ZeroSumBank.LootFrame.LootList:SetText("")
 		DKPTable_Update()
-		MonDKP.Sync:SendData("MonDKPZSumBank", MonDKP_DB.modes.ZeroSumBank)
-		MonDKP:ZeroSumBank_Update()
+		DWP.Sync:SendData("DWPZSumBank", DWPlus_DB.modes.ZeroSumBank)
+		DWP:ZeroSumBank_Update()
 		core.ZeroSumBank:Hide();
 	else
-		MonDKP:Print(L["NOTINRAIDPARTY"])
+		DWP:Print(L["NOTINRAIDPARTY"])
 	end
 end
 
-function MonDKP:ZeroSumBank_Update()
-	core.ZeroSumBank.Boss:SetText(MonDKP_DB.bossargs.LastKilledBoss.." in "..MonDKP_DB.bossargs.CurrentRaidZone)
-	core.ZeroSumBank.Balance:SetText(MonDKP_DB.modes.ZeroSumBank.balance)
+function DWP:ZeroSumBank_Update()
+	core.ZeroSumBank.Boss:SetText(DWPlus_DB.bossargs.LastKilledBoss.." in "..DWPlus_DB.bossargs.CurrentRaidZone)
+	core.ZeroSumBank.Balance:SetText(DWPlus_DB.modes.ZeroSumBank.balance)
 
-	for i=1, #MonDKP_DB.modes.ZeroSumBank do
+	for i=1, #DWPlus_DB.modes.ZeroSumBank do
  		if i==1 then
- 			core.ZeroSumBank.LootFrame.LootList:SetText(MonDKP_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..MonDKP_DB.modes.ZeroSumBank[i].cost.." "..L["RP"].."\n")
+ 			core.ZeroSumBank.LootFrame.LootList:SetText(DWPlus_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..DWPlus_DB.modes.ZeroSumBank[i].cost.." "..L["RP"].."\n")
  		else
- 			core.ZeroSumBank.LootFrame.LootList:SetText(core.ZeroSumBank.LootFrame.LootList:GetText()..MonDKP_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..MonDKP_DB.modes.ZeroSumBank[i].cost.." "..L["RP"].."\n")
+ 			core.ZeroSumBank.LootFrame.LootList:SetText(core.ZeroSumBank.LootFrame.LootList:GetText()..DWPlus_DB.modes.ZeroSumBank[i].loot.." "..L["FOR"].." "..DWPlus_DB.modes.ZeroSumBank[i].cost.." "..L["RP"].."\n")
  		end
  	end
  	
@@ -84,10 +84,10 @@ function MonDKP:ZeroSumBank_Update()
  	end
 end
 
-function MonDKP:ZeroSumBank_Create()
-	local f = CreateFrame("Frame", "MonDKP_DKPZeroSumBankFrame", UIParent, "ShadowOverlaySmallTemplate");
+function DWP:ZeroSumBank_Create()
+	local f = CreateFrame("Frame", "DWP_DKPZeroSumBankFrame", UIParent, "ShadowOverlaySmallTemplate");
 
-	if not MonDKP_DB.modes.ZeroSumBank then MonDKP_DB.modes.ZeroSumBank = 0 end
+	if not DWPlus_DB.modes.ZeroSumBank then DWPlus_DB.modes.ZeroSumBank = 0 end
 
 	f:SetPoint("TOP", UIParent, "TOP", 400, -50);
 	f:SetSize(325, 350);
@@ -108,7 +108,7 @@ function MonDKP:ZeroSumBank_Create()
 	f:Hide()
 
 	-- Close Button
-	f.closeContainer = CreateFrame("Frame", "MonDKPZeroSumBankWindowCloseButtonContainer", f)
+	f.closeContainer = CreateFrame("Frame", "DWPZeroSumBankWindowCloseButtonContainer", f)
 	f.closeContainer:SetPoint("CENTER", f, "TOPRIGHT", -4, 0)
 	f.closeContainer:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
@@ -122,17 +122,17 @@ function MonDKP:ZeroSumBank_Create()
 	f.closeBtn:SetPoint("CENTER", f.closeContainer, "TOPRIGHT", -14, -14)
 
 	f.BankHeader = f:CreateFontString(nil, "OVERLAY")
-	f.BankHeader:SetFontObject("MonDKPLargeLeft");
+	f.BankHeader:SetFontObject("DWPLargeLeft");
 	f.BankHeader:SetScale(1)
 	f.BankHeader:SetPoint("TOPLEFT", f, "TOPLEFT", 10, -10);
 	f.BankHeader:SetText(L["ZEROSUMBANK"])
 
 	f.Boss = f:CreateFontString(nil, "OVERLAY")
-	f.Boss:SetFontObject("MonDKPSmallLeft");
+	f.Boss:SetFontObject("DWPSmallLeft");
 	f.Boss:SetPoint("TOPLEFT", f, "TOPLEFT", 60, -45);
 
 	f.Boss.Header = f:CreateFontString(nil, "OVERLAY")
-	f.Boss.Header:SetFontObject("MonDKPLargeRight");
+	f.Boss.Header:SetFontObject("DWPLargeRight");
 	f.Boss.Header:SetScale(0.7)
 	f.Boss.Header:SetPoint("RIGHT", f.Boss, "LEFT", -7, 0);
 	f.Boss.Header:SetText(L["BOSS"]..": ")
@@ -150,7 +150,7 @@ function MonDKP:ZeroSumBank_Create()
     f.Balance:SetBackdropBorderColor(1,1,1,0.4)
     f.Balance:SetMaxLetters(10)
     f.Balance:SetTextColor(1, 1, 1, 1)
-    f.Balance:SetFontObject("MonDKPSmallLeft")
+    f.Balance:SetFontObject("DWPSmallLeft")
     f.Balance:SetTextInsets(10, 10, 5, 5)
     f.Balance:SetScript("OnEscapePressed", function(self)    -- clears focus on esc
       self:ClearFocus()
@@ -166,20 +166,20 @@ function MonDKP:ZeroSumBank_Create()
 	end)
 
 	f.Balance.Header = f:CreateFontString(nil, "OVERLAY")
-	f.Balance.Header:SetFontObject("MonDKPLargeRight");
+	f.Balance.Header:SetFontObject("DWPLargeRight");
 	f.Balance.Header:SetScale(0.7)
 	f.Balance.Header:SetPoint("RIGHT", f.Balance, "LEFT", -7, 0);
 	f.Balance.Header:SetText(L["BALANCE"]..": ")
 
-	f.Distribute = CreateFrame("Button", "MonDKPBiddingDistributeButton", f, "DWPlusButtonTemplate")
+	f.Distribute = CreateFrame("Button", "DWPBiddingDistributeButton", f, "DWPlusButtonTemplate")
 	f.Distribute:SetPoint("TOPRIGHT", f, "TOPRIGHT", -15, -95);
 	f.Distribute:SetSize(90, 25);
 	f.Distribute:SetText(L["DISTRIBUTEDKP"]);
 	f.Distribute:GetFontString():SetTextColor(1, 1, 1, 1)
-	f.Distribute:SetNormalFontObject("MonDKPSmallCenter");
-	f.Distribute:SetHighlightFontObject("MonDKPSmallCenter");
+	f.Distribute:SetNormalFontObject("DWPSmallCenter");
+	f.Distribute:SetHighlightFontObject("DWPSmallCenter");
 	f.Distribute:SetScript("OnClick", function (self)
-		if MonDKP_DB.modes.ZeroSumBank.balance > 0 then
+		if DWPlus_DB.modes.ZeroSumBank.balance > 0 then
 			StaticPopupDialogs["CONFIRM_ADJUST1"] = {
 				text = L["DISTRIBUTEALLDKPCONF"],
 				button1 = L["YES"],
@@ -194,7 +194,7 @@ function MonDKP:ZeroSumBank_Create()
 			}
 			StaticPopup_Show ("CONFIRM_ADJUST1")
 		else
-			MonDKP:Print(L["NOPOINTSTODISTRIBUTE"])
+			DWP:Print(L["NOPOINTSTODISTRIBUTE"])
 		end
 	end)
 	f.Distribute:SetScript("OnEnter", function(self)
@@ -209,14 +209,14 @@ function MonDKP:ZeroSumBank_Create()
 
 	-- Include Standby Checkbox
 	f.IncludeStandby = CreateFrame("CheckButton", nil, f, "UICheckButtonTemplate");
-	f.IncludeStandby:SetChecked(MonDKP_DB.modes.ZeroSumStandby)
+	f.IncludeStandby:SetChecked(DWPlus_DB.modes.ZeroSumStandby)
 	f.IncludeStandby:SetScale(0.6);
 	f.IncludeStandby.text:SetText("  |cff5151de"..L["INCLUDESTANDBY"].."|r");
 	f.IncludeStandby.text:SetScale(1.5);
-	f.IncludeStandby.text:SetFontObject("MonDKPSmallLeft")
+	f.IncludeStandby.text:SetFontObject("DWPSmallLeft")
 	f.IncludeStandby:SetPoint("TOPLEFT", f.Distribute, "BOTTOMLEFT", -15, -10);
 	f.IncludeStandby:SetScript("OnClick", function(self)
-		MonDKP_DB.modes.ZeroSumStandby = self:GetChecked();
+		DWPlus_DB.modes.ZeroSumStandby = self:GetChecked();
 		PlaySound(808)
 	end)
 	f.IncludeStandby:SetScript("OnEnter", function(self)
@@ -231,7 +231,7 @@ function MonDKP:ZeroSumBank_Create()
 	end)
 
 	-- Loot List Frame
-	f.LootFrame = CreateFrame("Frame", "MonDKPZeroSumBankLootListContainer", f, "ShadowOverlaySmallTemplate")
+	f.LootFrame = CreateFrame("Frame", "DWPZeroSumBankLootListContainer", f, "ShadowOverlaySmallTemplate")
 	f.LootFrame:SetPoint("TOPRIGHT", f.IncludeStandby, "BOTTOM", 95, -5)
 	f.LootFrame:SetSize(305, 190)
 	f.LootFrame:SetBackdrop({
@@ -242,13 +242,13 @@ function MonDKP:ZeroSumBank_Create()
 	f.LootFrame:SetBackdropBorderColor(1,1,1,1)
 
 	f.LootFrame.Header = f.LootFrame:CreateFontString(nil, "OVERLAY")
-	f.LootFrame.Header:SetFontObject("MonDKPLargeLeft");
+	f.LootFrame.Header:SetFontObject("DWPLargeLeft");
 	f.LootFrame.Header:SetScale(0.7)
 	f.LootFrame.Header:SetPoint("TOPLEFT", f.LootFrame, "TOPLEFT", 8, -8);
 	f.LootFrame.Header:SetText(L["LOOTBANKED"])
 
 	f.LootFrame.LootList = f.LootFrame:CreateFontString(nil, "OVERLAY")
-	f.LootFrame.LootList:SetFontObject("MonDKPNormalLeft");
+	f.LootFrame.LootList:SetFontObject("DWPNormalLeft");
 	f.LootFrame.LootList:SetPoint("TOPLEFT", f.LootFrame, "TOPLEFT", 8, -18);
 	f.LootFrame.LootList:SetText("")
 

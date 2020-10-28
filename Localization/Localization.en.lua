@@ -1,5 +1,5 @@
 local _, core = ...;
-local MonDKP = core.MonDKP;
+local DWP = core.DWP;
 
 core.BossList = {
   MC = {
@@ -359,9 +359,9 @@ core.L = {
   MINIMUMROLLTTDESC     = "Set the minimum roll to be used.",
   MINUTE                = "minute",
   MINUTES               = "minutes",
-  MONDKPSCALESIZE       = "Monolith DKP Scale Size",
-  MONDKPSCALESIZETTDESC = "Scale of the Monolith DKP window. Click \"Save Settings\" to change size to set value.",
-  MONDKPSCALESIZETTWARN = "May require a /reload after saving if another Addon is used that modifies UI scales (ex. TukUI, ElvUI etc...)",
+  DWPSCALESIZE       = "Monolith DKP Scale Size",
+  DWPSCALESIZETTDESC = "Scale of the Monolith DKP window. Click \"Save Settings\" to change size to set value.",
+  DWPSCALESIZETTWARN = "May require a /reload after saving if another Addon is used that modifies UI scales (ex. TukUI, ElvUI etc...)",
   MORE                  = "more",
   MOVEBIDTIMER          = "Move Bid Timer",
   MOVEME                = "Move Me!",
@@ -576,7 +576,7 @@ core.L = {
   TOSTANDBYLIST         = "to Standby List",
   TOTALDKP              = "Total DKP",
   TOTALDKPAWARD         = "Total DKP Awarded",
-  TOTALMONDKPUSERS      = "Total MonDKP Users",
+  TOTALDWPUSERS      = "Total DWP Users",
   TOWITHDRAWBID         = "to withdraw your bid.",
   TRINKET               = "Trinket",
   TTHISTORYCOUNT        = "Tooltip History Count",
@@ -614,7 +614,7 @@ core.L = {
   WHISPERCMDSHELP       = "Whisper Commands (To Designated Officers)",
   WHITELISTBROADCASTED  = "Whitelist Broadcasted",
   WHITELISTEMPTY        = "Your whitelist is empty.",
-  WHITELISTHEADER       = "Whitelist Settings |CFF444444(Leader Only) (Alpha)|r\n\nIt is strongly advised you only use this whitelist setting if you wish to restrict what officers require permissions. If you want all officers to have permissions, ignore this settings feature entirely. Use with caution. (If applying these settings causes problems, open your \\WTF\\Accounts\\ACCOUNT_NAME\\SavedVariables\\DWPlus.lua file with a text editor and delete the MonDKP_Whitelist table near the bottom.)",
+  WHITELISTHEADER       = "Whitelist Settings |CFF444444(Leader Only) (Alpha)|r\n\nIt is strongly advised you only use this whitelist setting if you wish to restrict what officers require permissions. If you want all officers to have permissions, ignore this settings feature entirely. Use with caution. (If applying these settings causes problems, open your \\WTF\\Accounts\\ACCOUNT_NAME\\SavedVariables\\DWPlus.lua file with a text editor and delete the DWPlus_Whitelist table near the bottom.)",
   WITH                  = "with",
   WON                   = "won",
   WONBY                 = "won by",
@@ -688,7 +688,7 @@ core.L = {
   AUTOOPENTTDESC        = "When checked, bidding window will automatically open when a new item is being auctioned. If unchecked, you will be required to open it manually when needed with \"/dkp bid\".",
   DELETETABLES          = "Delete Tables",
   YOUHAVERECOVERED      = "You have recovered a player. Please reload your interface to recalculate values.",
-  MIGRATEINST1          = "|cffff0000IMPORTANT!!|r: Back up your saved variables file prior to proceeding. With 2.0 comes a brand new indexed broadcast system. This requires your current tables to be migrated with new values. This migration is a one time process that can ONLY be conducted by ONE officer. Select the officer with the most accurate data to conduct the migration. All other officers will be blocked and will have their data deleted to accept a broadcast of the new data from that selected officer. This is to prevent duplicated data. Once ALL officers have received the new data, you can delete the {MonDKP=OFFICER_NAME} tag from the Guild Leaders public note. It is crutially important that only one officer conducts the migration or you will have duplicate data and your tables will be corrupted (Only way to correct the issue is to have all officers that have corrupted tables log off and delete their saved variables files simultaneously or else you'll simply receive the corrupted data again as soon as you login). Additionally, all members must be using 2.0 or later to be compatible. Older versions will NOT work.\n\nThis window can be reopened with \"/dkp migrate\".",
+  MIGRATEINST1          = "|cffff0000IMPORTANT!!|r: Back up your saved variables file prior to proceeding. With 2.0 comes a brand new indexed broadcast system. This requires your current tables to be migrated with new values. This migration is a one time process that can ONLY be conducted by ONE officer. Select the officer with the most accurate data to conduct the migration. All other officers will be blocked and will have their data deleted to accept a broadcast of the new data from that selected officer. This is to prevent duplicated data. Once ALL officers have received the new data, you can delete the {DWP=OFFICER_NAME} tag from the Guild Leaders public note. It is crutially important that only one officer conducts the migration or you will have duplicate data and your tables will be corrupted (Only way to correct the issue is to have all officers that have corrupted tables log off and delete their saved variables files simultaneously or else you'll simply receive the corrupted data again as soon as you login). Additionally, all members must be using 2.0 or later to be compatible. Older versions will NOT work.\n\nThis window can be reopened with \"/dkp migrate\".",
   MIGRATEINST2          = "%s has already conducted the migration. Please back up your saved variables file immediately (WTF\\Account\\ACCOUNT_NAME\\SavedVariables\\DWPlus.lua) and then click the delete tables button below. If %s is online, they will automatically push a sync to you after you've reloaded. If not, one will be pushed when they log in or you can request they push a sync (this is done by clicking the table status button on the bottom left corner of the main GUI). If any errors occur in the migration process for your guild, delete the migrating officers tag from the guild leader's public note and have all officers that have participated so far delete their corrupted saved variables file and restore it to the one that was backed up. Everyone must do this at the same time and not login (with the addon enabled) until this has been completed. Anyone online with migrated tables will automatically push that data to you as soon as you log in.",
   CHANGEDGUILDS         = "It appears you have joined a new guild. All data from your previous guild has been wiped to prevent data corruption.",
   VALIDATETABLES        = "Validate Tables",
