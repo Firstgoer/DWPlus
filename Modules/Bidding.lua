@@ -227,7 +227,7 @@ function MonDKP_CHAT_MSG_WHISPER(text, ...)
 		else
 			SendChatMessage(L["NOBIDINPROGRESS"], "WHISPER", nil, name)
 		end	
-	elseif string.find(text, "!dkp") == 1 and core.IsOfficer == true then
+	elseif string.find(text, "!rp") == 1 and core.IsOfficer == true then
 		cmd = tostring(BidCmd(text))
 
 		if cmd and cmd:gsub("%d+", "") == "" then
@@ -319,7 +319,7 @@ function MonDKP_CHAT_MSG_WHISPER(text, ...)
 			end
 		end
 		
-		if strfind(msg, "!dkp") == 1 and MonDKP_DB.defaults.SupressTells then
+		if strfind(msg, "!rp") == 1 and MonDKP_DB.defaults.SupressTells then
 			return true
 		end
 	end)
@@ -537,7 +537,7 @@ local function StartBidding()
 			SendChatMessage(L["TOBIDUSE"].." "..channelText.." "..L["TOSEND"].." !bid. "..L["OR"].." !bid cancel "..L["TOWITHDRAWBID"], "RAID_WARNING")
 		elseif mode == "Roll Based Bidding" then
 			SendChatMessage(L["ROLLFOR"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.cost:GetText()..perc..")", "RAID_WARNING")
-			SendChatMessage(L["TOBIDROLLRANGE"].." "..channelText.." "..L["WITH"].." !dkp", "RAID_WARNING")
+			SendChatMessage(L["TOBIDROLLRANGE"].." "..channelText.." "..L["WITH"].." !rp", "RAID_WARNING")
 		end
 	end
 end

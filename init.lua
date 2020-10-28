@@ -126,7 +126,7 @@ MonDKP.Commands = {
 		MonDKP:Print(" ");
 		MonDKP:Print(L["WHISPERCMDSHELP"]);
 		MonDKP:Print("|cff00cc66!bid (or !bid <"..L["VALUE"]..">)|r - "..L["BIDHELP"]);
-		MonDKP:Print("|cff00cc66!dkp (or !rp <"..L["PLAYERNAME"]..">)|r - "..L["DKPCMDHELP"]);
+		MonDKP:Print("|cff00cc66!rp (or !rp <"..L["PLAYERNAME"]..">)|r - "..L["DKPCMDHELP"]);
 	end,
 };
 
