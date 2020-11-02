@@ -123,6 +123,7 @@ DWP.Commands = {
 		DWP:Print("|cff00cc66/rp award [item link]|r - "..L["DKPAWARDHELP"]);
 		DWP:Print("|cff00cc66/rp modes|r - "..L["DKPMODESHELP"]);
 		DWP:Print("|cff00cc66/rp export|r - "..L["DKPEXPORTHELP"]);
+		DWP:Print("|cff00cc66/rp mmb|r - "..L["MINIMAPTOGGLE"]);
 		DWP:Print(" ");
 		DWP:Print(L["WHISPERCMDSHELP"]);
 		DWP:Print("|cff00cc66!bid (or !bid <"..L["VALUE"]..">)|r - "..L["BIDHELP"]);
@@ -484,6 +485,9 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
     			HistoryLimit = 2500, DKPHistoryLimit = 2500, BidTimerSize = 1.0, DWPScaleSize = 1.0, supressNotifications = false, TooltipHistoryCount = 15, SupressTells = true,
     		}
     	end
+		if not DWPlus_DB.defaults.MiniMapButton then
+			DWPlus_DB.defaults.MiniMapButton = {shown = true, minimapPos = 200, hide = nil}
+		end
     	if not DWPlus_DB.defaults.ChatFrames then
     		DWPlus_DB.defaults.ChatFrames = {}
     		for i = 1, NUM_CHAT_WINDOWS do
@@ -518,6 +522,7 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if DWP_Meta_Remote then DWP_Meta_Remote = nil end
 		if DWPlus_Archive_Meta then DWPlus_Archive_Meta = nil end
 		if DWP_Errant then DWP_Errant = nil end
+		if not DWPlus_DB.minimap then DWPlus_DB.minimap = DWPlus_DB.defaults.MiniMapButton end
 
 	    ------------------------------------
 	    --	Import SavedVariables
@@ -542,6 +547,8 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if #DWPlus_RPHistory > DWPlus_DB.defaults.DKPHistoryLimit then
 			DWP:PurgeDKPHistory()									-- purges DKP History entries that exceed the "DKPHistoryLimit" option variable (oldest entries) and populates DWPlus_Archive with deleted values
 		end
+
+		DWP:InitMinimapButton()
 	end
 end
 
