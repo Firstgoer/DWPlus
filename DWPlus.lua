@@ -489,7 +489,7 @@ function DWP:CreateMenu()
 		DWP.ChangeLogDisplay = CreateFrame("Frame", "DWP_ChangeLogDisplay", UIParent, "ShadowOverlaySmallTemplate");
 
 		DWP.ChangeLogDisplay:SetPoint("TOP", UIParent, "TOP", 0, -200);
-		DWP.ChangeLogDisplay:SetSize(800, 100);
+		DWP.ChangeLogDisplay:SetSize(600, 100);
 		DWP.ChangeLogDisplay:SetBackdrop( {
 			bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
 			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
@@ -509,26 +509,26 @@ function DWP:CreateMenu()
 		DWP.ChangeLogDisplay.ChangeLogHeader:ClearAllPoints();
 		DWP.ChangeLogDisplay.ChangeLogHeader:SetFontObject("DWPLargeLeft")
 		DWP.ChangeLogDisplay.ChangeLogHeader:SetPoint("TOPLEFT", DWP.ChangeLogDisplay, "TOPLEFT", 10, -10);
-		DWP.ChangeLogDisplay.ChangeLogHeader:SetText("Monolith DKP Change Log");
+		DWP.ChangeLogDisplay.ChangeLogHeader:SetText("DWPlus Change Log");
 
 		DWP.ChangeLogDisplay.Notes = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
 		DWP.ChangeLogDisplay.Notes:ClearAllPoints();
-		DWP.ChangeLogDisplay.Notes:SetWidth(780)
+		DWP.ChangeLogDisplay.Notes:SetWidth(580)
 		DWP.ChangeLogDisplay.Notes:SetFontObject("DWPNormalLeft")
-		DWP.ChangeLogDisplay.Notes:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "BOTTOMLEFT", 0, -10);
+		DWP.ChangeLogDisplay.Notes:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "BOTTOMLEFT", 8, -10);
 
 		DWP.ChangeLogDisplay.VerNumber = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
 		DWP.ChangeLogDisplay.VerNumber:ClearAllPoints();
-		DWP.ChangeLogDisplay.VerNumber:SetWidth(780)
+		DWP.ChangeLogDisplay.VerNumber:SetWidth(580)
 		DWP.ChangeLogDisplay.VerNumber:SetScale(0.8)
 		DWP.ChangeLogDisplay.VerNumber:SetFontObject("DWPLargeLeft")
-		DWP.ChangeLogDisplay.VerNumber:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.Notes, "BOTTOMLEFT", 35, -10);
+		DWP.ChangeLogDisplay.VerNumber:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.Notes, "BOTTOMLEFT", 27, -10);
 
 		DWP.ChangeLogDisplay.ChangeLogText = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
 		DWP.ChangeLogDisplay.ChangeLogText:ClearAllPoints();
-		DWP.ChangeLogDisplay.ChangeLogText:SetWidth(740)
+		DWP.ChangeLogDisplay.ChangeLogText:SetWidth(540)
 		DWP.ChangeLogDisplay.ChangeLogText:SetFontObject("DWPNormalLeft")
-		DWP.ChangeLogDisplay.ChangeLogText:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.VerNumber, "BOTTOMLEFT", -15, -0);
+		DWP.ChangeLogDisplay.ChangeLogText:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.VerNumber, "BOTTOMLEFT", -23, -10);
 
 		-- Change Log Close Button
 		DWP.ChangeLogDisplay.closeContainer = CreateFrame("Frame", "DWPChangeLogClose", DWP.ChangeLogDisplay)
@@ -565,10 +565,10 @@ function DWP:CreateMenu()
 		--------------------------------------
 		-- ChangeLog variable calls (bottom of localization files)
 		--------------------------------------
-		DWP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"].."\n\n"..L["CHANGELOG9"].."\n\n"..L["CHANGELOG10"]);
+		DWP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"]);
 
 		local logHeight = DWP.ChangeLogDisplay.ChangeLogHeader:GetHeight() + DWP.ChangeLogDisplay.Notes:GetHeight() + DWP.ChangeLogDisplay.VerNumber:GetHeight() + DWP.ChangeLogDisplay.ChangeLogText:GetHeight();
-		DWP.ChangeLogDisplay:SetSize(800, logHeight);  -- resize container
+		DWP.ChangeLogDisplay:SetSize(600, logHeight);  -- resize container
 	end
 
 	---------------------------------------
