@@ -557,7 +557,10 @@ function DWP:CreateMenu()
 			else
 				DWPlus_DB.defaults.HideChangeLogs = 0
 			end
-		end)
+		end);
+
+		DWP.ChangeLogDisplay.DontShowCheck:SetChecked(true);
+		DWPlus_DB.defaults.HideChangeLogs = core.BuildNumber;
 
 		DWP.ChangeLogDisplay.Notes:SetText("|CFFAEAEDD"..L["BESTPRACTICES"].."|r")
 		DWP.ChangeLogDisplay.VerNumber:SetText(core.MonVersion)
