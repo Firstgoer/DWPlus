@@ -138,6 +138,7 @@ core.L = {
   BROADCASTSETTTDESC    = "Broadcasts all DKP related settings including the above DKP mode parameters, as well as item values and bonus values (set in Options).",
   CANCEL                = "Cancel",
   CASTERDPS             = "Caster DPS",
+  CHANGELOGCOMMAND      = "Show changelog",
   CHEST                 = "Chest",
   CLASS                 = "Class",
   CLASSFILTER           = "Class Filters",
