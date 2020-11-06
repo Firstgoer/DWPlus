@@ -485,93 +485,96 @@ function DWP:CreateMenu()
 	---------------------------------------
 	-- CHANGE LOG WINDOW
 	---------------------------------------
+	DWP.ChangeLogDisplay = CreateFrame("Frame", "DWP_ChangeLogDisplay", UIParent, "ShadowOverlaySmallTemplate");
+	DWP.ChangeLogDisplay:Hide();
+
+	DWP.ChangeLogDisplay:SetPoint("TOP", UIParent, "TOP", 0, -200);
+	DWP.ChangeLogDisplay:SetSize(600, 100);
+	DWP.ChangeLogDisplay:SetBackdrop( {
+		bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
+		insets = { left = 0, right = 0, top = 0, bottom = 0 }
+	});
+	DWP.ChangeLogDisplay:SetBackdropColor(0,0,0,0.9);
+	DWP.ChangeLogDisplay:SetBackdropBorderColor(1,1,1,1)
+	DWP.ChangeLogDisplay:SetFrameStrata("DIALOG")
+	DWP.ChangeLogDisplay:SetFrameLevel(1)
+	DWP.ChangeLogDisplay:SetMovable(true);
+	DWP.ChangeLogDisplay:EnableMouse(true);
+	DWP.ChangeLogDisplay:RegisterForDrag("LeftButton");
+	DWP.ChangeLogDisplay:SetScript("OnDragStart", DWP.ChangeLogDisplay.StartMoving);
+	DWP.ChangeLogDisplay:SetScript("OnDragStop", DWP.ChangeLogDisplay.StopMovingOrSizing);
+
+	DWP.ChangeLogDisplay.ChangeLogHeader = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+	DWP.ChangeLogDisplay.ChangeLogHeader:ClearAllPoints();
+	DWP.ChangeLogDisplay.ChangeLogHeader:SetFontObject("DWPLargeLeft")
+	DWP.ChangeLogDisplay.ChangeLogHeader:SetPoint("TOPLEFT", DWP.ChangeLogDisplay, "TOPLEFT", 10, -10);
+	DWP.ChangeLogDisplay.ChangeLogHeader:SetText("DWPlus Change Log");
+
+	DWP.ChangeLogDisplay.Notes = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+	DWP.ChangeLogDisplay.Notes:ClearAllPoints();
+	DWP.ChangeLogDisplay.Notes:SetWidth(580)
+	DWP.ChangeLogDisplay.Notes:SetFontObject("DWPNormalLeft")
+	DWP.ChangeLogDisplay.Notes:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "BOTTOMLEFT", 8, -10);
+
+	DWP.ChangeLogDisplay.VerNumber = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+	DWP.ChangeLogDisplay.VerNumber:ClearAllPoints();
+	DWP.ChangeLogDisplay.VerNumber:SetWidth(580)
+	DWP.ChangeLogDisplay.VerNumber:SetScale(0.8)
+	DWP.ChangeLogDisplay.VerNumber:SetFontObject("DWPLargeLeft")
+	DWP.ChangeLogDisplay.VerNumber:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.Notes, "BOTTOMLEFT", 27, -10);
+
+	DWP.ChangeLogDisplay.ChangeLogText = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
+	DWP.ChangeLogDisplay.ChangeLogText:ClearAllPoints();
+	DWP.ChangeLogDisplay.ChangeLogText:SetWidth(540)
+	DWP.ChangeLogDisplay.ChangeLogText:SetFontObject("DWPNormalLeft")
+	DWP.ChangeLogDisplay.ChangeLogText:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.VerNumber, "BOTTOMLEFT", -23, -10);
+
+	-- Change Log Close Button
+	DWP.ChangeLogDisplay.closeContainer = CreateFrame("Frame", "DWPChangeLogClose", DWP.ChangeLogDisplay)
+	DWP.ChangeLogDisplay.closeContainer:SetPoint("CENTER", DWP.ChangeLogDisplay, "TOPRIGHT", -4, 0)
+	DWP.ChangeLogDisplay.closeContainer:SetBackdrop({
+		bgFile   = "Textures\\white.blp", tile = true,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
+	});
+	DWP.ChangeLogDisplay.closeContainer:SetBackdropColor(0,0,0,0.9)
+	DWP.ChangeLogDisplay.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
+	DWP.ChangeLogDisplay.closeContainer:SetSize(28, 28)
+
+	DWP.ChangeLogDisplay.closeBtn = CreateFrame("Button", nil, DWP.ChangeLogDisplay, "UIPanelCloseButton")
+	DWP.ChangeLogDisplay.closeBtn:SetPoint("CENTER", DWP.ChangeLogDisplay.closeContainer, "TOPRIGHT", -14, -14)
+
+	DWP.ChangeLogDisplay.DontShowCheck = CreateFrame("CheckButton", nil, DWP.ChangeLogDisplay, "UICheckButtonTemplate");
+	DWP.ChangeLogDisplay.DontShowCheck:SetChecked(false)
+	DWP.ChangeLogDisplay.DontShowCheck:SetScale(0.6);
+	DWP.ChangeLogDisplay.DontShowCheck.text:SetText("  |cff5151de"..L["DONTSHOW"].."|r");
+	DWP.ChangeLogDisplay.DontShowCheck.text:SetScale(1.5);
+	DWP.ChangeLogDisplay.DontShowCheck.text:SetFontObject("DWPSmallLeft")
+	DWP.ChangeLogDisplay.DontShowCheck:SetPoint("LEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "RIGHT", 10, 0);
+	DWP.ChangeLogDisplay.DontShowCheck:SetScript("OnClick", function(self)
+		if self:GetChecked() then
+			DWPlus_DB.defaults.HideChangeLogs = core.BuildNumber
+		else
+			DWPlus_DB.defaults.HideChangeLogs = 0
+		end
+	end);
+	DWP.ChangeLogDisplay.DontShowCheck:SetChecked(DWPlus_DB.defaults.HideChangeLogs == core.BuildNumber);
+
+	DWP.ChangeLogDisplay.Notes:SetText("|CFFAEAEDD"..L["BESTPRACTICES"].."|r")
+	DWP.ChangeLogDisplay.VerNumber:SetText(core.MonVersion)
+
+	--------------------------------------
+	-- ChangeLog variable calls (bottom of localization files)
+	--------------------------------------
+	DWP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"]);
+
+	local logHeight = DWP.ChangeLogDisplay.ChangeLogHeader:GetHeight() + DWP.ChangeLogDisplay.Notes:GetHeight() + DWP.ChangeLogDisplay.VerNumber:GetHeight() + DWP.ChangeLogDisplay.ChangeLogText:GetHeight();
+	DWP.ChangeLogDisplay:SetSize(600, logHeight);  -- resize container
+
 	if DWPlus_DB.defaults.HideChangeLogs < core.BuildNumber then
-		DWP.ChangeLogDisplay = CreateFrame("Frame", "DWP_ChangeLogDisplay", UIParent, "ShadowOverlaySmallTemplate");
-
-		DWP.ChangeLogDisplay:SetPoint("TOP", UIParent, "TOP", 0, -200);
-		DWP.ChangeLogDisplay:SetSize(600, 100);
-		DWP.ChangeLogDisplay:SetBackdrop( {
-			bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
-			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
-			insets = { left = 0, right = 0, top = 0, bottom = 0 }
-		});
-		DWP.ChangeLogDisplay:SetBackdropColor(0,0,0,0.9);
-		DWP.ChangeLogDisplay:SetBackdropBorderColor(1,1,1,1)
-		DWP.ChangeLogDisplay:SetFrameStrata("DIALOG")
-		DWP.ChangeLogDisplay:SetFrameLevel(1)
-		DWP.ChangeLogDisplay:SetMovable(true);
-		DWP.ChangeLogDisplay:EnableMouse(true);
-		DWP.ChangeLogDisplay:RegisterForDrag("LeftButton");
-		DWP.ChangeLogDisplay:SetScript("OnDragStart", DWP.ChangeLogDisplay.StartMoving);
-		DWP.ChangeLogDisplay:SetScript("OnDragStop", DWP.ChangeLogDisplay.StopMovingOrSizing);
-
-		DWP.ChangeLogDisplay.ChangeLogHeader = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		DWP.ChangeLogDisplay.ChangeLogHeader:ClearAllPoints();
-		DWP.ChangeLogDisplay.ChangeLogHeader:SetFontObject("DWPLargeLeft")
-		DWP.ChangeLogDisplay.ChangeLogHeader:SetPoint("TOPLEFT", DWP.ChangeLogDisplay, "TOPLEFT", 10, -10);
-		DWP.ChangeLogDisplay.ChangeLogHeader:SetText("DWPlus Change Log");
-
-		DWP.ChangeLogDisplay.Notes = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		DWP.ChangeLogDisplay.Notes:ClearAllPoints();
-		DWP.ChangeLogDisplay.Notes:SetWidth(580)
-		DWP.ChangeLogDisplay.Notes:SetFontObject("DWPNormalLeft")
-		DWP.ChangeLogDisplay.Notes:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "BOTTOMLEFT", 8, -10);
-
-		DWP.ChangeLogDisplay.VerNumber = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		DWP.ChangeLogDisplay.VerNumber:ClearAllPoints();
-		DWP.ChangeLogDisplay.VerNumber:SetWidth(580)
-		DWP.ChangeLogDisplay.VerNumber:SetScale(0.8)
-		DWP.ChangeLogDisplay.VerNumber:SetFontObject("DWPLargeLeft")
-		DWP.ChangeLogDisplay.VerNumber:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.Notes, "BOTTOMLEFT", 27, -10);
-
-		DWP.ChangeLogDisplay.ChangeLogText = DWP.ChangeLogDisplay:CreateFontString(nil, "OVERLAY")   -- Filters header
-		DWP.ChangeLogDisplay.ChangeLogText:ClearAllPoints();
-		DWP.ChangeLogDisplay.ChangeLogText:SetWidth(540)
-		DWP.ChangeLogDisplay.ChangeLogText:SetFontObject("DWPNormalLeft")
-		DWP.ChangeLogDisplay.ChangeLogText:SetPoint("TOPLEFT", DWP.ChangeLogDisplay.VerNumber, "BOTTOMLEFT", -23, -10);
-
-		-- Change Log Close Button
-		DWP.ChangeLogDisplay.closeContainer = CreateFrame("Frame", "DWPChangeLogClose", DWP.ChangeLogDisplay)
-		DWP.ChangeLogDisplay.closeContainer:SetPoint("CENTER", DWP.ChangeLogDisplay, "TOPRIGHT", -4, 0)
-		DWP.ChangeLogDisplay.closeContainer:SetBackdrop({
-			bgFile   = "Textures\\white.blp", tile = true,
-			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
-		});
-		DWP.ChangeLogDisplay.closeContainer:SetBackdropColor(0,0,0,0.9)
-		DWP.ChangeLogDisplay.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
-		DWP.ChangeLogDisplay.closeContainer:SetSize(28, 28)
-
-		DWP.ChangeLogDisplay.closeBtn = CreateFrame("Button", nil, DWP.ChangeLogDisplay, "UIPanelCloseButton")
-		DWP.ChangeLogDisplay.closeBtn:SetPoint("CENTER", DWP.ChangeLogDisplay.closeContainer, "TOPRIGHT", -14, -14)
-
-		DWP.ChangeLogDisplay.DontShowCheck = CreateFrame("CheckButton", nil, DWP.ChangeLogDisplay, "UICheckButtonTemplate");
-		DWP.ChangeLogDisplay.DontShowCheck:SetChecked(false)
-		DWP.ChangeLogDisplay.DontShowCheck:SetScale(0.6);
-		DWP.ChangeLogDisplay.DontShowCheck.text:SetText("  |cff5151de"..L["DONTSHOW"].."|r");
-		DWP.ChangeLogDisplay.DontShowCheck.text:SetScale(1.5);
-		DWP.ChangeLogDisplay.DontShowCheck.text:SetFontObject("DWPSmallLeft")
-		DWP.ChangeLogDisplay.DontShowCheck:SetPoint("LEFT", DWP.ChangeLogDisplay.ChangeLogHeader, "RIGHT", 10, 0);
-		DWP.ChangeLogDisplay.DontShowCheck:SetScript("OnClick", function(self)
-			if self:GetChecked() then
-				DWPlus_DB.defaults.HideChangeLogs = core.BuildNumber
-			else
-				DWPlus_DB.defaults.HideChangeLogs = 0
-			end
-		end);
-
-		DWP.ChangeLogDisplay.DontShowCheck:SetChecked(true);
 		DWPlus_DB.defaults.HideChangeLogs = core.BuildNumber;
-
-		DWP.ChangeLogDisplay.Notes:SetText("|CFFAEAEDD"..L["BESTPRACTICES"].."|r")
-		DWP.ChangeLogDisplay.VerNumber:SetText(core.MonVersion)
-
-		--------------------------------------
-		-- ChangeLog variable calls (bottom of localization files)
-		--------------------------------------
-		DWP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"]);
-
-		local logHeight = DWP.ChangeLogDisplay.ChangeLogHeader:GetHeight() + DWP.ChangeLogDisplay.Notes:GetHeight() + DWP.ChangeLogDisplay.VerNumber:GetHeight() + DWP.ChangeLogDisplay.ChangeLogText:GetHeight();
-		DWP.ChangeLogDisplay:SetSize(600, logHeight);  -- resize container
+		DWP.ChangeLogDisplay.DontShowCheck:SetChecked(true);
+		DWP.ChangeLogDisplay:Show();
 	end
 
 	---------------------------------------

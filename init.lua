@@ -110,6 +110,9 @@ DWP.Commands = {
 			DWP:Print("DW Plus has not completed initialization.")
 		end
 	end,
+	["changelog"] = function()
+		DWP.ChangeLogDisplay:Show();
+	end,
 	["help"] = function()
 		DWP:Print(" ");
 		DWP:Print(L["SLASHCOMMANDLIST"]..":")
@@ -124,6 +127,7 @@ DWP.Commands = {
 		DWP:Print("|cff00cc66/rp modes|r - "..L["DKPMODESHELP"]);
 		DWP:Print("|cff00cc66/rp export|r - "..L["DKPEXPORTHELP"]);
 		DWP:Print("|cff00cc66/rp mmb|r - "..L["MINIMAPTOGGLE"]);
+		DWP:Print("|cff00cc66/rp changelog|r - "..L["CHANGELOGCOMMAND"]);
 		DWP:Print(" ");
 		DWP:Print(L["WHISPERCMDSHELP"]);
 		DWP:Print("|cff00cc66!bid (or !bid <"..L["VALUE"]..">)|r - "..L["BIDHELP"]);
