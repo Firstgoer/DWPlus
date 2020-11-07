@@ -202,7 +202,7 @@ end
 
 function DWP:CreateMenu()
 	DWP.UIConfig = CreateFrame("Frame", "DWPConfig", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
-	DWP.UIConfig:SetPoint("CENTER", UIParent, "CENTER", -250, 100);
+	DWP.UIConfig:SetPoint("CENTER", UIParent, "CENTER", DWPlus_DB.ConfigPos.x, DWPlus_DB.ConfigPos.y);
 	DWP.UIConfig:SetSize(550, 590);
 	DWP.UIConfig:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
@@ -216,7 +216,11 @@ function DWP:CreateMenu()
 	--DWP.UIConfig:SetMinResize(1000, 590)
 	DWP.UIConfig:RegisterForDrag("LeftButton");
 	DWP.UIConfig:SetScript("OnDragStart", DWP.UIConfig.StartMoving);
-	DWP.UIConfig:SetScript("OnDragStop", DWP.UIConfig.StopMovingOrSizing);
+	DWP.UIConfig:SetScript("OnDragStop", function (self, button)
+		DWP.UIConfig:StopMovingOrSizing();
+		local _, _, _, newX, newY = DWP.UIConfig:GetPoint();
+		DWPlus_DB.ConfigPos = { x = newX, y = newY };
+	end);
 	DWP.UIConfig:SetFrameStrata("DIALOG")
 	DWP.UIConfig:SetFrameLevel(10)
 	DWP.UIConfig:SetScript("OnMouseDown", function(self)
@@ -456,14 +460,26 @@ function DWP:CreateMenu()
 			DWP.UIConfig:SetWidth(1050)
 			DWP.UIConfig.TabMenu:Show()
 			DWP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\collapse-arrow");
+			DWPlus_DB.TabMenuShown = true;
 		else
 			DWP.UIConfig:SetWidth(550)
 			DWP.UIConfig.TabMenu:Hide()
 			DWP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\expand-arrow");
+			DWPlus_DB.TabMenuShown = false;
 		end
 		PlaySound(62540)
 		core.ShowState = not core.ShowState
 	end)
+
+	if DWPlus_DB.TabMenuShown then
+		DWP.UIConfig:SetWidth(1050)
+		DWP.UIConfig.TabMenu:Show()
+		DWP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\collapse-arrow");
+	else
+		DWP.UIConfig:SetWidth(550)
+		DWP.UIConfig.TabMenu:Hide()
+		DWP.UIConfig.expandtab:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\expand-arrow");
+	end
 
 	-- Title Frame (top/center)
 	DWP.UIConfig.TitleBar = CreateFrame("Frame", "DWPTitle", DWP.UIConfig, "ShadowOverlaySmallTemplate")

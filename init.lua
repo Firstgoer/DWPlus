@@ -464,14 +464,14 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		FrameStackTooltip_Toggle();
 	end--]]
 
-    if(event == "ADDON_LOADED") then
-    	core.Initialized = false
-    	core.InitStart = false
-    	core.IsOfficer = nil
+	if(event == "ADDON_LOADED") then
+		core.Initialized = false
+		core.InitStart = false
+		core.IsOfficer = nil
 		C_Timer.After(5, function ()
 			core.DWPUI = DWP.UIConfig or DWP:CreateMenu();		-- creates main menu after 5 seconds (trying to initialize after raid frames are loaded)
 		end)
-    	if not DWPlus_RPTable then DWPlus_RPTable = {} end;
+		if not DWPlus_RPTable then DWPlus_RPTable = {} end;
 		if not DWPlus_Loot then DWPlus_Loot = {} end;
 		if not DWPlus_RPHistory then DWPlus_RPHistory = {} end;
 		if not DWPlus_MinBids then DWPlus_MinBids = {} end;
@@ -527,6 +527,8 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if DWPlus_Archive_Meta then DWPlus_Archive_Meta = nil end
 		if DWP_Errant then DWP_Errant = nil end
 		if not DWPlus_DB.minimap then DWPlus_DB.minimap = DWPlus_DB.defaults.MiniMapButton end
+		if not DWPlus_DB.ConfigPos then DWPlus_DB.ConfigPos = {x = -250, y = 100} end
+		if not DWPlus_DB.TabMenuShown then DWPlus_DB.TabMenuShown = false end
 
 	    ------------------------------------
 	    --	Import SavedVariables
