@@ -3,8 +3,8 @@ DWPlus is RP**(Roll points)** system written with intent to track all aspects of
 This is my first official go at writting an addon despite 15 years of playing the game. So if any bugs or errors show their face, please let me know. Any suggestions or requests are also welcome!  
   
 **Features**  
-	- RP Table entries provide a tooltip showing the players recently spent and earned RP  
-	- Filter the table by certain classes or show only those in your party / raid. Table columns can also be sorted by Player, Class or DKP  
+	- RP Table entries provide a tooltip showing the players recently spent and earned RP.  
+	- Filter the table by certain classes or show only those in your party / raid. Table columns can also be sorted by Player, Class or DKP.  
 	- Loot history. What item was won, by whom, from what boss/zone, and how much they spent on it. Can be filtered by player.  
 	- RP history. Comprehensive list of all players that received (or lost) rp for each event.  
 	- Bid timer displaying what is currently up for bid as well as it's minimum bid.  
@@ -14,9 +14,9 @@ This is my first official go at writting an addon despite 15 years of playing th
 	- Adjust RP tab (awarding RP). Also includes a RP Decay option that reduces all entries by X% (default set in options or change on the fly in the Adjust RP tab).  
 	- Manage Tab. Used to broadcast complete tables to everyone in the guild if required as well as add/remove player entries.  
 	- Shift+Click entries in the table to select multiple players to modify.  
-	- Right click context menu in Loot History to reassign items (if minds are changed after awarding) which will subsequently give the RP cost back to the initial owner and charge it to the new recipient  
-	- Boss Kill Bonus auto selects the last killed boss/zone  
-	- Options window has additional fields to set bonus defaults (On time bonus, boss kill bonus etc)  
+	- Right click context menu in Loot History to reassign items (if minds are changed after awarding) which will subsequently give the RP cost back to the initial owner and charge it to the new recipient.  
+	- Boss Kill Bonus auto selects the last killed boss/zone.  
+	- Options window has additional fields to set bonus defaults (On time bonus, boss kill bonus etc).  
   
 **Redundencies**
 	- All entries can only be edited / added by officers in the guild (this is determined by checking Officer Note Writing permissions).  
@@ -25,10 +25,10 @@ This is my first official go at writting an addon despite 15 years of playing th
   
 **Commands**  
 	/rp ?  	- Lists all available commands  
-	/rp 		- Opens Main GUI  
+	/rp 		- Opens Main GUI.  
 	/rp timer	- Starts a raid timer (Officers Only) IE: /rp timer 120 Pizza Break!  
-	/rp reset 	- Resets GUI position  
-	/rp export  - Exports all entries to HTML (To avoid crashing this will only export the most recent 200 loot history items and 200 RP history items)  
+	/rp reset 	- Resets GUI position.  
+	/rp export  - Exports all entries to HTML (To avoid crashing this will only export the most recent 200 loot history items and 200 RP history items).  
 	/rp bid 	- Opens Bid Window. If you include an item link (/rp bid [item link]) it will include that item for bid information.  
 	/rp mmb     - Show/Hide minimap icon.  
 	/rp changelog - Show changelog window.
