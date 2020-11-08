@@ -11,7 +11,7 @@ This is my first official go at writting an addon despite 15 years of playing th
   
 **Officer only features**  
 	- Bid window (opened by SHIFT+ALT clicking an item in the loot window or by typing /rp bid [item link]) that starts bidding, collects all bids submitted, and awards the item. NOTE: Shift+Alt clicking an item only works if the item in in one of the first 4 slots of the loot window due to restrictions at the moment. If the item you wish to bid on isn't on the first page, either loot all items on that first page, close and reopen window. Or simply use /rp bid [item link]  
-	- Adjust RP tab (awarding RP). Also includes a RP Decay option that reduces all entries by X% (default set in options or change on the fly in the Adjust RP tab)   
+	- Adjust RP tab (awarding RP). Also includes a RP Decay option that reduces all entries by X% (default set in options or change on the fly in the Adjust RP tab).  
 	- Manage Tab. Used to broadcast complete tables to everyone in the guild if required as well as add/remove player entries.  
 	- Shift+Click entries in the table to select multiple players to modify.  
 	- Right click context menu in Loot History to reassign items (if minds are changed after awarding) which will subsequently give the RP cost back to the initial owner and charge it to the new recipient  
@@ -23,14 +23,14 @@ This is my first official go at writting an addon despite 15 years of playing th
 	- If the addon is modified to grant a player access to the options available only to officers, attempting to broadcast a modified table will notify officers of this action.  
 	- Every time an officer adds an entry or modifies a RP value, the public note of the Guild Leader is changed to a time stamp. That time stamp is used to notify other users if they do or do not have the most up-to-date tables.  
   
-**Commands** 
+**Commands**  
 	/rp ?  	- Lists all available commands  
 	/rp 		- Opens Main GUI  
 	/rp timer	- Starts a raid timer (Officers Only) IE: /rp timer 120 Pizza Break!  
 	/rp reset 	- Resets GUI position  
 	/rp export  - Exports all entries to HTML (To avoid crashing this will only export the most recent 200 loot history items and 200 RP history items)  
-	/rp bid 	- Opens Bid Window. If you include an item link (/rp bid [item link]) it will include that item for bid information.
-	/rp mmb     - Show/Hide minimap icon.
+	/rp bid 	- Opens Bid Window. If you include an item link (/rp bid [item link]) it will include that item for bid information.  
+	/rp mmb     - Show/Hide minimap icon.  
 	/rp changelog - Show changelog window.
   
 **Recommendations**  
