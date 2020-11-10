@@ -63,7 +63,7 @@ function DWP:AutoAward(phase, amount, reason) -- phase identifies who to award (
 				DWP.Sync:SendData("DWPDKPDist", DWPlus_RPHistory[1])
 			end
 
-			if DWP.ConfigTab6.history and DWP.ConfigTab6:IsShown() then
+			if DWP.ConfigTab7.history and DWP.ConfigTab7:IsShown() then
 				DWP:DKPHistory_Update(true)
 			end
 			DKPTable_Update()

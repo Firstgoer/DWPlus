@@ -276,6 +276,12 @@ function DWP:BidInterface_Toggle()
 			f.headerButtons.dkp.t:SetText(L["EXPECTEDROLL"])
 			f.headerButtons.dkp.t:Show();
 		end
+	elseif not core.BiddingWindow then
+		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and MonDKP_DB.modes.ZeroSumBidType == "Minimum Bid") then
+			core.BidInterface:SetHeight(259);
+		else
+			core.BidInterface:SetHeight(231);
+		end
 	end
 
 	if DWPlus_DB.modes.BroadcastBids then
@@ -645,7 +651,7 @@ function DWP:BidInterface_Create()
 	f.AutoOpenCheckbox.text:ClearAllPoints()
 	f.AutoOpenCheckbox.text:SetPoint("RIGHT", f.AutoOpenCheckbox, "LEFT", -2, 0)
 	f.AutoOpenCheckbox.text:SetFontObject("DWPSmallLeft")
-	f.AutoOpenCheckbox:SetPoint("TOP", f.CancelBid, "BOTTOMRIGHT", 5, -53)
+	f.AutoOpenCheckbox:SetPoint("TOPRIGHT", f.CancelBid, "BOTTOMRIGHT", -5, -53)
 	f.AutoOpenCheckbox:SetScript("OnClick", function(self)
 		DWPlus_DB.defaults.AutoOpenBid = self:GetChecked()
 	end)

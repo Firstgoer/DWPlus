@@ -220,7 +220,7 @@ function DWP_BroadcastFull_Init()
 		end
 
 		if core.Broadcast.fullCheckbox:GetChecked() == true then
-			tempTable = { DKPTable=DWPlus_RPTable, DKP=DWPlus_RPHistory, Loot=DWPlus_Loot, Archive=DWPlus_Archive }
+			tempTable = { DKPTable=DWPlus_RPTable, DKP=DWPlus_RPHistory, Loot=DWPlus_Loot, Archive=DWPlus_Archive, Consul=DWPlus_Consul }
 		elseif core.Broadcast.mergeCheckbox:GetChecked() == true then
 			tempTable = DWP_MergeTable_Create()
 		end
@@ -502,6 +502,6 @@ function DWP_MergeTable_Create()
 		table.insert(profiles, { player=DWPlus_RPTable[i].player, class=DWPlus_RPTable[i].class })
 	end
 
-	local tempTable = { DKP=tempDKP, Loot=tempLoot, Profiles=profiles }
+	local tempTable = { DKP=tempDKP, Loot=tempLoot, Profiles=profiles, Consul=DWPlus_Consul }
 	return tempTable
 end

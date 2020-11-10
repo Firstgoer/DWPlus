@@ -28,7 +28,7 @@ function DWP:Toggle()        -- toggles IsShown() state of DWP.UIConfig, the ent
 	DWP.UIConfig:SetClampedToScreen(true)
 	if core.BiddingWindow then core.BiddingWindow:SetFrameLevel(6) end
 	if core.ModesWindow then core.ModesWindow:SetFrameLevel(2) end
-		
+
 	if core.IsOfficer == nil then
 		DWP:CheckOfficer()
 	end
@@ -64,14 +64,15 @@ function DWP:Toggle()        -- toggles IsShown() state of DWP.UIConfig, the ent
 	end
 
 	core.DWPUI:SetScale(DWPlus_DB.defaults.DWPScaleSize)
-	if DWP.ConfigTab6.history and DWP.ConfigTab6:IsShown() then
+	if DWP.ConfigTab7.history and DWP.ConfigTab7:IsShown() then
 		DWP:DKPHistory_Update(true)
-	elseif DWP.ConfigTab5 and DWP.ConfigTab5:IsShown() then
+	elseif DWP.ConfigTab6 and DWP.ConfigTab6:IsShown() then
 		DWP:LootHistory_Update(L["NOFILTER"]);
 	end
 
 	DWP:StatusVerify_Update()
 	DKPTable_Update()
+	DWPlus_ConsulTab_Show();
 end
 
 ---------------------------------------

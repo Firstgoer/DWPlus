@@ -1010,6 +1010,7 @@ function DWP:Options()
 				DWPlus_Loot = {}
 				DWPlus_RPHistory = {}
 				DWPlus_Archive = {}
+				DWPlus_Consul = {}
 				DWPlus_Whitelist = {}
 				DWPlus_Standby = {}
 				DWPlus_MinBids = {}

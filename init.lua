@@ -113,6 +113,9 @@ DWP.Commands = {
 	["changelog"] = function()
 		DWP.ChangeLogDisplay:Show();
 	end,
+	["consul"] = function()
+		DWP:ConsulModal();
+	end,
 	["help"] = function()
 		DWP:Print(" ");
 		DWP:Print(L["SLASHCOMMANDLIST"]..":")
@@ -128,6 +131,7 @@ DWP.Commands = {
 		DWP:Print("|cff00cc66/rp export|r - "..L["DKPEXPORTHELP"]);
 		DWP:Print("|cff00cc66/rp mmb|r - "..L["MINIMAPTOGGLE"]);
 		DWP:Print("|cff00cc66/rp changelog|r - "..L["CHANGELOGCOMMAND"]);
+		DWP:Print("|cff00cc66/rp consul|r - "..L["CONSULMODAL"]);
 		DWP:Print(" ");
 		DWP:Print(L["WHISPERCMDSHELP"]);
 		DWP:Print("|cff00cc66!bid (or !bid <"..L["VALUE"]..">)|r - "..L["BIDHELP"]);
@@ -231,6 +235,13 @@ function DWP_OnEvent(self, event, arg1, ...)
 						end
 					end
 					table.insert(DWPlus_DB.bossargs.RecentZones, 1, GetRealZoneText())
+				end
+
+				local currentDate = date("%m/%d/%y");
+				local _, _, _, _, _, _, _, instanceID = GetInstanceInfo();
+				if DWPlus_DB.bossargs.LastConsulNotifications[instanceID] ~= currentDate then
+					DWPlus_ConsulItemsCountMessage(instanceID);
+					DWPlus_DB.bossargs.LastConsulNotifications[instanceID] = currentDate;
 				end
 			end
 			if DWPlus_DB.defaults.AutoLog and DWP:Table_Search(core.ZoneList, GetRealZoneText()) then
@@ -400,6 +411,7 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 		end--]]
 	elseif event == "LOOT_OPENED" then
+		print("Loot opened");
 		DWP:CheckOfficer();
 		if core.IsOfficer then
 			if not IsInRaid() and arg1 == false then  -- only fires hook when autoloot is not active if not in a raid to prevent nil value error
@@ -436,6 +448,8 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 
 			DWP:LootTable_Set(lootList)
+
+			print("Added "..#lootList.." items to bid interface");
 		end
 	end
 end
@@ -478,6 +492,7 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if not DWPlus_Whitelist then DWPlus_Whitelist = {} end;
 		if not DWPlus_Standby then DWPlus_Standby = {} end;
 		if not DWPlus_Archive then DWPlus_Archive = {} end;
+		if not DWPlus_Consul then DWPlus_Consul = {} end;
 		if not DWPlus_DB then DWPlus_DB = {} end
 		if not DWPlus_DB.DKPBonus or not DWPlus_DB.DKPBonus.OnTimeBonus then
 			DWPlus_DB.DKPBonus = {
@@ -516,6 +531,7 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if not DWPlus_DB.modes.rolls or not DWPlus_DB.modes.rolls.min then DWPlus_DB.modes.rolls = { min = 1, max = 100, UsePerc = false, AddToMax = 0 } end
 		if not DWPlus_DB.bossargs.LastKilledNPC then DWPlus_DB.bossargs.LastKilledNPC = {} end
 		if not DWPlus_DB.bossargs.RecentZones then DWPlus_DB.bossargs.RecentZones = {} end
+		if not DWPlus_DB.bossargs.LastConsulNotifications then DWPlus_DB.bossargs.LastConsulNotifications = {} end
 		if not DWPlus_DB.defaults.HideChangeLogs then DWPlus_DB.defaults.HideChangeLogs = 0 end
 		if not DWPlus_DB.modes.AntiSnipe then DWPlus_DB.modes.AntiSnipe = 0 end
 		if not DWPlus_DB.defaults.CurrentGuild then DWPlus_DB.defaults.CurrentGuild = {} end

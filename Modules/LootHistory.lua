@@ -130,7 +130,7 @@ function CreateSortBox()
 
 	-- Create the dropdown, and configure its appearance
 	if not sortDropdown then
-		sortDropdown = CreateFrame("FRAME", "DWPConfigFilterNameDropDown", DWP.ConfigTab5, "DWPlusUIDropDownMenuTemplate")
+		sortDropdown = CreateFrame("FRAME", "DWPConfigFilterNameDropDown", DWP.ConfigTab6, "DWPlusUIDropDownMenuTemplate")
 	end
 
 	-- Create and bind the initialization function to the dropdown menu
@@ -175,7 +175,7 @@ function CreateSortBox()
 		end
 	end)
 
-	sortDropdown:SetPoint("TOPRIGHT", DWP.ConfigTab5, "TOPRIGHT", -13, -11)
+	sortDropdown:SetPoint("TOPRIGHT", DWP.ConfigTab6, "TOPRIGHT", -13, -11)
 
 	UIDropDownMenu_SetWidth(sortDropdown, 150)
 	UIDropDownMenu_SetText(sortDropdown, curfilterName or "Filter Name")
@@ -210,9 +210,9 @@ function DWP:LootHistory_Reset()
 
 	if DWP.DKPTable then
 		for i=1, #DWPlus_Loot+1 do
-			if DWP.ConfigTab5.looter[i] then
-				DWP.ConfigTab5.looter[i]:SetText("")
-				DWP.ConfigTab5.lootFrame[i]:Hide()
+			if DWP.ConfigTab6.looter[i] then
+				DWP.ConfigTab6.looter[i]:SetText("")
+				DWP.ConfigTab6.lootFrame[i]:Hide()
 			end
 		end
 	end
@@ -257,9 +257,9 @@ function DWP:LootHistory_Update(filter)				-- if "filter" is included in call, r
 		end
 	end
 
-	DWP.ConfigTab5.inst:SetText(L["LOOTHISTINST1"]);
+	DWP.ConfigTab6.inst:SetText(L["LOOTHISTINST1"]);
 	if core.IsOfficer == true then
-		DWP.ConfigTab5.inst:SetText(DWP.ConfigTab5.inst:GetText().."\n"..L["LOOTHISTINST2"])
+		DWP.ConfigTab6.inst:SetText(DWP.ConfigTab6.inst:GetText().."\n"..L["LOOTHISTINST2"])
 		DWP.ConfigTab6.inst:SetText(L["LOOTHISTINST3"])
 	end
 
@@ -296,34 +296,34 @@ function DWP:LootHistory_Update(filter)				-- if "filter" is included in call, r
 		      linesToUse = 1
 		    end
 
-		    if (type(DWP.ConfigTab5.lootFrame[i]) ~= "table") then
-		    	DWP.ConfigTab5.lootFrame[i] = CreateFrame("Frame", "DWPLootHistoryFrame"..i, DWP.ConfigTab5);	-- creates line if it doesn't exist yet
+		    if (type(DWP.ConfigTab6.lootFrame[i]) ~= "table") then
+		    	DWP.ConfigTab6.lootFrame[i] = CreateFrame("Frame", "DWPLootHistoryFrame"..i, DWP.ConfigTab6);	-- creates line if it doesn't exist yet
 		    end
 		    -- determine line height 
 	    	if linesToUse == 1 then
-				DWP.ConfigTab5.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab5, "TOPLEFT", 10, lineHeight-2);
-				DWP.ConfigTab5.lootFrame[i]:SetSize(200, 14)
+				DWP.ConfigTab6.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 10, lineHeight-2);
+				DWP.ConfigTab6.lootFrame[i]:SetSize(200, 14)
 				lineHeight = lineHeight-14;
 			elseif linesToUse == 2 then
 				lineHeight = lineHeight-14;
-				DWP.ConfigTab5.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab5, "TOPLEFT", 10, lineHeight);
-				DWP.ConfigTab5.lootFrame[i]:SetSize(200, 28)
+				DWP.ConfigTab6.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 10, lineHeight);
+				DWP.ConfigTab6.lootFrame[i]:SetSize(200, 28)
 				lineHeight = lineHeight-24;
 			elseif linesToUse == 3 then
 				lineHeight = lineHeight-14;
-				DWP.ConfigTab5.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab5, "TOPLEFT", 10, lineHeight);
-				DWP.ConfigTab5.lootFrame[i]:SetSize(200, 38)
+				DWP.ConfigTab6.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 10, lineHeight);
+				DWP.ConfigTab6.lootFrame[i]:SetSize(200, 38)
 				lineHeight = lineHeight-36;
 			elseif linesToUse == 4 then
 				lineHeight = lineHeight-14;
-				DWP.ConfigTab5.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab5, "TOPLEFT", 10, lineHeight);
-				DWP.ConfigTab5.lootFrame[i]:SetSize(200, 50)
+				DWP.ConfigTab6.lootFrame[i]:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 10, lineHeight);
+				DWP.ConfigTab6.lootFrame[i]:SetSize(200, 50)
 				lineHeight = lineHeight-48;
 			end;
 
-			DWP.ConfigTab5.looter[i] = DWP.ConfigTab5.lootFrame[i]:CreateFontString(nil, "OVERLAY")
-			DWP.ConfigTab5.looter[i]:SetFontObject("DWPSmallLeft");
-			DWP.ConfigTab5.looter[i]:SetPoint("TOPLEFT", DWP.ConfigTab5.lootFrame[i], "TOPLEFT", 0, 0);
+			DWP.ConfigTab6.looter[i] = DWP.ConfigTab6.lootFrame[i]:CreateFontString(nil, "OVERLAY")
+			DWP.ConfigTab6.looter[i]:SetFontObject("DWPSmallLeft");
+			DWP.ConfigTab6.looter[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.lootFrame[i], "TOPLEFT", 0, 0);
 
 			local date1, date2, date3 = strsplit("/", strtrim(strsub(thedate, 1, 8), " "))    -- date is stored as yy/mm/dd for sorting purposes. rearranges numbers for printing to string
 
@@ -349,7 +349,7 @@ function DWP:LootHistory_Update(filter)				-- if "filter" is included in call, r
 					feedString = feedString.."    "..itemToLink.." "..L["WONBY"].." |cff"..c.hex..LootTable[i]["player"].."|r |cff555555("..lootCost.." "..L["DKP"]..")|r"
 				end
 				        
-				DWP.ConfigTab5.looter[i]:SetText(feedString);
+				DWP.ConfigTab6.looter[i]:SetText(feedString);
 				curDate = strtrim(strsub(thedate, 1, 8), " ")
 				curZone = LootTable[i]["zone"];
 				curBoss = LootTable[i]["boss"];
@@ -357,21 +357,21 @@ function DWP:LootHistory_Update(filter)				-- if "filter" is included in call, r
 		    	feedString = "   |cffff0000"..LootTable[i]["boss"].."|r |cff555555("..strtrim(strsub(thedate, 10), " ")..")|r".."\n"
 		    	feedString = feedString.."    "..itemToLink.." "..L["WONBY"].." |cff"..c.hex..LootTable[i]["player"].."|r |cff555555("..lootCost.." "..L["DKP"]..")|r"
 		    	 
-		    	DWP.ConfigTab5.looter[i]:SetText(feedString);
+		    	DWP.ConfigTab6.looter[i]:SetText(feedString);
 		    	curDate = strtrim(strsub(thedate, 1, 8), " ")
 		    	curBoss = LootTable[i]["boss"]
 		    else
 		    	feedString = "    "..itemToLink.." "..L["WONBY"].." |cff"..c.hex..LootTable[i]["player"].."|r |cff555555("..lootCost.." "..L["DKP"]..")|r"
 		    	
-		    	DWP.ConfigTab5.looter[i]:SetText(feedString);
+		    	DWP.ConfigTab6.looter[i]:SetText(feedString);
 		    	curZone = LootTable[i]["zone"];
 		    end
 
 		    if LootTable[i].reassigned then
-		    	DWP.ConfigTab5.looter[i]:SetText(DWP.ConfigTab5.looter[i]:GetText(feedString).." |cff555555("..L["REASSIGNED"]..")|r")
+		    	DWP.ConfigTab6.looter[i]:SetText(DWP.ConfigTab6.looter[i]:GetText(feedString).." |cff555555("..L["REASSIGNED"]..")|r")
 		    end
 		    -- Set script for tooltip/linking
-		    DWP.ConfigTab5.lootFrame[i]:SetScript("OnEnter", function(self)
+		    DWP.ConfigTab6.lootFrame[i]:SetScript("OnEnter", function(self)
 		    	local history = 0;
 		    	tooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
 		    	tooltip:SetHyperlink(itemToLink)
@@ -469,7 +469,7 @@ function DWP:LootHistory_Update(filter)				-- if "filter" is included in call, r
 			    tooltip:AddDoubleLine(L["AWARDEDBY"], "|cff"..c.hex..awardOfficer.."|r", 0.25, 0.75, 0.90)
 		    	tooltip:Show();
 		    end)
-		    DWP.ConfigTab5.lootFrame[i]:SetScript("OnMouseDown", function(self, button)
+		    DWP.ConfigTab6.lootFrame[i]:SetScript("OnMouseDown", function(self, button)
 	   			if button == "RightButton" and filter ~= L["DELETEDENTRY"] then
 	   				if core.IsOfficer == true then
 	   					RightClickLootMenu(self, LootTable[i].index)
@@ -486,39 +486,39 @@ function DWP:LootHistory_Update(filter)				-- if "filter" is included in call, r
 			    	end
 	   			end		    	
 		    end)
-		    DWP.ConfigTab5.lootFrame[i]:SetScript("OnLeave", function()
+		    DWP.ConfigTab6.lootFrame[i]:SetScript("OnLeave", function()
 		    	tooltip:Hide()
 		    end)
-			if DWP.ConfigTab5.LoadHistory then
-				DWP.ConfigTab5.LoadHistory:SetPoint("TOP", DWP.ConfigTab5.lootFrame[i], "BOTTOM", 110, -15)
+			if DWP.ConfigTab6.LoadHistory then
+				DWP.ConfigTab6.LoadHistory:SetPoint("TOP", DWP.ConfigTab6.lootFrame[i], "BOTTOM", 110, -15)
 			end
 		    CurrentPosition = CurrentPosition + 1;
-		    DWP.ConfigTab5.lootFrame[i]:Show();
+		    DWP.ConfigTab6.lootFrame[i]:Show();
 		    processing = false
 		    j=i+1
 		    LootTimer = 0
 		elseif j > CurrentLimit then
 			LootHistTimer:SetScript("OnUpdate", nil)
 			LootTimer = 0
-			if DWP.ConfigTab5.LoadHistory then
-				DWP.ConfigTab5.LoadHistory:ClearAllPoints();
-				DWP.ConfigTab5.LoadHistory:SetPoint("TOP", DWP.ConfigTab5.lootFrame[CurrentLimit], "BOTTOM", 110, -15)
+			if DWP.ConfigTab6.LoadHistory then
+				DWP.ConfigTab6.LoadHistory:ClearAllPoints();
+				DWP.ConfigTab6.LoadHistory:SetPoint("TOP", DWP.ConfigTab6.lootFrame[CurrentLimit], "BOTTOM", 110, -15)
 				if (#LootTable - CurrentPosition) < 25 then
 					ButtonText = #LootTable - CurrentPosition;
 				end
-				DWP.ConfigTab5.LoadHistory:SetText(string.format(L["LOAD50MORE"], ButtonText).."...")
+				DWP.ConfigTab6.LoadHistory:SetText(string.format(L["LOAD50MORE"], ButtonText).."...")
 
 				if CurrentLimit >= #LootTable then
-					DWP.ConfigTab5.LoadHistory:Hide();
+					DWP.ConfigTab6.LoadHistory:Hide();
 				end
 			end
 		end
  	end)
-	if CurrentLimit < #LootTable and not DWP.ConfigTab5.LoadHistory then
+	if CurrentLimit < #LootTable and not DWP.ConfigTab6.LoadHistory then
 	 	-- Load More History Button
-		DWP.ConfigTab5.LoadHistory = self:CreateButton("TOP", DWP.ConfigTab5, "BOTTOM", 110, 0, string.format(L["LOAD50MORE"].."...", ButtonText));
-		DWP.ConfigTab5.LoadHistory:SetSize(110,25)
-		DWP.ConfigTab5.LoadHistory:SetScript("OnClick", function(self)
+		DWP.ConfigTab6.LoadHistory = self:CreateButton("TOP", DWP.ConfigTab6, "BOTTOM", 110, 0, string.format(L["LOAD50MORE"].."...", ButtonText));
+		DWP.ConfigTab6.LoadHistory:SetSize(110,25)
+		DWP.ConfigTab6.LoadHistory:SetScript("OnClick", function(self)
 			CurrentLimit = CurrentLimit + 25
 			if CurrentLimit > #LootTable then
 				CurrentLimit = #LootTable

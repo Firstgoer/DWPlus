@@ -46,26 +46,26 @@ local function GetSortOptions()
 end
 
 function DWP:DKPHistory_Reset()
-	if not DWP.ConfigTab6 then return end
+	if not DWP.ConfigTab7 then return end
 	currentRow = 0
 	currentLength = maxDisplayed;
 	curDate = nil;
 	btnText = maxDisplayed;
-	if DWP.ConfigTab6.loadMoreBtn then
-		DWP.ConfigTab6.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
+	if DWP.ConfigTab7.loadMoreBtn then
+		DWP.ConfigTab7.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
 	end
 
-	if DWP.ConfigTab6.history then
-		for i=1, #DWP.ConfigTab6.history do
-			if DWP.ConfigTab6.history[i] then
-				DWP.ConfigTab6.history[i].h:SetText("")
-				DWP.ConfigTab6.history[i].h:Hide()
-				DWP.ConfigTab6.history[i].d:SetText("")
-				DWP.ConfigTab6.history[i].d:Hide()
-				DWP.ConfigTab6.history[i].s:SetText("")
-				DWP.ConfigTab6.history[i].s:Hide()
-				DWP.ConfigTab6.history[i]:SetHeight(10)
-				DWP.ConfigTab6.history[i]:Hide()
+	if DWP.ConfigTab7.history then
+		for i=1, #DWP.ConfigTab7.history do
+			if DWP.ConfigTab7.history[i] then
+				DWP.ConfigTab7.history[i].h:SetText("")
+				DWP.ConfigTab7.history[i].h:Hide()
+				DWP.ConfigTab7.history[i].d:SetText("")
+				DWP.ConfigTab7.history[i].d:Hide()
+				DWP.ConfigTab7.history[i].s:SetText("")
+				DWP.ConfigTab7.history[i].s:Hide()
+				DWP.ConfigTab7.history[i]:SetHeight(10)
+				DWP.ConfigTab7.history[i]:Hide()
 			end
 		end
 	end
@@ -77,7 +77,7 @@ function DKPHistoryFilterBox_Create()
 
 	-- Create the dropdown, and configure its appearance
 	if not filterDropdown then
-		filterDropdown = CreateFrame("FRAME", "DWPDKPHistoryFilterNameDropDown", DWP.ConfigTab6, "DWPlusUIDropDownMenuTemplate")
+		filterDropdown = CreateFrame("FRAME", "DWPDKPHistoryFilterNameDropDown", DWP.ConfigTab7, "DWPlusUIDropDownMenuTemplate")
 	end
 
 	-- Create and bind the initialization function to the dropdown menu
@@ -122,7 +122,7 @@ function DKPHistoryFilterBox_Create()
 		end
 	end)
 
-	filterDropdown:SetPoint("TOPRIGHT", DWP.ConfigTab6, "TOPRIGHT", -13, -11)
+	filterDropdown:SetPoint("TOPRIGHT", DWP.ConfigTab7, "TOPRIGHT", -13, -11)
 
 	UIDropDownMenu_SetWidth(filterDropdown, 150)
 	UIDropDownMenu_SetText(filterDropdown, curfilterName or L["NOFILTER"])
@@ -155,7 +155,7 @@ end
 local function DWPDeleteDKPEntry(index, timestamp, item)  -- index = entry index , item = # of the entry on DKP History tab; may be different than the key of DKPHistory if hidden fields exist
 	-- pop confirmation. If yes, cycles through DWPlus_RPHistory.players and every name it finds, it refunds them (or strips them of) dkp.
 	-- if deleted is the weekly decay,     curdkp * (100 / (100 - decayvalue))
-	local reason_header = DWP.ConfigTab6.history[item].d:GetText();
+	local reason_header = DWP.ConfigTab7.history[item].d:GetText();
 	if strfind(reason_header, L["OTHER"].."- ") then reason_header = reason_header:gsub(L["OTHER"].." -- ", "") end
 	if strfind(reason_header, "%%") then
 		reason_header = gsub(reason_header, "%%", "%%%%")
@@ -223,7 +223,7 @@ local function DWPDeleteDKPEntry(index, timestamp, item)  -- index = entry index
 				table.insert(DWPlus_RPHistory, 1, { players=DWPlus_RPHistory[search[1][1]].players, dkp=dkpString, date=curTime, reason="Delete Entry", index=newIndex, deletes=index })
 				DWP.Sync:SendData("DWPDelSync", DWPlus_RPHistory[1])
 
-				if DWP.ConfigTab6.history and DWP.ConfigTab6:IsShown() then
+				if DWP.ConfigTab7.history and DWP.ConfigTab7:IsShown() then
 					DWP:DKPHistory_Update(true)
 				end
 
@@ -245,7 +245,7 @@ local function RightClickDKPMenu(self, index, timestamp, item)
 
 	if search then
 		menu = {
-		{ text = DWP.ConfigTab6.history[item].d:GetText():gsub(L["OTHER"].." -- ", ""), isTitle = true},
+		{ text = DWP.ConfigTab7.history[item].d:GetText():gsub(L["OTHER"].." -- ", ""), isTitle = true},
 		{ text = L["DELETEDKPENTRY"], func = function()
 			DWPDeleteDKPEntry(index, timestamp, item)
 		end },
@@ -286,7 +286,7 @@ function DWP:DKPHistory_Update(reset)
 		end
 	end
 	
-	DWP.ConfigTab6.history = history;
+	DWP.ConfigTab7.history = history;
 
 	if currentLength > #DKPHistory then currentLength = #DKPHistory end
 
@@ -300,8 +300,8 @@ function DWP:DKPHistory_Update(reset)
 			local i = j
 			processing = true
 
-			if DWP.ConfigTab6.loadMoreBtn then
-				DWP.ConfigTab6.loadMoreBtn:Hide()
+			if DWP.ConfigTab7.loadMoreBtn then
+				DWP.ConfigTab7.loadMoreBtn:Hide()
 			end
 
 			local curOfficer, curIndex
@@ -312,33 +312,33 @@ function DWP:DKPHistory_Update(reset)
 				curOfficer = "Unknown"
 			end
 
-			if not DWP.ConfigTab6.history[i] then
+			if not DWP.ConfigTab7.history[i] then
 				if i==1 then
-					DWP.ConfigTab6.history[i] = CreateFrame("Frame", "DWPlus_RPHistoryTab", DWP.ConfigTab6);
-					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 0, -45)
-					DWP.ConfigTab6.history[i]:SetWidth(400)
+					DWP.ConfigTab7.history[i] = CreateFrame("Frame", "DWPlus_RPHistoryTab", DWP.ConfigTab7);
+					DWP.ConfigTab7.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab7, "TOPLEFT", 0, -45)
+					DWP.ConfigTab7.history[i]:SetWidth(400)
 				else
-					DWP.ConfigTab6.history[i] = CreateFrame("Frame", "DWPlus_RPHistoryTab", DWP.ConfigTab6);
-					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, 0)
-					DWP.ConfigTab6.history[i]:SetWidth(400)
+					DWP.ConfigTab7.history[i] = CreateFrame("Frame", "DWPlus_RPHistoryTab", DWP.ConfigTab7);
+					DWP.ConfigTab7.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab7.history[i-1], "BOTTOMLEFT", 0, 0)
+					DWP.ConfigTab7.history[i]:SetWidth(400)
 				end
 
-				DWP.ConfigTab6.history[i].h = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY") 		-- entry header
-				DWP.ConfigTab6.history[i].h:SetFontObject("DWPNormalLeft");
-				DWP.ConfigTab6.history[i].h:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i], "TOPLEFT", 15, 0);
-				DWP.ConfigTab6.history[i].h:SetWidth(400)
+				DWP.ConfigTab7.history[i].h = DWP.ConfigTab7:CreateFontString(nil, "OVERLAY") 		-- entry header
+				DWP.ConfigTab7.history[i].h:SetFontObject("DWPNormalLeft");
+				DWP.ConfigTab7.history[i].h:SetPoint("TOPLEFT", DWP.ConfigTab7.history[i], "TOPLEFT", 15, 0);
+				DWP.ConfigTab7.history[i].h:SetWidth(400)
 
-				DWP.ConfigTab6.history[i].d = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY") 		-- entry description
-				DWP.ConfigTab6.history[i].d:SetFontObject("DWPSmallLeft");
-				DWP.ConfigTab6.history[i].d:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i].h, "BOTTOMLEFT", 5, -2);
-				DWP.ConfigTab6.history[i].d:SetWidth(400)
+				DWP.ConfigTab7.history[i].d = DWP.ConfigTab7:CreateFontString(nil, "OVERLAY") 		-- entry description
+				DWP.ConfigTab7.history[i].d:SetFontObject("DWPSmallLeft");
+				DWP.ConfigTab7.history[i].d:SetPoint("TOPLEFT", DWP.ConfigTab7.history[i].h, "BOTTOMLEFT", 5, -2);
+				DWP.ConfigTab7.history[i].d:SetWidth(400)
 
-				DWP.ConfigTab6.history[i].s = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")			-- entry player string
-				DWP.ConfigTab6.history[i].s:SetFontObject("DWPTinyLeft");
-				DWP.ConfigTab6.history[i].s:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i].d, "BOTTOMLEFT", 15, -4);
-				DWP.ConfigTab6.history[i].s:SetWidth(400)
+				DWP.ConfigTab7.history[i].s = DWP.ConfigTab7:CreateFontString(nil, "OVERLAY")			-- entry player string
+				DWP.ConfigTab7.history[i].s:SetFontObject("DWPTinyLeft");
+				DWP.ConfigTab7.history[i].s:SetPoint("TOPLEFT", DWP.ConfigTab7.history[i].d, "BOTTOMLEFT", 15, -4);
+				DWP.ConfigTab7.history[i].s:SetWidth(400)
 
-				DWP.ConfigTab6.history[i]:SetScript("OnMouseDown", function(self, button)
+				DWP.ConfigTab7.history[i]:SetScript("OnMouseDown", function(self, button)
 			    	if button == "RightButton" then
 		   				if core.IsOfficer == true then
 		   					RightClickDKPMenu(self, DKPHistory[i].index, DKPHistory[i].date, i)
@@ -377,8 +377,8 @@ function DWP:DKPHistory_Update(reset)
 				dkp = DKPHistory[i].dkp;
 				date = DWP:FormatTime(DKPHistory[i].date);
 
-				if DWP.ConfigTab6.history[i].b then
-					DWP.ConfigTab6.history[i].b:Hide()
+				if DWP.ConfigTab7.history[i].b then
+					DWP.ConfigTab7.history[i].b:Hide()
 				end
 			end
 			
@@ -401,14 +401,14 @@ function DWP:DKPHistory_Update(reset)
 				end
 			end
 
-			DWP.ConfigTab6.history[i]:SetScript("OnMouseDown", function(self, button)
+			DWP.ConfigTab7.history[i]:SetScript("OnMouseDown", function(self, button)
 		    	if button == "RightButton" and filter ~= L["DELETEDENTRY"] then
 	   				if core.IsOfficer == true then
 	   					RightClickDKPMenu(self, DKPHistory[i].index, DKPHistory[i].date, i)
 	   				end
 	   			end
 		    end)
-		    DWP.ConfigTab6.inst:Show();
+		    DWP.ConfigTab7.inst:Show();
 
 			day = strsub(date, 1, 8)
 			timeofday = strsub(date, 10)
@@ -416,16 +416,16 @@ function DWP:DKPHistory_Update(reset)
 
 			if day ~= curDate then
 				if i~=1 then
-					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, -20)
+					DWP.ConfigTab7.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab7.history[i-1], "BOTTOMLEFT", 0, -20)
 				end
-				DWP.ConfigTab6.history[i].h:SetText(day.."/"..month.."/"..year);
-				DWP.ConfigTab6.history[i].h:Show()
+				DWP.ConfigTab7.history[i].h:SetText(day.."/"..month.."/"..year);
+				DWP.ConfigTab7.history[i].h:Show()
 				curDate = day;
 			else
 				if i~=1 then
-					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, 0)
+					DWP.ConfigTab7.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab7.history[i-1], "BOTTOMLEFT", 0, 0)
 				end
-				DWP.ConfigTab6.history[i].h:Hide()
+				DWP.ConfigTab7.history[i].h:Hide()
 			end
 
 			local officer_search = DWP:Table_Search(DWPlus_RPTable, curOfficer, "player")
@@ -436,37 +436,37 @@ function DWP:DKPHistory_Update(reset)
 		    end
 			
 			if not strfind(dkp, "-") then
-				DWP.ConfigTab6.history[i].d:SetText("|cff00ff00"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
+				DWP.ConfigTab7.history[i].d:SetText("|cff00ff00"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
 			else
 				if strfind(reason, L["WEEKLYDECAY"]) or strfind(reason, "Migration Correction") then
 					local decay = {strsplit(",", dkp)}
-					DWP.ConfigTab6.history[i].d:SetText("|cffff0000"..decay[#decay].." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
+					DWP.ConfigTab7.history[i].d:SetText("|cffff0000"..decay[#decay].." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
 				else
-					DWP.ConfigTab6.history[i].d:SetText("|cffff0000"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
+					DWP.ConfigTab7.history[i].d:SetText("|cffff0000"..dkp.." "..L["DKP"].."|r - |cff616ccf"..reason.."|r |cff555555("..timeofday..")|r by |cff"..c.hex..curOfficer.."|r");
 				end
 			end
 
-			DWP.ConfigTab6.history[i].d:Show()
+			DWP.ConfigTab7.history[i].d:Show()
 
 			if not filter or (filter and filter == L["DELETEDENTRY"]) then
-				DWP.ConfigTab6.history[i].s:SetText(playerString);
-				DWP.ConfigTab6.history[i].s:Show()
+				DWP.ConfigTab7.history[i].s:SetText(playerString);
+				DWP.ConfigTab7.history[i].s:Show()
 			else
-				DWP.ConfigTab6.history[i].s:Hide()
+				DWP.ConfigTab7.history[i].s:Hide()
 			end
 
 			if filter and filter ~= L["DELETEDENTRY"] then
-				DWP.ConfigTab6.history[i]:SetHeight(DWP.ConfigTab6.history[i].s:GetHeight() + DWP.ConfigTab6.history[i].h:GetHeight() + DWP.ConfigTab6.history[i].d:GetHeight())
+				DWP.ConfigTab7.history[i]:SetHeight(DWP.ConfigTab7.history[i].s:GetHeight() + DWP.ConfigTab7.history[i].h:GetHeight() + DWP.ConfigTab7.history[i].d:GetHeight())
 			else
-				DWP.ConfigTab6.history[i]:SetHeight(DWP.ConfigTab6.history[i].s:GetHeight() + DWP.ConfigTab6.history[i].h:GetHeight() + DWP.ConfigTab6.history[i].d:GetHeight() + 10)
+				DWP.ConfigTab7.history[i]:SetHeight(DWP.ConfigTab7.history[i].s:GetHeight() + DWP.ConfigTab7.history[i].h:GetHeight() + DWP.ConfigTab7.history[i].d:GetHeight() + 10)
 				if filter == L["DELETEDENTRY"] then
-					if not DWP.ConfigTab6.history[i].b then
-						DWP.ConfigTab6.history[i].b = CreateFrame("Button", "RightClickButtonDKPHistory"..i, DWP.ConfigTab6.history[i]);
+					if not DWP.ConfigTab7.history[i].b then
+						DWP.ConfigTab7.history[i].b = CreateFrame("Button", "RightClickButtonDKPHistory"..i, DWP.ConfigTab7.history[i]);
 					end
-					DWP.ConfigTab6.history[i].b:Show()
-					DWP.ConfigTab6.history[i].b:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i], "TOPLEFT", 0, 0)
-					DWP.ConfigTab6.history[i].b:SetPoint("BOTTOMRIGHT", DWP.ConfigTab6.history[i], "BOTTOMRIGHT", 0, 0)
-					DWP.ConfigTab6.history[i].b:SetScript("OnEnter", function(self)
+					DWP.ConfigTab7.history[i].b:Show()
+					DWP.ConfigTab7.history[i].b:SetPoint("TOPLEFT", DWP.ConfigTab7.history[i], "TOPLEFT", 0, 0)
+					DWP.ConfigTab7.history[i].b:SetPoint("BOTTOMRIGHT", DWP.ConfigTab7.history[i], "BOTTOMRIGHT", 0, 0)
+					DWP.ConfigTab7.history[i].b:SetScript("OnEnter", function(self)
 				    	local col
 				    	local s = DWP:Table_Search(DWPlus_RPTable, delOfficer, "player")
 				    	if s then
@@ -479,7 +479,7 @@ function DWP:DKPHistory_Update(reset)
 						GameTooltip:AddDoubleLine("|cff"..col.hex..delOfficer.."|r", delete_month.."/"..delete_day.."/"..delete_year.." @ "..delete_timeofday, 1,0,0,1,1,1)
 						GameTooltip:Show()
 					end);
-					DWP.ConfigTab6.history[i].b:SetScript("OnLeave", function(self)
+					DWP.ConfigTab7.history[i].b:SetScript("OnLeave", function(self)
 						GameTooltip:Hide();
 					end)
 				end
@@ -488,7 +488,7 @@ function DWP:DKPHistory_Update(reset)
 			playerString = ""
 			table.wipe(player_table)
 
-			DWP.ConfigTab6.history[i]:Show()
+			DWP.ConfigTab7.history[i]:Show()
 
 			currentRow = currentRow + 1;
 			processing = false
@@ -498,29 +498,29 @@ function DWP:DKPHistory_Update(reset)
 			DKPHistTimer:SetScript("OnUpdate", nil)
 			HistTimer = 0
 
-			if not DWP.ConfigTab6.loadMoreBtn then
-				DWP.ConfigTab6.loadMoreBtn = CreateFrame("Button", nil, DWP.ConfigTab6, "DWPlusButtonTemplate")
-				DWP.ConfigTab6.loadMoreBtn:SetSize(100, 30);
-				DWP.ConfigTab6.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...");
-				DWP.ConfigTab6.loadMoreBtn:GetFontString():SetTextColor(1, 1, 1, 1)
-				DWP.ConfigTab6.loadMoreBtn:SetNormalFontObject("DWPSmallCenter");
-				DWP.ConfigTab6.loadMoreBtn:SetHighlightFontObject("DWPSmallCenter");
-				DWP.ConfigTab6.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10);
-				DWP.ConfigTab6.loadMoreBtn:SetScript("OnClick", function(self)
+			if not DWP.ConfigTab7.loadMoreBtn then
+				DWP.ConfigTab7.loadMoreBtn = CreateFrame("Button", nil, DWP.ConfigTab7, "DWPlusButtonTemplate")
+				DWP.ConfigTab7.loadMoreBtn:SetSize(100, 30);
+				DWP.ConfigTab7.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...");
+				DWP.ConfigTab7.loadMoreBtn:GetFontString():SetTextColor(1, 1, 1, 1)
+				DWP.ConfigTab7.loadMoreBtn:SetNormalFontObject("DWPSmallCenter");
+				DWP.ConfigTab7.loadMoreBtn:SetHighlightFontObject("DWPSmallCenter");
+				DWP.ConfigTab7.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab7.history[currentRow], "BOTTOM", 0, -10);
+				DWP.ConfigTab7.loadMoreBtn:SetScript("OnClick", function(self)
 					currentLength = currentLength + maxDisplayed;
 					DWP:DKPHistory_Update()
-					DWP.ConfigTab6.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
-					DWP.ConfigTab6.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10)
+					DWP.ConfigTab7.loadMoreBtn:SetText(L["LOAD"].." "..btnText.." "..L["MORE"].."...")
+					DWP.ConfigTab7.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab7.history[currentRow], "BOTTOM", 0, -10)
 				end)
 			end
 
-			if DWP.ConfigTab6.loadMoreBtn and currentRow == #DKPHistory then
-				DWP.ConfigTab6.loadMoreBtn:Hide();
-			elseif DWP.ConfigTab6.loadMoreBtn and currentRow < #DKPHistory then
+			if DWP.ConfigTab7.loadMoreBtn and currentRow == #DKPHistory then
+				DWP.ConfigTab7.loadMoreBtn:Hide();
+			elseif DWP.ConfigTab7.loadMoreBtn and currentRow < #DKPHistory then
 				if (#DKPHistory - currentRow) < btnText then btnText = (#DKPHistory - currentRow) end
-				DWP.ConfigTab6.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...")
-				DWP.ConfigTab6.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab6.history[currentRow], "BOTTOM", 0, -10);
-				DWP.ConfigTab6.loadMoreBtn:Show()
+				DWP.ConfigTab7.loadMoreBtn:SetText(string.format(L["LOAD50MORE"], btnText).."...")
+				DWP.ConfigTab7.loadMoreBtn:SetPoint("TOP", DWP.ConfigTab7.history[currentRow], "BOTTOM", 0, -10);
+				DWP.ConfigTab7.loadMoreBtn:Show()
 			end
 		end
 	end)

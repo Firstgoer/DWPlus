@@ -47,17 +47,18 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 			if search_reassign then
 				local deleted = CopyTable(DWPlus_Loot[search_reassign[1][1]])
 				local reimburse = DWP:Table_Search(DWPlus_RPTable, deleted.player, "player")
-				local newIndex = curOfficer.."-"..curTime-3
+				local newIndex = curOfficer.."-"..curTime-2
 				deleted.cost = deleted.cost * -1
 				deleted.deletes = reassign
 				deleted.index = newIndex
-				deleted.date = curTime-3
+				deleted.date = curTime-2
 				if deleted.bids then
 					bids = CopyTable(deleted.bids);
 					deleted.bids = nil;
 				end
 				DWPlus_Loot[search_reassign[1][1]].deletedby = newIndex
 				DWPlus_RPTable[reimburse[1][1]].dkp = DWPlus_RPTable[reimburse[1][1]].dkp + deleted.cost
+				DWPlus_RPTable[reimburse[1][1]].lifetime_spent = DWPlus_RPTable[reimburse[1][1]].lifetime_spent + deleted.cost
 				table.insert(DWPlus_Loot, 1, deleted)
 				DWP.Sync:SendData("DWPDelLoot", DWPlus_Loot[1])
 			end
@@ -212,7 +213,7 @@ local function AwardConfirm_Create()
 	f.lootHeader = f:CreateFontString(nil, "OVERLAY")
 	f.lootHeader:SetFontObject("DWPLargeRight");
 	f.lootHeader:SetScale(0.7)
-	f.lootHeader:SetPoint("TOPRIGHT", f.playerHeader, "BOTTOMRIGHT", 0, -10);
+	f.lootHeader:SetPoint("TOPRIGHT", f.playerHeader, "BOTTOMRIGHT", 0, -15);
 	f.lootHeader:SetText(L["ITEM"]..":")
 
 	f.lootIcon = f:CreateTexture(nil, "OVERLAY", nil);
@@ -228,7 +229,7 @@ local function AwardConfirm_Create()
 	f.costHeader = f:CreateFontString(nil, "OVERLAY")
 	f.costHeader:SetFontObject("DWPLargeRight");
 	f.costHeader:SetScale(0.7)
-	f.costHeader:SetPoint("TOPRIGHT", f.lootHeader, "BOTTOMRIGHT", 0, -10);
+	f.costHeader:SetPoint("TOPRIGHT", f.lootHeader, "BOTTOMRIGHT", 0, -15);
 	f.costHeader:SetText(L["ITEMCOST"]..":")
 
 	f.cost = CreateFrame("EditBox", nil, f)
@@ -264,7 +265,7 @@ local function AwardConfirm_Create()
 	f.bossHeader = f:CreateFontString(nil, "OVERLAY")
 	f.bossHeader:SetFontObject("DWPLargeRight");
 	f.bossHeader:SetScale(0.7)
-	f.bossHeader:SetPoint("TOPRIGHT", f.costHeader, "BOTTOMRIGHT", 0, -10);
+	f.bossHeader:SetPoint("TOPRIGHT", f.costHeader, "BOTTOMRIGHT", 0, -15);
 	f.bossHeader:SetText(L["BOSS"]..":")
 
 	f.bossDropDown = CreateFrame("FRAME", "DWPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")
@@ -275,7 +276,7 @@ local function AwardConfirm_Create()
 	f.zoneHeader = f:CreateFontString(nil, "OVERLAY")
 	f.zoneHeader:SetFontObject("DWPLargeRight");
 	f.zoneHeader:SetScale(0.7)
-	f.zoneHeader:SetPoint("TOPRIGHT", f.bossHeader, "BOTTOMRIGHT", 0, -10);
+	f.zoneHeader:SetPoint("TOPRIGHT", f.bossHeader, "BOTTOMRIGHT", 0, -15);
 	f.zoneHeader:SetText(L["ZONE"]..":")
 
 	f.zoneDropDown = CreateFrame("FRAME", "DWPAwardConfirmBossDropDown", f, "DWPlusUIDropDownMenuTemplate")

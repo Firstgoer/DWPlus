@@ -65,6 +65,7 @@ function DWP.Sync:OnEnable()
 	DWP.Sync:RegisterComm("DWPBidShare", DWP.Sync:OnCommReceived())			-- broadcast accepted bids
 	DWP.Sync:RegisterComm("DWPBidder", DWP.Sync:OnCommReceived())			-- Submit bids
 	DWP.Sync:RegisterComm("DWPAllTabs", DWP.Sync:OnCommReceived())			-- Full table broadcast
+	DWP.Sync:RegisterComm("DWPConsul", DWP.Sync:OnCommReceived())			-- Full table broadcast
 	--DWP.Sync:RegisterComm("DWPEditLoot", DWP.Sync:OnCommReceived())		-- not in use
 	--DWP.Sync:RegisterComm("DWPDataSync", DWP.Sync:OnCommReceived())		-- not in use
 	--DWP.Sync:RegisterComm("DWPDKPLogSync", DWP.Sync:OnCommReceived())	-- not in use
@@ -311,12 +312,13 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 										DWPlus_RPTable = deserialized.DKPTable
 										DWPlus_RPHistory = deserialized.DKP
 										DWPlus_Loot = deserialized.Loot
+										DWPlus_Consul = deserialized.Consul
 										
 										DWPlus_Archive = deserialized.Archive
 										
-										if DWP.ConfigTab6 and DWP.ConfigTab6.history and DWP.ConfigTab6:IsShown() then
+										if DWP.ConfigTab7 and DWP.ConfigTab7.history and DWP.ConfigTab7:IsShown() then
 											DWP:DKPHistory_Update(true)
-										elseif DWP.ConfigTab5 and DWP.ConfigTab5:IsShown() then
+										elseif DWP.ConfigTab6 and DWP.ConfigTab6:IsShown() then
 											DWP:LootHistory_Reset()
 											DWP:LootHistory_Update(L["NOFILTER"]);
 										end
@@ -338,6 +340,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 								DWPlus_RPTable = deserialized.DKPTable
 								DWPlus_RPHistory = deserialized.DKP
 								DWPlus_Loot = deserialized.Loot
+								DWPlus_Consul = deserialized.Consul
 								
 								DWPlus_Archive = deserialized.Archive
 								
@@ -354,6 +357,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 								end
 								DWP:FilterDKPTable(core.currentSort, "reset")
 								DWP:StatusVerify_Update()
+								DWP:ConsulUpdate();
 							end
 							return
 						elseif prefix == "DWPMerge" then
@@ -473,7 +477,9 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							DWP:LootHistory_Reset()
 							DWP:LootHistory_Update(L["NOFILTER"])
 							DWP:FilterDKPTable(core.currentSort, "reset")
-							DWP:StatusVerify_Update()
+							DWP:StatusVerify_Update();
+							DWP:ConsulUpdate();
+
 							return
 						elseif prefix == "DWPLootDist" then
 							local search = DWP:Table_Search(DWPlus_RPTable, deserialized.player, "player")
@@ -715,6 +721,9 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							end
 
 							DWP:LootTable_Set(lootList)
+						elseif prefix == "DWPConsul" then
+							DWPlus_Consul = deserialized;
+							DWP:ConsulUpdate();
 						end
 					else
 						DWP:Print("Report the following error on Curse or Github: "..deserialized)  -- error reporting if string doesn't get deserialized correctly

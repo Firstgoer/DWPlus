@@ -11,8 +11,8 @@ DWP.MiniMapButton = MiniMapButton
 local DWPlusButton = LibStub("LibDBIcon-1.0")
 
 local TT_H_1, TT_H_2 = "|cff00FF00"..L["DWPLUS"].."|r", string.format("|cffFFFFFF%s|r", core.MonVersion)
-local TT_ENTRY = "|cffFFFFFF%s|r"
---local TT_ENTRY = "|cFFCFCFCF%s:|r %s"
+--local TT_ENTRY = "|cffFFFFFF%s|r"
+local TT_ENTRY = "|cFFCFCFCF%s:|r %s"
 
 
 -- LDB
@@ -25,9 +25,9 @@ local MiniMapLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("DWPlus
 	icon = "Interface\\AddOns\\DWPlus\\Media\\Icons\\minimap.tga",
 	OnTooltipShow = function(tooltip)
 		tooltip:AddDoubleLine(TT_H_1, TT_H_2);
-		tooltip:AddLine(format(TT_ENTRY, L["MINIMAPSETTINGS"]))
-		--tooltip:AddLine(format(TT_ENTRY, L["MINIMAPLEFTCLICK"], L["MINIMAPSETTINGS"]))
-		--tooltip:AddLine(format(TT_ENTRY, L["Shift + Left Click"], L["Open Options"]))
+		tooltip:AddLine(" ")
+		tooltip:AddLine(format(TT_ENTRY, L["MINIMAPLEFTCLICK"], L["MINIMAPSETTINGS"]))
+		tooltip:AddLine(format(TT_ENTRY, "Shift + " .. L["MINIMAPLEFTCLICK"], L["CONSULMODAL"]))
 		--tooltip:AddLine(format(TT_ENTRY, L["Right Click"], L["Open Favourites"]))
 	end,
 	OnClick = function(self, button)
@@ -38,7 +38,11 @@ local MiniMapLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("DWPlus
 		--	SlashCommands:Run("")
 		--	DWPlus_DB.enableAutoSelect = true
 		--else
-		DWP:Toggle();
+		if IsShiftKeyDown() then
+			DWP:ConsulModal();
+		else
+			DWP:Toggle();
+		end
 		--end
 	end,
 })

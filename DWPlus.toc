@@ -4,7 +4,7 @@
 ## Notes: DreamWorld guild management utility.
 ## Version: 1.0.20
 ## DefaultState: enabled
-## SavedVariables: DWPlus_DB, DWPlus_Loot, DWPlus_RPTable, DWPlus_RPHistory, DWPlus_MinBids, DWPlus_Whitelist, DWPlus_Standby, DWPlus_Archive
+## SavedVariables: DWPlus_DB, DWPlus_Loot, DWPlus_RPTable, DWPlus_RPHistory, DWPlus_MinBids, DWPlus_Whitelist, DWPlus_Standby, DWPlus_Archive, DWPlus_Consul
 
 Localization\Localization.en.lua
 Localization\Localization.cn.lua
@@ -26,6 +26,7 @@ init.lua
 Localization\Localization.lua
 Modules\LootHistory.lua
 Modules\DKPHistory.lua
+Modules\ConsulLoot.lua
 ConfigMenuTabs.lua
 Modules\Award.lua
 Modules\AdjustDKP.lua

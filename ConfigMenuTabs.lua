@@ -100,7 +100,7 @@ function DWP:SetTabs(frame, numTabs, width, height, ...)
 		table.insert(contents, tab.content);
 		
 		if (i == 1) then
-			tab:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", -5, 1);
+			tab:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", -10, 1);
 		else
 			tab:SetPoint("TOPLEFT", _G[frameName.."Tab"..(i - 1)], "TOPRIGHT", -17, 0);
 		end 
@@ -120,8 +120,8 @@ function DWP:ConfigMenuTabs()
 	---------------------------------------
 
 	DWP.UIConfig.TabMenu = CreateFrame("Frame", "DWP.ConfigTabMenu", DWP.UIConfig);
-	DWP.UIConfig.TabMenu:SetPoint("TOPRIGHT", DWP.UIConfig, "TOPRIGHT", -25, -25);
-	DWP.UIConfig.TabMenu:SetSize(477, 510);
+	DWP.UIConfig.TabMenu:SetPoint("TOPRIGHT", DWP.UIConfig, "TOPRIGHT", -15, -25);
+	DWP.UIConfig.TabMenu:SetSize(482, 510);
 	DWP.UIConfig.TabMenu:SetBackdrop( {
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
@@ -149,7 +149,7 @@ function DWP:ConfigMenuTabs()
 	DWP.UIConfig.TabMenu.ScrollFrame.ScrollBar:SetPoint("TOPLEFT", DWP.UIConfig.TabMenu.ScrollFrame, "TOPRIGHT", -20, -12);
 	DWP.UIConfig.TabMenu.ScrollFrame.ScrollBar:SetPoint("BOTTOMRIGHT", DWP.UIConfig.TabMenu.ScrollFrame, "BOTTOMRIGHT", -2, 15);
 
-	DWP.ConfigTab1, DWP.ConfigTab2, DWP.ConfigTab3, DWP.ConfigTab4, DWP.ConfigTab5, DWP.ConfigTab6 = DWP:SetTabs(DWP.UIConfig.TabMenu, 6, 475, 490, L["FILTERS"], L["ADJUSTDKP"], L["MANAGE"], L["OPTIONS"], L["LOOTHISTORY"], L["DKPHISTORY"]);
+	DWP.ConfigTab1, DWP.ConfigTab2, DWP.ConfigTab3, DWP.ConfigTab4, DWP.ConfigTab5, DWP.ConfigTab6, DWP.ConfigTab7 = DWP:SetTabs(DWP.UIConfig.TabMenu, 7, 475, 490, L["FILTERS"], L["ADJUSTDKP"], L["MANAGE"], L["OPTIONS"], L["RESERVATIONS"], L["LOOTHISTORY"], L["DKPHISTORY"]);
 
 	---------------------------------------
 	-- MENU TAB 1
@@ -263,27 +263,27 @@ function DWP:ConfigMenuTabs()
 	-- Loot History TAB
 	---------------------------------------
 
-	DWP.ConfigTab5.text = DWP.ConfigTab5:CreateFontString(nil, "OVERLAY")
-	DWP.ConfigTab5.text:ClearAllPoints();
-	DWP.ConfigTab5.text:SetFontObject("DWPLargeLeft");
-	DWP.ConfigTab5.text:SetPoint("TOPLEFT", DWP.ConfigTab5, "TOPLEFT", 15, -10);
-	DWP.ConfigTab5.text:SetText(L["LOOTHISTORY"]);
-	DWP.ConfigTab5.text:SetScale(1.2)
+	DWP.ConfigTab6.text = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab6.text:ClearAllPoints();
+	DWP.ConfigTab6.text:SetFontObject("DWPLargeLeft");
+	DWP.ConfigTab6.text:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 15, -10);
+	DWP.ConfigTab6.text:SetText(L["LOOTHISTORY"]);
+	DWP.ConfigTab6.text:SetScale(1.2)
 
-	DWP.ConfigTab5.inst = DWP.ConfigTab5:CreateFontString(nil, "OVERLAY")
-	DWP.ConfigTab5.inst:ClearAllPoints();
-	DWP.ConfigTab5.inst:SetFontObject("DWPSmallRight");
-	DWP.ConfigTab5.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
-	DWP.ConfigTab5.inst:SetPoint("TOPRIGHT", DWP.ConfigTab5, "TOPRIGHT", -40, -43);
-	DWP.ConfigTab5.inst:SetText(L["LOOTHISTINST1"]);
+	DWP.ConfigTab6.inst = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab6.inst:ClearAllPoints();
+	DWP.ConfigTab6.inst:SetFontObject("DWPSmallRight");
+	DWP.ConfigTab6.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
+	DWP.ConfigTab6.inst:SetPoint("TOPRIGHT", DWP.ConfigTab6, "TOPRIGHT", -40, -43);
+	DWP.ConfigTab6.inst:SetText(L["LOOTHISTINST1"]);
 
 	-- Populate Loot History (LootHistory.lua)
 	local looter = {}
-	DWP.ConfigTab5.looter = looter
+	DWP.ConfigTab6.looter = looter
 	local lootFrame = {}
-	DWP.ConfigTab5.lootFrame = lootFrame
+	DWP.ConfigTab6.lootFrame = lootFrame
 	for i=1, #DWPlus_Loot do
-	DWP.ConfigTab5.lootFrame[i] = CreateFrame("Frame", "DWPLootHistoryFrame"..i, DWP.ConfigTab5);
+	DWP.ConfigTab6.lootFrame[i] = CreateFrame("Frame", "DWPLootHistoryFrame"..i, DWP.ConfigTab6);
 	end
 
 	if #DWPlus_Loot > 0 then
@@ -295,23 +295,22 @@ function DWP:ConfigMenuTabs()
 	-- DKP History Tab
 	---------------------------------------
 
-	DWP.ConfigTab6.text = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")
-	DWP.ConfigTab6.text:ClearAllPoints();
-	DWP.ConfigTab6.text:SetFontObject("DWPLargeLeft");
-	DWP.ConfigTab6.text:SetPoint("TOPLEFT", DWP.ConfigTab6, "TOPLEFT", 15, -10);
-	DWP.ConfigTab6.text:SetText(L["DKPHISTORY"]);
-	DWP.ConfigTab6.text:SetScale(1.2)
+	DWP.ConfigTab7.text = DWP.ConfigTab7:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab7.text:ClearAllPoints();
+	DWP.ConfigTab7.text:SetFontObject("DWPLargeLeft");
+	DWP.ConfigTab7.text:SetPoint("TOPLEFT", DWP.ConfigTab7, "TOPLEFT", 15, -10);
+	DWP.ConfigTab7.text:SetText(L["DKPHISTORY"]);
+	DWP.ConfigTab7.text:SetScale(1.2)
 
-	DWP.ConfigTab6.inst = DWP.ConfigTab6:CreateFontString(nil, "OVERLAY")
-	DWP.ConfigTab6.inst:ClearAllPoints();
-	DWP.ConfigTab6.inst:SetFontObject("DWPSmallRight");
-	DWP.ConfigTab6.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
-	DWP.ConfigTab6.inst:SetPoint("TOPRIGHT", DWP.ConfigTab6, "TOPRIGHT", -40, -43);
-	
+	DWP.ConfigTab7.inst = DWP.ConfigTab7:CreateFontString(nil, "OVERLAY")
+	DWP.ConfigTab7.inst:ClearAllPoints();
+	DWP.ConfigTab7.inst:SetFontObject("DWPSmallRight");
+	DWP.ConfigTab7.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
+	DWP.ConfigTab7.inst:SetPoint("TOPRIGHT", DWP.ConfigTab7, "TOPRIGHT", -40, -43);
+
 	if #DWPlus_RPHistory > 0 then
 		DWP:DKPHistory_Update()
 	end
 	DKPHistoryFilterBox_Create()
-
 end
 	

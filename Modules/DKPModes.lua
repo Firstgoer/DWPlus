@@ -33,7 +33,7 @@ function DWP:DKPModesFrame_Create()
 
 	f:SetClampedToScreen(true)
 	f:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -200);
-	f:SetSize(473, 598);
+	f:SetSize(483, 598);
 	f:SetBackdrop( {
 	edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
 	insets = { left = 0, right = 0, top = 0, bottom = 0 }
@@ -57,7 +57,7 @@ function DWP:DKPModesFrame_Create()
 	f.BG = f:CreateTexture(nil, "OVERLAY", nil);
 	f.BG:SetColorTexture(0, 0, 0, 1)
 	f.BG:SetPoint("TOPLEFT", f, "TOPLEFT", 2, -2);
-	f.BG:SetSize(475, 600);
+	f.BG:SetSize(485, 600);
 	f.BG:SetTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\menu-bg");
 
 	-- TabMenu ScrollFrame and ScrollBar
