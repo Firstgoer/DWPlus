@@ -418,7 +418,7 @@ function DWP:DKPHistory_Update(reset)
 				if i~=1 then
 					DWP.ConfigTab6.history[i]:SetPoint("TOPLEFT", DWP.ConfigTab6.history[i-1], "BOTTOMLEFT", 0, -20)
 				end
-				DWP.ConfigTab6.history[i].h:SetText(month.."/"..day.."/"..year);
+				DWP.ConfigTab6.history[i].h:SetText(day.."/"..month.."/"..year);
 				DWP.ConfigTab6.history[i].h:Show()
 				curDate = day;
 			else

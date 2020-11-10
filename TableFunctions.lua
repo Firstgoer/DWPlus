@@ -145,9 +145,9 @@ local function DisplayUserHistory(self, player)
 		end
 
 		for i=1, RowCount do
-			if date("%m/%d/%y", PlayerTable[i].date) ~= curDate then
-				curDate = date("%m/%d/%y", PlayerTable[i].date)
-				GameTooltip:AddLine(date("%m/%d/%y", PlayerTable[i].date), 1.0, 1.0, 1.0, true);
+			if date("%d/%m/%y", PlayerTable[i].date) ~= curDate then
+				curDate = date("%d/%m/%y", PlayerTable[i].date)
+				GameTooltip:AddLine(date("%d/%m/%y", PlayerTable[i].date), 1.0, 1.0, 1.0, true);
 			end
 			if PlayerTable[i].dkp then
 				if strfind(PlayerTable[i].dkp, "%%") then

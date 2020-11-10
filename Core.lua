@@ -483,7 +483,7 @@ function DWP:StatusVerify_Update()
 				if (date1 and tonumber(date1) < (time() - 1209600)) or not DWP:ValidateSender(officer1) then   -- does not consider if claimed entry was made more than two weeks ago or name is not an officer
 					core.OOD = false
 				else
-					date1 = date("%m/%d/%y %H:%M:%S", tonumber(date1))
+					date1 = date("%d/%m/%y %H:%M:%S", tonumber(date1))
 					missing[officer1] = date1 			-- if both missing seeds identify the same officer, it'll only list once
 				end
 			end
@@ -494,7 +494,7 @@ function DWP:StatusVerify_Update()
 				if (date2 and tonumber(date2) < (time() - 1209600)) or not DWP:ValidateSender(officer2) then   -- does not consider if claimed entry was made more than two weeks ago or name is not an officer
 					core.OOD = false
 				else
-					date2 = date("%m/%d/%y %H:%M:%S", tonumber(date2))
+					date2 = date("%d/%m/%y %H:%M:%S", tonumber(date2))
 					missing[officer2] = date2
 				end
 			end
