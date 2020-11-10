@@ -536,8 +536,8 @@ local function StartBidding()
 			SendChatMessage(L["TAKINGBIDSON"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.cost:GetText()..perc..")", "RAID_WARNING")
 			SendChatMessage(L["TOBIDUSE"].." "..channelText.." "..L["TOSEND"].." !bid. "..L["OR"].." !bid cancel "..L["TOWITHDRAWBID"], "RAID_WARNING")
 		elseif mode == "Roll Based Bidding" then
+			SendChatMessage(L["STARTROLL"], "RAID_WARNING")
 			SendChatMessage(L["ROLLFOR"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.cost:GetText()..perc..")", "RAID_WARNING")
-			SendChatMessage(L["TOBIDROLLRANGE"].." "..channelText.." "..L["WITH"].." !rp", "RAID_WARNING")
 		end
 	end
 end
