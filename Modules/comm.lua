@@ -288,7 +288,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 			if (sender ~= UnitName("player")) then
 				if prefix == "DWPLootDist" or prefix == "DWPDKPDist" or prefix == "DWPDelLoot" or prefix == "DWPDelSync" or prefix == "DWPMinBid" or prefix == "DWPWhitelist"
 				or prefix == "DWPDKPModes" or prefix == "DWPStand" or prefix == "DWPZSumBank" or prefix == "DWPBossLoot" or prefix == "DWPDecay" or prefix == "DWPDelUsers" or
-				prefix == "DWPAllTabs" or prefix == "DWPBidShare" or prefix == "DWPMerge" then
+				prefix == "DWPAllTabs" or prefix == "DWPBidShare" or prefix == "DWPMerge" or prefix == "DWPConsul" then
 					decoded = LibDeflate:DecompressDeflate(LibDeflate:DecodeForWoWAddonChannel(message))
 					local success, deserialized = LibAceSerializer:Deserialize(decoded);
 					if success then
@@ -722,7 +722,6 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 
 							DWP:LootTable_Set(lootList)
 						elseif prefix == "DWPConsul" then
-							print("Consul received", deserialized);
 							DWPlus_Consul = deserialized;
 							DWP:ConsulUpdate();
 						end
