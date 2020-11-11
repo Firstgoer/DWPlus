@@ -312,8 +312,12 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 										DWPlus_RPTable = deserialized.DKPTable
 										DWPlus_RPHistory = deserialized.DKP
 										DWPlus_Loot = deserialized.Loot
-										DWPlus_Consul = deserialized.Consul
-										
+
+										if (DWP:canUserChangeConsul(sender)) then
+											DWPlus_Consul = deserialized.Consul;
+											DWP:ConsulUpdate();
+										end
+
 										DWPlus_Archive = deserialized.Archive
 										
 										if DWP.ConfigTab7 and DWP.ConfigTab7.history and DWP.ConfigTab7:IsShown() then
@@ -340,7 +344,11 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 								DWPlus_RPTable = deserialized.DKPTable
 								DWPlus_RPHistory = deserialized.DKP
 								DWPlus_Loot = deserialized.Loot
-								DWPlus_Consul = deserialized.Consul
+
+								if (DWP:canUserChangeConsul(sender)) then
+									DWPlus_Consul = deserialized.Consul;
+									DWP:ConsulUpdate();
+								end
 								
 								DWPlus_Archive = deserialized.Archive
 								
@@ -357,7 +365,6 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 								end
 								DWP:FilterDKPTable(core.currentSort, "reset")
 								DWP:StatusVerify_Update()
-								DWP:ConsulUpdate();
 							end
 							return
 						elseif prefix == "DWPMerge" then
@@ -474,11 +481,15 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 								end
 							end
 
+							if (DWP:canUserChangeConsul(sender)) then
+								DWPlus_Consul = deserialized.Consul;
+								DWP:ConsulUpdate();
+							end
+
 							DWP:LootHistory_Reset()
 							DWP:LootHistory_Update(L["NOFILTER"])
 							DWP:FilterDKPTable(core.currentSort, "reset")
 							DWP:StatusVerify_Update();
-							DWP:ConsulUpdate();
 
 							return
 						elseif prefix == "DWPLootDist" then
@@ -722,8 +733,10 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 
 							DWP:LootTable_Set(lootList)
 						elseif prefix == "DWPConsul" then
-							DWPlus_Consul = deserialized;
-							DWP:ConsulUpdate();
+							if (DWP:canUserChangeConsul(sender)) then
+								DWPlus_Consul = deserialized;
+								DWP:ConsulUpdate();
+							end
 						end
 					else
 						DWP:Print("Report the following error on Curse or Github: "..deserialized)  -- error reporting if string doesn't get deserialized correctly

@@ -378,7 +378,7 @@ local function CreateRow(parent, id, item)
 		--if button == "LeftButton" then
 		--	LeftClickTooltip(id)
 		--end
-		if button == "RightButton" and core.IsOfficer then
+		if button == "RightButton" and DWP:canUserChangeConsul(UnitName("player")) then
 			RightClickMenu(id)
 		end
 	end)
@@ -802,6 +802,17 @@ function DWP:ConsulModal()
 	end)
 end
 
+function DWP:canUserChangeConsul(sender)
+	local rankIndex = DWP:GetGuildRankIndex(sender);
+
+	if rankIndex == 1 then       			-- automatically gives permissions above all settings if player is guild leader
+		return true;
+	end
+
+	return DWP:ValidateSender(sender);
+	-- return false -- TODO: enable only for GM
+end
+
 function DWPlus_ConsulTab_Show()
 	menuFrame = CreateFrame("Frame", "DWPDeleteDKPMenuFrame", UIParent, "UIDropDownMenuTemplate");
 
@@ -812,7 +823,7 @@ function DWPlus_ConsulTab_Show()
 	DWP.ConfigTab5.text:SetText(L["CONSULLOOT"]);
 	DWP.ConfigTab5.text:SetScale(1.2)
 
-	if (core.IsOfficer) then
+	if (DWP:canUserChangeConsul(UnitName("player"))) then
 		addConsulFrame = CreateFrame("Frame", "DWPAddConsulFrame", DWP.ConfigTab5);
 		addConsulFrame:SetPoint("TOPLEFT", DWP.ConfigTab5.text, "BOTTOMLEFT", 0, -15);
 		addConsulFrame:SetSize(consulItemsWidth, 80);
