@@ -5,6 +5,7 @@ local GameTooltip = GameTooltip
 
 local players = {};
 
+local playerHeader;
 local playerDropdown;
 local playerSelected;
 
@@ -13,11 +14,13 @@ local zoneBossDropdown;
 local zoneSelected;
 local bossSelected;
 
+local itemHeader;
 local itemDropDown;
 local itemSelected;
 
 local updateItemDropdown;
 
+local addButton;
 local addConsulFrame;
 local menuFrame;
 
@@ -33,6 +36,13 @@ local drawnRows = {};
 local consulDialog;
 local consulSelectedZone;
 local consulSelectedChannel = "RAID";
+
+local function tableHasItems(table)
+	for _, _ in pairs(table) do
+		return true;
+	end
+	return false;
+end
 
 local function GetPlayersOptions()
 	for i=1, #DWPlus_RPTable do
@@ -91,6 +101,8 @@ local function ConsulDeleteEntry(index, item)
 		OnAccept = function()
 			table.remove(DWPlus_Consul, index);
 			DWP:ConsulUpdate();
+			DWP.Sync:SendData("DWPConsul", DWPlus_Consul);
+			DWP:ConsulZoneShareUpdate()
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -131,19 +143,25 @@ local function resetItemDropDown()
 end
 
 local function BossZoneDropDownCreate()
-	zoneBossHeader = addConsulFrame:CreateFontString(nil, "OVERLAY")
-	zoneBossHeader:SetFontObject("DWPLargeRight");
-	zoneBossHeader:SetScale(0.7)
-	zoneBossHeader:SetPoint("TOPLEFT", addConsulFrame, "TOPLEFT", 30, -20);
-	zoneBossHeader:SetText(L["BOSS"]..":")
-	zoneBossHeader:SetWidth(80);
+	if not zoneBossHeader then
+		zoneBossHeader = addConsulFrame:CreateFontString(nil, "OVERLAY")
+		zoneBossHeader:SetFontObject("DWPLargeRight");
+		zoneBossHeader:SetScale(0.7)
+		zoneBossHeader:SetPoint("TOPLEFT", addConsulFrame, "TOPLEFT", 30, -20);
+		zoneBossHeader:SetText(L["BOSS"]..":")
+		zoneBossHeader:SetWidth(80);
+	end
 
-	zoneBossDropdown = CreateFrame("FRAME", "DWPCLZoneDropDown", addConsulFrame, "DWPlusUIDropDownMenuTemplate")
-	zoneBossDropdown:SetPoint("LEFT", zoneBossHeader, "RIGHT", -15, -2)
-	UIDropDownMenu_SetWidth(zoneBossDropdown, 120)
-	UIDropDownMenu_JustifyText(zoneBossDropdown, "LEFT")
+	if not zoneBossDropdown then
+		zoneBossDropdown = CreateFrame("FRAME", "DWPCLZoneDropDown", addConsulFrame, "DWPlusUIDropDownMenuTemplate")
+		zoneBossDropdown:SetPoint("LEFT", zoneBossHeader, "RIGHT", -15, -2)
+		UIDropDownMenu_SetWidth(zoneBossDropdown, 120)
+		UIDropDownMenu_JustifyText(zoneBossDropdown, "LEFT")
+	end
 
-	UIDropDownMenu_SetText(zoneBossDropdown, zoneSelected or "");
+	if zoneSelected and bossSelected then
+		UIDropDownMenu_SetText(zoneBossDropdown, getBossName(zoneSelected, bossSelected));
+	end
 
 	UIDropDownMenu_Initialize(zoneBossDropdown, function(self, level, menuList)
 		local filterName = UIDropDownMenu_CreateInfo()
@@ -185,34 +203,38 @@ local function BossZoneDropDownCreate()
 end
 
 local function ItemDropDownCreate()
-	local itemHeader = addConsulFrame:CreateFontString(nil, "OVERLAY")
-	itemHeader:SetFontObject("DWPLargeRight");
-	itemHeader:SetScale(0.7)
-	itemHeader:SetPoint("TOPRIGHT", zoneBossHeader, "BOTTOMRIGHT", 0, -25);
-	itemHeader:SetText(L["ITEM"]..":")
+	if not itemHeader then
+		itemHeader = addConsulFrame:CreateFontString(nil, "OVERLAY")
+		itemHeader:SetFontObject("DWPLargeRight");
+		itemHeader:SetScale(0.7)
+		itemHeader:SetPoint("TOPRIGHT", zoneBossHeader, "BOTTOMRIGHT", 0, -25);
+		itemHeader:SetText(L["ITEM"]..":")
+	end
 
-	itemDropDown = CreateFrame("FRAME", "DWPCLItemDropDown", addConsulFrame, "DWPlusUIDropDownMenuTemplate")
-	itemDropDown:SetPoint("LEFT", itemHeader, "RIGHT", -15, -2)
-	UIDropDownMenu_SetWidth(itemDropDown, 120);
-	UIDropDownMenu_JustifyText(itemDropDown, "LEFT");
+	if not itemDropDown then
+		itemDropDown = CreateFrame("FRAME", "DWPCLItemDropDown", addConsulFrame, "DWPlusUIDropDownMenuTemplate")
+		itemDropDown:SetPoint("LEFT", itemHeader, "RIGHT", -15, -2)
+		UIDropDownMenu_SetWidth(itemDropDown, 120);
+		UIDropDownMenu_JustifyText(itemDropDown, "LEFT");
 
-	UIDropDownMenu_SetText(itemDropDown, itemSelected or "");
+		UIDropDownMenu_SetText(itemDropDown, itemSelected or "");
 
-	itemDropDown:SetScript("OnEnter", function ()
-		if (itemSelected) then
-			local _, itemLink = GetItemInfo(itemSelected);
-			GameTooltip:SetOwner(itemDropDown);
-			GameTooltip:SetHyperlink(itemLink);
-			GameTooltip:Show();
-		end
-	end);
-	itemDropDown:SetScript("OnLeave", function ()
-		if (itemSelected) then
-			GameTooltip:Hide();
-		end
-	end);
+		itemDropDown:SetScript("OnEnter", function ()
+			if (itemSelected) then
+				local _, itemLink = GetItemInfo(itemSelected);
+				GameTooltip:SetOwner(itemDropDown);
+				GameTooltip:SetHyperlink(itemLink);
+				GameTooltip:Show();
+			end
+		end);
+		itemDropDown:SetScript("OnLeave", function ()
+			if (itemSelected) then
+				GameTooltip:Hide();
+			end
+		end);
+	end
 
-	resetItemDropDown();
+	updateItemDropdown();
 end
 
 updateItemDropdown = function()
@@ -257,17 +279,30 @@ updateItemDropdown = function()
 end
 
 local function PlayersSelectorCreate()
-	local playerHeader = addConsulFrame:CreateFontString(nil, "OVERLAY")
-	playerHeader:SetFontObject("DWPLargeRight");
-	playerHeader:SetScale(0.7)
-	playerHeader:SetPoint("TOPLEFT", zoneBossDropdown, "TOPRIGHT", 0, -7);
-	playerHeader:SetText(L["PLAYER"]..":")
+	if not playerHeader then
+		playerHeader = addConsulFrame:CreateFontString(nil, "OVERLAY")
+		playerHeader:SetFontObject("DWPLargeRight");
+		playerHeader:SetScale(0.7)
+		playerHeader:SetPoint("TOPLEFT", zoneBossDropdown, "TOPRIGHT", 0, -7);
+		playerHeader:SetText(L["PLAYER"]..":")
+	end
 
 	if not playerDropdown then
 		playerDropdown = CreateFrame("FRAME", "DWPCLPlayerDropDown", addConsulFrame, "DWPlusUIDropDownMenuTemplate")
-	end
+		playerDropdown:SetPoint("LEFT", playerHeader, "RIGHT", -15, -2)
 
-	playerDropdown:SetPoint("LEFT", playerHeader, "RIGHT", -15, -2)
+		UIDropDownMenu_SetWidth(playerDropdown, 120)
+		UIDropDownMenu_SetText(playerDropdown, playerSelected or "")
+
+		-- Dropdown Menu Function
+		function playerDropdown:FilterSetValue(newValue, arg2)
+			UIDropDownMenu_SetText(playerDropdown, arg2)
+
+			playerSelected = newValue;
+			maxDisplayed = 30;
+			CloseDropDownMenus()
+		end
+	end
 
 	UIDropDownMenu_Initialize(playerDropdown, function(self, level, menuList)
 		local filterName = UIDropDownMenu_CreateInfo()
@@ -313,18 +348,6 @@ local function PlayersSelectorCreate()
 			end
 		end
 	end)
-
-	UIDropDownMenu_SetWidth(playerDropdown, 120)
-	UIDropDownMenu_SetText(playerDropdown, playerSelected or "")
-
-	-- Dropdown Menu Function
-	function playerDropdown:FilterSetValue(newValue, arg2)
-		UIDropDownMenu_SetText(playerDropdown, arg2)
-
-		playerSelected = newValue;
-		maxDisplayed = 30;
-		CloseDropDownMenus()
-	end
 end
 
 local function CreateRow(parent, id, item)
@@ -441,7 +464,10 @@ local function sortConsulTable()
 end
 
 local function ConsulAddButtonCreate()
-	local addButton = CreateFrame("Button", nil, addConsulFrame, "DWPlusButtonTemplate")
+	if addButton then
+		return;
+	end
+	addButton = CreateFrame("Button", nil, addConsulFrame, "DWPlusButtonTemplate")
 	addButton:SetSize(100, 26);
 	addButton:SetText(L["ADD"]);
 	addButton:GetFontString():SetTextColor(1, 1, 1, 1)
@@ -474,6 +500,7 @@ local function ConsulAddButtonCreate()
 		UIDropDownMenu_SetText(playerDropdown, "");
 		resetItemDropDown();
 		DWP.Sync:SendData("DWPConsul", DWPlus_Consul);
+		DWP:ConsulZoneShareUpdate();
 	end)
 end
 
@@ -487,7 +514,9 @@ local function changeSortConsulTable(column)
 end
 
 local function ConsulTableCreate(point)
-	tableHeaders = CreateFrame("Frame", "ConsulTableHeaders", DWP.ConfigTab5)
+	if not tableHeaders then
+		tableHeaders = CreateFrame("Frame", "ConsulTableHeaders", DWP.ConfigTab5)
+	end
 	tableHeaders:SetSize(consulItemsWidth, 22)
 	tableHeaders:SetPoint(unpack(point));
 	tableHeaders:SetBackdrop({
@@ -498,9 +527,15 @@ local function ConsulTableCreate(point)
 	tableHeaders:SetBackdropBorderColor(1,1,1,0.5)
 	tableHeaders:Show()
 
-	SortButtons.bossZone = CreateFrame("Button", "$ParentSortButtonDkp", tableHeaders)
-	SortButtons.item = CreateFrame("Button", "$ParentSortButtonItem", tableHeaders)
-	SortButtons.player = CreateFrame("Button", "$ParentSortButtonPlayer", tableHeaders)
+	if not SortButtons.bossZone then
+		SortButtons.bossZone = CreateFrame("Button", "$ParentSortButtonDkp", tableHeaders)
+	end
+	if not SortButtons.item then
+		SortButtons.item = CreateFrame("Button", "$ParentSortButtonItem", tableHeaders)
+	end
+	if not SortButtons.player then
+		SortButtons.player = CreateFrame("Button", "$ParentSortButtonPlayer", tableHeaders)
+	end
 
 	SortButtons.bossZone:SetPoint("LEFT", tableHeaders, "LEFT")
 	SortButtons.item:SetPoint("LEFT", SortButtons.bossZone, "RIGHT")
@@ -519,7 +554,9 @@ local function ConsulTableCreate(point)
 		end)
 	end
 
-	SortButtons.bossZone.t = CreateFrame("FRAME", "ConsulSortColDropdown", SortButtons.bossZone, "DWPlusTableHeaderDropDownMenuTemplate")
+	if not SortButtons.bossZone.t then
+		SortButtons.bossZone.t = CreateFrame("FRAME", "ConsulSortColDropdown", SortButtons.bossZone, "DWPlusTableHeaderDropDownMenuTemplate")
+	end
 	SortButtons.bossZone.t:SetPoint("CENTER", SortButtons.bossZone, "CENTER", 4, -3)
 	UIDropDownMenu_JustifyText(SortButtons.bossZone.t, "CENTER")
 	UIDropDownMenu_SetWidth(SortButtons.bossZone.t, 80)
@@ -614,78 +651,14 @@ local function getConsulZones()
 	return zones;
 end
 
-function DWP:ConsulModal()
-	if not consulDialog then
-		consulDialog = CreateFrame("Frame", "DWPConsulDialog", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
-		consulDialog:SetPoint("CENTER", UIParent, "CENTER", 0, 30);
-		consulDialog:SetSize(270, 150);
-		consulDialog:SetBackdrop({
-			bgFile   = "Textures\\white.blp", tile = true,
-			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
-		});
-		consulDialog:SetBackdropColor(0,0,0,0.8);
-		consulDialog:SetMovable(true);
-		consulDialog:EnableMouse(true);
-		consulDialog:RegisterForDrag("LeftButton");
-		consulDialog:SetScript("OnDragStart", consulDialog.StartMoving);
-		consulDialog:SetScript("OnDragStop", consulDialog.StopMovingOrSizing);
-		consulDialog:SetFrameStrata("DIALOG")
-		consulDialog:SetFrameLevel(10)
-
-		-- Close Button
-		consulDialog.closeContainer = CreateFrame("Frame", "DWPConsulClose", consulDialog)
-		consulDialog.closeContainer:SetPoint("TOPRIGHT", consulDialog, "TOPRIGHT", -2, -2)
-		consulDialog.closeContainer:SetSize(28, 28)
-
-		consulDialog.closeBtn = CreateFrame("Button", nil, consulDialog, "UIPanelCloseButton")
-		consulDialog.closeBtn:SetPoint("CENTER", consulDialog.closeContainer, "TOPRIGHT", -14, -14)
-		tinsert(UISpecialFrames, consulDialog:GetName()); -- Sets frame to close on "Escape"
-
-		local dialogHeader = consulDialog:CreateFontString(nil, "OVERLAY")
-		dialogHeader:SetFontObject("DWPLargeCenter");
-		dialogHeader:SetScale(0.7)
-		dialogHeader:SetPoint("TOP", consulDialog, "TOP", 0, -15);
-		dialogHeader:SetText(L["CONSULDIALOGHEADER"]..":")
-
-		local zoneHeader = consulDialog:CreateFontString(nil, "OVERLAY")
-		zoneHeader:SetFontObject("DWPLargeRight");
-		zoneHeader:SetScale(0.7)
-		zoneHeader:SetPoint("TOPLEFT", consulDialog, "TOPLEFT", 25, -60);
-		zoneHeader:SetText(L["ZONE"]..":")
-
-		consulDialog.zoneDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
-		consulDialog.zoneDropdown:SetPoint("LEFT", zoneHeader, "RIGHT", -15, -2)
-		UIDropDownMenu_SetWidth(consulDialog.zoneDropdown, 120);
-		UIDropDownMenu_JustifyText(consulDialog.zoneDropdown, "LEFT");
-
-		local channelHeader = consulDialog:CreateFontString(nil, "OVERLAY")
-		channelHeader:SetFontObject("DWPLargeRight");
-		channelHeader:SetScale(0.7)
-		channelHeader:SetPoint("TOPLEFT", zoneHeader, "BOTTOMLEFT", 0, -25);
-		channelHeader:SetText(L["CHANNEL"]..":")
-
-		consulDialog.channelDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
-		consulDialog.channelDropdown:SetPoint("LEFT", channelHeader, "RIGHT", -15, -2)
-		UIDropDownMenu_SetWidth(consulDialog.channelDropdown, 120);
-		UIDropDownMenu_JustifyText(consulDialog.channelDropdown, "LEFT");
-
-		consulDialog.addButton = CreateFrame("Button", nil, consulDialog, "DWPlusButtonTemplate")
-		consulDialog.addButton:SetSize(100, 26);
-		consulDialog.addButton:SetText(L["OK"]);
-		consulDialog.addButton:GetFontString():SetTextColor(1, 1, 1, 1)
-		consulDialog.addButton:SetNormalFontObject("DWPSmallCenter");
-		consulDialog.addButton:SetHighlightFontObject("DWPSmallCenter");
-		consulDialog.addButton:SetPoint("BOTTOM", consulDialog, "BOTTOM", 0, 15);
-		consulDialog.addButton:SetScript("OnClick", function()
-			printConsulForZone();
-		end)
+function DWP:ConsulZoneShareUpdate()
+	local zonesWithConsul = getConsulZones();
+	if not zonesWithConsul[consulSelectedZone] then
+		UIDropDownMenu_SetText(consulDialog.zoneDropdown, "");
+		consulSelectedZone = nil;
 	end
 
-	consulDialog:Show();
-
-	local zonesWithConsul = getConsulZones();
-
-	if not consulSelectedZone then
+	if not consulSelectedZone  then
 		local zoneId;
 		if IsInRaid() then
 			_, _, _, _, _, _, _, zoneId = GetInstanceInfo();
@@ -706,7 +679,7 @@ function DWP:ConsulModal()
 
 		reason.func = self.SetValue
 
-		if zonesWithConsul then
+		if tableHasItems(zonesWithConsul) then
 			for zoneId, _ in pairs(zonesWithConsul) do
 				local zoneName = getZoneName(zoneId);
 				reason.text, reason.arg1, reason.arg2, reason.checked, reason.isNotRadio = zoneName, zoneId, zoneName, zoneId == consulSelectedZone, true
@@ -723,6 +696,78 @@ function DWP:ConsulModal()
 			UIDropDownMenu_AddButton(reason)
 		end
 	end)
+end
+
+function DWP:ConsulModal()
+	if not consulDialog then
+		consulDialog = CreateFrame("Frame", "DWPConsulDialog", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
+	end
+	consulDialog:SetPoint("CENTER", UIParent, "CENTER", 0, 30);
+	consulDialog:SetSize(270, 150);
+	consulDialog:SetBackdrop({
+		bgFile   = "Textures\\white.blp", tile = true,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
+	});
+	consulDialog:SetBackdropColor(0,0,0,0.8);
+	consulDialog:SetMovable(true);
+	consulDialog:EnableMouse(true);
+	consulDialog:RegisterForDrag("LeftButton");
+	consulDialog:SetScript("OnDragStart", consulDialog.StartMoving);
+	consulDialog:SetScript("OnDragStop", consulDialog.StopMovingOrSizing);
+	consulDialog:SetFrameStrata("FULLSCREEN_DIALOG")
+	consulDialog:SetFrameLevel(11)
+
+	-- Close Button
+	consulDialog.closeContainer = CreateFrame("Frame", "DWPConsulClose", consulDialog)
+	consulDialog.closeContainer:SetPoint("TOPRIGHT", consulDialog, "TOPRIGHT", -2, -2)
+	consulDialog.closeContainer:SetSize(28, 28)
+
+	consulDialog.closeBtn = CreateFrame("Button", nil, consulDialog, "UIPanelCloseButton")
+	consulDialog.closeBtn:SetPoint("CENTER", consulDialog.closeContainer, "TOPRIGHT", -14, -14)
+	tinsert(UISpecialFrames, consulDialog:GetName()); -- Sets frame to close on "Escape"
+
+	local dialogHeader = consulDialog:CreateFontString(nil, "OVERLAY")
+	dialogHeader:SetFontObject("DWPLargeCenter");
+	dialogHeader:SetScale(0.7)
+	dialogHeader:SetPoint("TOP", consulDialog, "TOP", 0, -15);
+	dialogHeader:SetText(L["CONSULDIALOGHEADER"]..":")
+
+	local zoneHeader = consulDialog:CreateFontString(nil, "OVERLAY")
+	zoneHeader:SetFontObject("DWPLargeRight");
+	zoneHeader:SetScale(0.7)
+	zoneHeader:SetPoint("TOPLEFT", consulDialog, "TOPLEFT", 25, -60);
+	zoneHeader:SetText(L["ZONE"]..":")
+
+	consulDialog.zoneDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
+	consulDialog.zoneDropdown:SetPoint("LEFT", zoneHeader, "RIGHT", -15, -2)
+	UIDropDownMenu_SetWidth(consulDialog.zoneDropdown, 120);
+	UIDropDownMenu_JustifyText(consulDialog.zoneDropdown, "LEFT");
+
+	local channelHeader = consulDialog:CreateFontString(nil, "OVERLAY")
+	channelHeader:SetFontObject("DWPLargeRight");
+	channelHeader:SetScale(0.7)
+	channelHeader:SetPoint("TOPLEFT", zoneHeader, "BOTTOMLEFT", 0, -25);
+	channelHeader:SetText(L["CHANNEL"]..":")
+
+	consulDialog.channelDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
+	consulDialog.channelDropdown:SetPoint("LEFT", channelHeader, "RIGHT", -15, -2)
+	UIDropDownMenu_SetWidth(consulDialog.channelDropdown, 120);
+	UIDropDownMenu_JustifyText(consulDialog.channelDropdown, "LEFT");
+
+	consulDialog.addButton = CreateFrame("Button", nil, consulDialog, "DWPlusButtonTemplate")
+	consulDialog.addButton:SetSize(100, 26);
+	consulDialog.addButton:SetText(L["OK"]);
+	consulDialog.addButton:GetFontString():SetTextColor(1, 1, 1, 1)
+	consulDialog.addButton:SetNormalFontObject("DWPSmallCenter");
+	consulDialog.addButton:SetHighlightFontObject("DWPSmallCenter");
+	consulDialog.addButton:SetPoint("BOTTOM", consulDialog, "BOTTOM", 0, 15);
+	consulDialog.addButton:SetScript("OnClick", function()
+		printConsulForZone();
+	end)
+
+	consulDialog:Show();
+
+	DWP:ConsulZoneShareUpdate();
 
 	local channels = {
 		["SAY"] = CHAT_MSG_SAY,

@@ -722,6 +722,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 
 							DWP:LootTable_Set(lootList)
 						elseif prefix == "DWPConsul" then
+							print("Consul received", deserialized);
 							DWPlus_Consul = deserialized;
 							DWP:ConsulUpdate();
 						end
