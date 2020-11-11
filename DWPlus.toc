@@ -2,7 +2,7 @@
 ## Title: DWPlus
 ## Author: Firstgoer & Tikinokys
 ## Notes: DreamWorld guild management utility.
-## Version: 1.0.20
+## Version: 1.1.0
 ## DefaultState: enabled
 ## SavedVariables: DWPlus_DB, DWPlus_Loot, DWPlus_RPTable, DWPlus_RPHistory, DWPlus_MinBids, DWPlus_Whitelist, DWPlus_Standby, DWPlus_Archive, DWPlus_Consul
 
