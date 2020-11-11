@@ -889,7 +889,7 @@ function DWP:Options()
 	DWP.ConfigTab4.submitSettings = self:CreateButton("BOTTOMLEFT", DWP.ConfigTab4, "BOTTOMLEFT", 30, 30, L["SAVESETTINGS"]);
 	DWP.ConfigTab4.submitSettings:ClearAllPoints();
 	DWP.ConfigTab4.submitSettings:SetPoint("TOP", DWP.ConfigTab4.AutoOpenCheckbox, "BOTTOMLEFT", 20, -40)
-	DWP.ConfigTab4.submitSettings:SetSize(90,25)
+	DWP.ConfigTab4.submitSettings:SetSize(110,25)
 	DWP.ConfigTab4.submitSettings:SetScript("OnClick", function()
 		if core.IsOfficer == true then
 			for i=1, 6 do

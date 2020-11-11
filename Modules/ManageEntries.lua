@@ -354,7 +354,7 @@ function DWP:ManageEntries()
 
 	-- remove selected entries button
 	DWP.ConfigTab3.remove_entries = self:CreateButton("TOPLEFT", DWP.ConfigTab3, "TOPLEFT", 170, -60, L["REMOVEENTRIES"]);
-	DWP.ConfigTab3.remove_entries:SetSize(120,25);
+	DWP.ConfigTab3.remove_entries:SetSize(130,25);
 	DWP.ConfigTab3.remove_entries:ClearAllPoints()
 	DWP.ConfigTab3.remove_entries:SetPoint("LEFT", DWP.ConfigTab3.add_raid_to_table, "RIGHT", 20, 0)
 	DWP.ConfigTab3.remove_entries:SetScript("OnEnter", function(self)
@@ -451,7 +451,7 @@ function DWP:ManageEntries()
 		GameTooltip:Hide()
 	end)
 	UIDropDownMenu_SetWidth(DWP.ConfigTab3.GuildRankDropDown, 105)
-	UIDropDownMenu_SetText(DWP.ConfigTab3.GuildRankDropDown, "Select Rank")
+	UIDropDownMenu_SetText(DWP.ConfigTab3.GuildRankDropDown, L["SELECTRANK"])
 
 	-- Create and bind the initialization function to the dropdown menu
 	UIDropDownMenu_Initialize(DWP.ConfigTab3.GuildRankDropDown, function(self, level, menuList)
@@ -484,7 +484,7 @@ function DWP:ManageEntries()
 
 	-- Add Guild to DKP Table Button
 	DWP.ConfigTab3.AddGuildToDKP = self:CreateButton("TOPLEFT", DWP.ConfigTab3, "TOPLEFT", 0, 0, L["ADDGUILDMEMBERS"]);
-	DWP.ConfigTab3.AddGuildToDKP:SetSize(120,25);
+	DWP.ConfigTab3.AddGuildToDKP:SetSize(130,25);
 	DWP.ConfigTab3.AddGuildToDKP:ClearAllPoints()
 	DWP.ConfigTab3.AddGuildToDKP:SetPoint("LEFT", DWP.ConfigTab3.GuildRankDropDown, "RIGHT", 2, 2)
 	DWP.ConfigTab3.AddGuildToDKP:SetScript("OnEnter", function(self)
