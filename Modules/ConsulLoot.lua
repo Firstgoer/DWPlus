@@ -101,8 +101,8 @@ local function ConsulDeleteEntry(index, item)
 		OnAccept = function()
 			table.remove(DWPlus_Consul, index);
 			DWP:ConsulUpdate();
+			DWP:ConsulZoneShareUpdate();
 			DWP.Sync:SendData("DWPConsul", DWPlus_Consul);
-			DWP:ConsulZoneShareUpdate()
 		end,
 		timeout = 0,
 		whileDead = true,
@@ -652,6 +652,9 @@ local function getConsulZones()
 end
 
 function DWP:ConsulZoneShareUpdate()
+	if not consulDialog then
+		return;
+	end
 	local zonesWithConsul = getConsulZones();
 	if not zonesWithConsul[consulSelectedZone] then
 		UIDropDownMenu_SetText(consulDialog.zoneDropdown, "");
@@ -701,69 +704,69 @@ end
 function DWP:ConsulModal()
 	if not consulDialog then
 		consulDialog = CreateFrame("Frame", "DWPConsulDialog", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
+		consulDialog:SetPoint("CENTER", UIParent, "CENTER", 0, 30);
+		consulDialog:SetSize(270, 150);
+		consulDialog:SetBackdrop({
+			bgFile   = "Textures\\white.blp", tile = true,
+			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
+		});
+		consulDialog:SetBackdropColor(0,0,0,0.8);
+		consulDialog:SetMovable(true);
+		consulDialog:EnableMouse(true);
+		consulDialog:RegisterForDrag("LeftButton");
+		consulDialog:SetScript("OnDragStart", consulDialog.StartMoving);
+		consulDialog:SetScript("OnDragStop", consulDialog.StopMovingOrSizing);
+		consulDialog:SetFrameStrata("FULLSCREEN_DIALOG")
+		consulDialog:SetFrameLevel(11)
+
+		-- Close Button
+		consulDialog.closeContainer = CreateFrame("Frame", "DWPConsulClose", consulDialog)
+		consulDialog.closeContainer:SetPoint("TOPRIGHT", consulDialog, "TOPRIGHT", -2, -2)
+		consulDialog.closeContainer:SetSize(28, 28)
+
+		consulDialog.closeBtn = CreateFrame("Button", nil, consulDialog, "UIPanelCloseButton")
+		consulDialog.closeBtn:SetPoint("CENTER", consulDialog.closeContainer, "TOPRIGHT", -14, -14)
+		tinsert(UISpecialFrames, consulDialog:GetName()); -- Sets frame to close on "Escape"
+
+		local dialogHeader = consulDialog:CreateFontString(nil, "OVERLAY")
+		dialogHeader:SetFontObject("DWPLargeCenter");
+		dialogHeader:SetScale(0.7)
+		dialogHeader:SetPoint("TOP", consulDialog, "TOP", 0, -15);
+		dialogHeader:SetText(L["CONSULDIALOGHEADER"]..":")
+
+		local zoneHeader = consulDialog:CreateFontString(nil, "OVERLAY")
+		zoneHeader:SetFontObject("DWPLargeRight");
+		zoneHeader:SetScale(0.7)
+		zoneHeader:SetPoint("TOPLEFT", consulDialog, "TOPLEFT", 25, -60);
+		zoneHeader:SetText(L["ZONE"]..":")
+
+		consulDialog.zoneDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
+		consulDialog.zoneDropdown:SetPoint("LEFT", zoneHeader, "RIGHT", -15, -2)
+		UIDropDownMenu_SetWidth(consulDialog.zoneDropdown, 120);
+		UIDropDownMenu_JustifyText(consulDialog.zoneDropdown, "LEFT");
+
+		local channelHeader = consulDialog:CreateFontString(nil, "OVERLAY")
+		channelHeader:SetFontObject("DWPLargeRight");
+		channelHeader:SetScale(0.7)
+		channelHeader:SetPoint("TOPLEFT", zoneHeader, "BOTTOMLEFT", 0, -25);
+		channelHeader:SetText(L["CHANNEL"]..":")
+
+		consulDialog.channelDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
+		consulDialog.channelDropdown:SetPoint("LEFT", channelHeader, "RIGHT", -15, -2)
+		UIDropDownMenu_SetWidth(consulDialog.channelDropdown, 120);
+		UIDropDownMenu_JustifyText(consulDialog.channelDropdown, "LEFT");
+
+		consulDialog.addButton = CreateFrame("Button", nil, consulDialog, "DWPlusButtonTemplate")
+		consulDialog.addButton:SetSize(100, 26);
+		consulDialog.addButton:SetText(L["OK"]);
+		consulDialog.addButton:GetFontString():SetTextColor(1, 1, 1, 1)
+		consulDialog.addButton:SetNormalFontObject("DWPSmallCenter");
+		consulDialog.addButton:SetHighlightFontObject("DWPSmallCenter");
+		consulDialog.addButton:SetPoint("BOTTOM", consulDialog, "BOTTOM", 0, 15);
+		consulDialog.addButton:SetScript("OnClick", function()
+			printConsulForZone();
+		end)
 	end
-	consulDialog:SetPoint("CENTER", UIParent, "CENTER", 0, 30);
-	consulDialog:SetSize(270, 150);
-	consulDialog:SetBackdrop({
-		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
-	});
-	consulDialog:SetBackdropColor(0,0,0,0.8);
-	consulDialog:SetMovable(true);
-	consulDialog:EnableMouse(true);
-	consulDialog:RegisterForDrag("LeftButton");
-	consulDialog:SetScript("OnDragStart", consulDialog.StartMoving);
-	consulDialog:SetScript("OnDragStop", consulDialog.StopMovingOrSizing);
-	consulDialog:SetFrameStrata("FULLSCREEN_DIALOG")
-	consulDialog:SetFrameLevel(11)
-
-	-- Close Button
-	consulDialog.closeContainer = CreateFrame("Frame", "DWPConsulClose", consulDialog)
-	consulDialog.closeContainer:SetPoint("TOPRIGHT", consulDialog, "TOPRIGHT", -2, -2)
-	consulDialog.closeContainer:SetSize(28, 28)
-
-	consulDialog.closeBtn = CreateFrame("Button", nil, consulDialog, "UIPanelCloseButton")
-	consulDialog.closeBtn:SetPoint("CENTER", consulDialog.closeContainer, "TOPRIGHT", -14, -14)
-	tinsert(UISpecialFrames, consulDialog:GetName()); -- Sets frame to close on "Escape"
-
-	local dialogHeader = consulDialog:CreateFontString(nil, "OVERLAY")
-	dialogHeader:SetFontObject("DWPLargeCenter");
-	dialogHeader:SetScale(0.7)
-	dialogHeader:SetPoint("TOP", consulDialog, "TOP", 0, -15);
-	dialogHeader:SetText(L["CONSULDIALOGHEADER"]..":")
-
-	local zoneHeader = consulDialog:CreateFontString(nil, "OVERLAY")
-	zoneHeader:SetFontObject("DWPLargeRight");
-	zoneHeader:SetScale(0.7)
-	zoneHeader:SetPoint("TOPLEFT", consulDialog, "TOPLEFT", 25, -60);
-	zoneHeader:SetText(L["ZONE"]..":")
-
-	consulDialog.zoneDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
-	consulDialog.zoneDropdown:SetPoint("LEFT", zoneHeader, "RIGHT", -15, -2)
-	UIDropDownMenu_SetWidth(consulDialog.zoneDropdown, 120);
-	UIDropDownMenu_JustifyText(consulDialog.zoneDropdown, "LEFT");
-
-	local channelHeader = consulDialog:CreateFontString(nil, "OVERLAY")
-	channelHeader:SetFontObject("DWPLargeRight");
-	channelHeader:SetScale(0.7)
-	channelHeader:SetPoint("TOPLEFT", zoneHeader, "BOTTOMLEFT", 0, -25);
-	channelHeader:SetText(L["CHANNEL"]..":")
-
-	consulDialog.channelDropdown = CreateFrame("FRAME", "DWPCLItemDropDown", consulDialog, "DWPlusUIDropDownMenuTemplate")
-	consulDialog.channelDropdown:SetPoint("LEFT", channelHeader, "RIGHT", -15, -2)
-	UIDropDownMenu_SetWidth(consulDialog.channelDropdown, 120);
-	UIDropDownMenu_JustifyText(consulDialog.channelDropdown, "LEFT");
-
-	consulDialog.addButton = CreateFrame("Button", nil, consulDialog, "DWPlusButtonTemplate")
-	consulDialog.addButton:SetSize(100, 26);
-	consulDialog.addButton:SetText(L["OK"]);
-	consulDialog.addButton:GetFontString():SetTextColor(1, 1, 1, 1)
-	consulDialog.addButton:SetNormalFontObject("DWPSmallCenter");
-	consulDialog.addButton:SetHighlightFontObject("DWPSmallCenter");
-	consulDialog.addButton:SetPoint("BOTTOM", consulDialog, "BOTTOM", 0, 15);
-	consulDialog.addButton:SetScript("OnClick", function()
-		printConsulForZone();
-	end)
 
 	consulDialog:Show();
 
