@@ -173,6 +173,7 @@ core.L = {
   CONSULLOOT            = "Consul loot",
   CONSULFOUND           = "Found %d consul loot entries. You can print them to raid using command \"/rp consul\" or with shift + LKM on minimap button";
   CONSULPRINT           = "Consul: %s is reserved for %s",
+  CONSULPRINTEMPTY      = "Consul: %s is custom defined",
   CREATEDMAINTAIN       = "created and maintained by",
   CREATERAIDTIMER       = "Creates Raid Timer (Officers Only) (eg. /dkp timer 120 Pizza Break!)",
   CURRENTLYHAS          = "currently has",

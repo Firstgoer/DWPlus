@@ -36,6 +36,7 @@ local drawnRows = {};
 local consulDialog;
 local consulSelectedZone;
 local consulSelectedChannel = "RAID";
+local consulSelectedParty = true;
 
 local function tableHasItems(table)
 	for _, _ in pairs(table) do
@@ -624,6 +625,25 @@ local function pconcat(tab, delim)
 	return table.concat(ctab, delim)
 end
 
+local function IsPlayerInPartyOrRaid(player)
+	local GroupSize;
+
+	if IsInRaid() then
+		GroupSize = 40
+	elseif IsInGroup() then
+		GroupSize = 5
+	end
+
+    for i=1, GroupSize do
+        local tempName = GetRaidRosterInfo(i)
+        if tempName == player then
+            return true;
+        end
+    end
+
+	return false;
+end
+
 local function printConsulForZone()
 	if not consulSelectedZone or not consulSelectedChannel then
 		return;
@@ -635,11 +655,13 @@ local function printConsulForZone()
 			if not consulItems[item.item] then
 				consulItems[item.item] = {};
 			end
-			if item.player == 0 then
-				consulItems[item.item][item.player] = L["NOTSET"];
-			else
+			--if item.player == 0 then
+			--	consulItems[item.item][item.player] = L["NOTSET"];
+			--else
+			if not consulSelectedParty or (consulSelectedParty and IsPlayerInPartyOrRaid(item.player)) then
 				consulItems[item.item][item.player] = item.player;
 			end
+			--end
 			found = true;
 		end
 	end
@@ -653,8 +675,11 @@ local function printConsulForZone()
 		local itemObject = Item:CreateFromItemID(itemId);
 		itemObject:ContinueOnItemLoad(function()
 			local _, itemLink = GetItemInfo(itemId);
-			print(string.format(L["CONSULPRINT"], itemLink, pconcat(playersTable, ", ")));
-			--SendChatMessage(string.format(L["CONSULPRINT"], itemLink, pconcat(playersTable, ", ")), consulSelectedChannel);
+			if tableHasItems(playersTable) then
+				SendChatMessage(string.format(L["CONSULPRINT"], itemLink, pconcat(playersTable, ", ")), consulSelectedChannel);
+			else
+				SendChatMessage(string.format(L["CONSULPRINTEMPTY"], itemLink), consulSelectedChannel);
+			end
 		end);
 	end
 end
@@ -721,7 +746,7 @@ function DWP:ConsulModal()
 	if not consulDialog then
 		consulDialog = CreateFrame("Frame", "DWPConsulDialog", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
 		consulDialog:SetPoint("CENTER", UIParent, "CENTER", 0, 30);
-		consulDialog:SetSize(270, 150);
+		consulDialog:SetSize(270, 180);
 		consulDialog:SetBackdrop({
 			bgFile   = "Textures\\white.blp", tile = true,
 			edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
@@ -772,6 +797,17 @@ function DWP:ConsulModal()
 		UIDropDownMenu_SetWidth(consulDialog.channelDropdown, 120);
 		UIDropDownMenu_JustifyText(consulDialog.channelDropdown, "LEFT");
 
+		consulDialog.OnlyInPartyCheck = CreateFrame("CheckButton", nil, consulDialog, "UICheckButtonTemplate");
+		consulDialog.OnlyInPartyCheck:SetChecked(consulSelectedParty)
+		consulDialog.OnlyInPartyCheck:SetScale(0.8);
+		consulDialog.OnlyInPartyCheck.text:SetText(L["PLAYERS"]..": "..L["ONLYPARTYRAID"]);
+		consulDialog.OnlyInPartyCheck.text:SetScale(1.5);
+		consulDialog.OnlyInPartyCheck.text:SetFontObject("DWPNormalLeft")
+		consulDialog.OnlyInPartyCheck:SetPoint("TOPLEFT", channelHeader, "BOTTOMLEFT", 0, -15);
+		consulDialog.OnlyInPartyCheck:SetScript("OnClick", function(self)
+			consulSelectedParty = self:GetChecked();
+		end)
+
 		consulDialog.addButton = CreateFrame("Button", nil, consulDialog, "DWPlusButtonTemplate")
 		consulDialog.addButton:SetSize(100, 26);
 		consulDialog.addButton:SetText(L["OK"]);
@@ -780,7 +816,9 @@ function DWP:ConsulModal()
 		consulDialog.addButton:SetHighlightFontObject("DWPSmallCenter");
 		consulDialog.addButton:SetPoint("BOTTOM", consulDialog, "BOTTOM", 0, 15);
 		consulDialog.addButton:SetScript("OnClick", function()
+			DWP.Sync:SendData("DWPConsul", DWPlus_Consul);
 			printConsulForZone();
+			consulDialog:Hide();
 		end)
 	end
 
