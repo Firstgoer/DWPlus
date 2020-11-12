@@ -411,7 +411,7 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 		end--]]
 	elseif event == "LOOT_OPENED" then
-		print("Loot opened");
+		--print("Loot opened");
 		DWP:CheckOfficer();
 		if core.IsOfficer then
 			if not IsInRaid() and arg1 == false then  -- only fires hook when autoloot is not active if not in a raid to prevent nil value error
@@ -448,8 +448,8 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 
 			DWP:LootTable_Set(lootList)
-
-			print("Added "..#lootList.." items to bid interface");
+			--
+			--print("Added "..#lootList.." items to bid interface");
 		end
 	end
 end
