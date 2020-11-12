@@ -417,6 +417,7 @@ core.L = {
   NOTINRAIDPARTY        = "You are not in a raid party.",
   NOTSUBMITTEDBID       = "You have not submitted a bid.",
   NOTFOUND              = "Not found",
+  NOTSET                = "Not set",
   OFF                   = "off",
   OFFHAND               = "Off-Hand",
   OFFHANDITEMS          = "Off-Hand Items",

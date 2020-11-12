@@ -183,13 +183,16 @@ local function BossZoneDropDownCreate()
 
 			if core.ZoneItemsExtraData[menuList] then
 				-- Extra
-				filterName.text, filterName.arg1, filterName.arg2, filterName.arg3, filterName.checked, filterName.isNotRadio = L["EXTRA"], menuList, 0, L["EXTRA"], bossSelected == 0 and zoneSelected == menuList, true
+				filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = L["EXTRA"], menuList, 0, bossSelected == 0 and zoneSelected == menuList, true
 				UIDropDownMenu_AddButton(filterName, level)
 			end
 		end
 
 		-- Dropdown Menu Function
 		function zoneBossDropdown:FilterSetValue(zoneId, bossId)
+			if not zoneId or not bossId then
+				return;
+			end
 			UIDropDownMenu_SetText(zoneBossDropdown, getBossName(zoneId, bossId));
 			zoneSelected = zoneId;
 			bossSelected = bossId;
@@ -295,10 +298,13 @@ local function PlayersSelectorCreate()
 		UIDropDownMenu_SetText(playerDropdown, playerSelected or "")
 
 		-- Dropdown Menu Function
-		function playerDropdown:FilterSetValue(newValue, arg2)
-			UIDropDownMenu_SetText(playerDropdown, arg2)
+		function playerDropdown:FilterSetValue(id, text)
+			if not id or not text then
+				return;
+			end
+			UIDropDownMenu_SetText(playerDropdown, text)
 
-			playerSelected = newValue;
+			playerSelected = id;
 			maxDisplayed = 30;
 			CloseDropDownMenus()
 		end
@@ -312,16 +318,19 @@ local function PlayersSelectorCreate()
 		end
 
 		local curSelected = 0;
-		if playerSelected then
+		if playerSelected and playerSelected ~= 0 then
 			local search = DWP:Table_Search(players, playerSelected)
 			if search ~= false then
 				curSelected = search[1]
 			end
 		end
 
+		filterName.func = self.FilterSetValue
 		if (level or 1) == 1 then
 			local numSubs = ceil(#players/20)
-			filterName.func = self.FilterSetValue
+
+			filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = L["NOTSET"], 0, L["NOTSET"], playerSelected == 0, true
+			UIDropDownMenu_AddButton(filterName)
 
 			for i=1, numSubs do
 				local max = i*20;
@@ -329,9 +338,7 @@ local function PlayersSelectorCreate()
 				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = string.utf8sub(players[((i*20)-19)], 1, 1).."-"..string.utf8sub(players[max], 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
 				UIDropDownMenu_AddButton(filterName)
 			end
-
 		else
-			filterName.func = self.FilterSetValue
 			for i=ranges[menuList], ranges[menuList]+19 do
 				if players[i] then
 					local classSearch = DWP:Table_Search(DWPlus_RPTable, players[i])
@@ -434,12 +441,16 @@ function DWP:ConsulUpdate()
 			drawnRows[i].Columns[2]:SetText(itemLink);
 		end);
 
-		local playerName = item.player;
-		local search = DWP:Table_Search(players, item.player)
-		if search == false then
-			playerName = playerName .. "(" .. L["NOTFOUND"] .. ")";
+		local player = item.player;
+		if player == 0 then
+			player = L["NOTSET"];
+		else
+			local search = DWP:Table_Search(players, item.player)
+			if search == false then
+				player = player .. "(" .. L["NOTFOUND"] .. ")";
+			end
 		end
-		drawnRows[i].Columns[3]:SetText(playerName);
+		drawnRows[i].Columns[3]:SetText(player);
 	end
 end
 
@@ -624,7 +635,11 @@ local function printConsulForZone()
 			if not consulItems[item.item] then
 				consulItems[item.item] = {};
 			end
-			consulItems[item.item][item.player] = item.player;
+			if item.player == 0 then
+				consulItems[item.item][item.player] = L["NOTSET"];
+			else
+				consulItems[item.item][item.player] = item.player;
+			end
 			found = true;
 		end
 	end
@@ -638,7 +653,8 @@ local function printConsulForZone()
 		local itemObject = Item:CreateFromItemID(itemId);
 		itemObject:ContinueOnItemLoad(function()
 			local _, itemLink = GetItemInfo(itemId);
-			SendChatMessage(string.format(L["CONSULPRINT"], itemLink, pconcat(playersTable, ", ")), consulSelectedChannel);
+			print(string.format(L["CONSULPRINT"], itemLink, pconcat(playersTable, ", ")));
+			--SendChatMessage(string.format(L["CONSULPRINT"], itemLink, pconcat(playersTable, ", ")), consulSelectedChannel);
 		end);
 	end
 end

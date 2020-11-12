@@ -500,6 +500,7 @@ if GetLocale() == "ruRU" then
     NOTINRAIDPARTY = "Вы не находитесь в рейде.",
     NOTSUBMITTEDBID = "Ваша ставка не принята.",
     NOTFOUND = "Не найден",
+    NOTSET = "На усмотрение",
     NOWLOGGINGCOMBAT = "Теперь журнал боя будет записываться. ",
     OFF = "от",
     OFFHAND = "Левая рука",
