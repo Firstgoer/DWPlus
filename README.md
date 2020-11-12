@@ -31,7 +31,8 @@ This is my first official go at writting an addon despite 15 years of playing th
 	/rp export  - Exports all entries to HTML (To avoid crashing this will only export the most recent 200 loot history items and 200 RP history items).  
 	/rp bid 	- Opens Bid Window. If you include an item link (/rp bid [item link]) it will include that item for bid information.  
 	/rp mmb     - Show/Hide minimap icon.  
-	/rp changelog - Show changelog window.
+	/rp changelog - Show changelog window.  
+	/rp consul  - Show output window the consul loot.
   
 **Recommendations**  
 	- Due to the volatile nature of WoW Addons and saved variables, it's recommended you back up your SavedVariables file located at "WTF\Accounts\ACCOUNT_NAME\SavedVariables\DWPlus.lua" at the end of every raid week to ensure all data

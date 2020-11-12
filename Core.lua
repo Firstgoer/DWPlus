@@ -2101,28 +2101,6 @@ core.ZoneItemsExtraData = {
 		19921, -- Zulian Hacker
 		19908, -- Sceptre of Smiting
 		20258, -- Zulian Ceremonial Staff
-		19726, -- Bloodvine
-		19774, -- Souldarite
-		19767, -- Primal Bat Leather
-		19768, -- Primal Tiger Leather
-		19706, -- Bloodscalp Coin
-		19701, -- Gurubashi Coin
-		19700, -- Hakkari Coin
-		19699, -- Razzashi Coin
-		19704, -- Sandfury Coin
-		19705, -- Skullsplitter Coin
-		19702, -- Vilebranch Coin
-		19703, -- Witherbark Coin
-		19698, -- Zulian Coin
-		19708, -- Blue Hakkari Bijou
-		19713, -- Bronze Hakkari Bijou
-		19715, -- Gold Hakkari Bijou
-		19711, -- Green Hakkari Bijou
-		19710, -- Orange Hakkari Bijou
-		19712, -- Purple Hakkari Bijou
-		19707, -- Red Hakkari Bijou
-		19714, -- Silver Hakkari Bijou
-		19709, -- Yellow Hakkari Bijou
 		19789, -- Prophetic Aura
 		19787, -- Presence of Sight
 		19788, -- Hoodoo Hex
@@ -2136,17 +2114,6 @@ core.ZoneItemsExtraData = {
 		20076, -- Zandalar Signet of Mojo
 		20078, -- Zandalar Signet of Serenity
 		22635, -- Savage Guard
-		19975, -- Zulian Mudskunk
-		19727, -- Blood Scythe
-		19820, -- Punctured Voodoo Doll
-		19818, -- Punctured Voodoo Doll
-		19819, -- Punctured Voodoo Doll
-		19814, -- Punctured Voodoo Doll
-		19821, -- Punctured Voodoo Doll
-		19816, -- Punctured Voodoo Doll
-		19817, -- Punctured Voodoo Doll
-		19815, -- Punctured Voodoo Doll
-		19813, -- Punctured Voodoo Doll
 	},
 	-- BlackwingLair
 	[469] = {
@@ -2171,29 +2138,9 @@ core.ZoneItemsExtraData = {
 			end
 		end,
 		21805, -- Polished Obsidian Pauldrons
-		20873, -- Alabaster Idol
-		20869, -- Amber Idol
-		20866, -- Azure Idol
-		20870, -- Jasper Idol
-		20868, -- Lambent Idol
-		20871, -- Obsidian Idol
-		20867, -- Onyx Idol
-		20872, -- Vermillion Idol
-		21761, -- Scarab Coffer Key
-		21156, -- Scarab Bag
 		21801, -- Antenna of Invigoration
 		21800, -- Silithid Husked Launcher
 		21802, -- The Lost Kris of Zedd
-		20864, -- Bone Scarab
-		20861, -- Bronze Scarab
-		20863, -- Clay Scarab
-		20862, -- Crystal Scarab
-		20859, -- Gold Scarab
-		20865, -- Ivory Scarab
-		20860, -- Silver Scarab
-		20858, -- Stone Scarab
-		22203, -- Large Obsidian Shard
-		22202, -- Small Obsidian Shard
 		21284, -- Codex of Greater Heal V
 		21287, -- Codex of Prayer of Healing V
 		21285, -- Codex of Renew X
