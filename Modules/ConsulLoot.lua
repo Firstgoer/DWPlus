@@ -863,8 +863,8 @@ function DWP:canUserChangeConsul(sender)
 		return true;
 	end
 
-	return DWP:ValidateSender(sender);
-	-- return false -- TODO: enable only for GM
+	--return DWP:ValidateSender(sender); -- enabled not only for gm
+	 return false;
 end
 
 function DWPlus_ConsulTab_Show()
