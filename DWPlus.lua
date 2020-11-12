@@ -583,7 +583,7 @@ function DWP:CreateMenu()
 	--------------------------------------
 	-- ChangeLog variable calls (bottom of localization files)
 	--------------------------------------
-	DWP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"]);
+	DWP.ChangeLogDisplay.ChangeLogText:SetText(L["CHANGELOG1"].."\n\n"..L["CHANGELOG2"].."\n\n"..L["CHANGELOG3"].."\n\n"..L["CHANGELOG4"].."\n\n"..L["CHANGELOG5"].."\n\n"..L["CHANGELOG6"].."\n\n"..L["CHANGELOG7"].."\n\n"..L["CHANGELOG8"].."\n\n"..L["CHANGELOG0"].."\n\n"..L["CHANGELOG0"].."\n\n"..L["CHANGELOG0"]);
 
 	local logHeight = DWP.ChangeLogDisplay.ChangeLogHeader:GetHeight() + DWP.ChangeLogDisplay.Notes:GetHeight() + DWP.ChangeLogDisplay.VerNumber:GetHeight() + DWP.ChangeLogDisplay.ChangeLogText:GetHeight();
 	DWP.ChangeLogDisplay:SetSize(600, logHeight);  -- resize container
