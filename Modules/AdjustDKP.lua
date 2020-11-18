@@ -16,7 +16,7 @@ function DWP:AdjustDKP(value)
 	end
 
 	if (curReason == L["OTHER"]) then adjustReason = L["OTHER"].." - "..DWP.ConfigTab2.otherReason:GetText(); end
-	if curReason == L["BOSSKILLBONUS"] then adjustReason = core.CurrentRaidZone..": "..core.LastKilledBoss; end
+	if curReason == L["BOSSKILLBONUS"] then adjustReason = core.CurrentRaidZone..": "..core.LastKilledBoss.." ("..L["TRAINING"]..")"; end
 	if curReason == L["NEWBOSSKILLBONUS"] then adjustReason = core.CurrentRaidZone..": "..core.LastKilledBoss.." ("..L["FIRSTKILL"]..")" end
 	if (#core.SelectedData > 0 and adjustReason and adjustReason ~= L["OTHER"].." - "..L["ENTEROTHERREASONHERE"]) then
 		if core.IsOfficer then

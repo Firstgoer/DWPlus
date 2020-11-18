@@ -718,6 +718,7 @@ if GetLocale() == "ruRU" then
     TOTALDKPAWARD = "Всего RP добавлено",
     TOTALDWPUSERS = "Всего пользователей DW Plus",
     TOWITHDRAWBID = "отменить Вашу ставку.",
+    TRAINING = "Учебный бой",
     TRINKET = "Аксессуар",
     TRIO = "Трио жуков",
     TTHISTORYCOUNT = "История в подсказке",
