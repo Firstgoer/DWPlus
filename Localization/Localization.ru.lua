@@ -43,6 +43,7 @@ if GetLocale() == "ruRU" then
   }
 
   core.L = {
+    ABSENSE = "Пропуск рейда без предупреждения",
     ADD = "Добавить",
     ADDED = "добавленной",
     ADDGUILDCONFIRM = "Вы уверены, что хотите добавить всех членов гильдии ранга",
@@ -152,7 +153,7 @@ if GetLocale() == "ruRU" then
     BONUSAWARDED = "Бонус",
     BOOTS = "Ступни",
     BOSS = "Босс",
-    ONTIMEBONUS = "Подготовка к рейду",
+    ONTIMEBONUS = "Основной рейд",
     BOSSKILLBONUSTTDESC = "Бонус за убийство босса.",
     BRACERS = "Запястья",
     BROADCAST = "Синхронизация",

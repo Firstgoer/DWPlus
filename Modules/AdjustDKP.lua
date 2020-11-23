@@ -223,6 +223,8 @@ function DWP:AdjustDKPTab_Create()
 		UIDropDownMenu_AddButton(reason)
 		reason.text, reason.arg1, reason.checked, reason.isNotRadio = L["UNEXCUSEDABSENCE"], L["UNEXCUSEDABSENCE"], L["UNEXCUSEDABSENCE"] == curReason, true
 		UIDropDownMenu_AddButton(reason)
+		reason.text, reason.arg1, reason.checked, reason.isNotRadio = L["ABSENSE"], L["ABSENSE"], L["ABSENSE"] == curReason, true
+		UIDropDownMenu_AddButton(reason)
 		reason.text, reason.arg1, reason.checked, reason.isNotRadio = L["OTHER"], L["OTHER"], L["OTHER"] == curReason, true
 		UIDropDownMenu_AddButton(reason)
 	end)
