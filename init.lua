@@ -136,6 +136,7 @@ DWP.Commands = {
 		DWP:Print(L["WHISPERCMDSHELP"]);
 		DWP:Print("|cff00cc66!bid (or !bid <"..L["VALUE"]..">)|r - "..L["BIDHELP"]);
 		DWP:Print("|cff00cc66!rp (or !rp <"..L["PLAYERNAME"]..">)|r - "..L["DKPCMDHELP"]);
+		DWP:Print(L["SUBMITBUGS"].." @ https://github.com/Firstgoer/DWPlus/issues");
 	end,
 };
 
@@ -268,9 +269,8 @@ function DWP_OnEvent(self, event, arg1, ...)
 				DWP:CheckOfficer()
 				DWP:SortLootTable()
 				DWP:SortDKPHistoryTable()
-				DWP:Print(L["VERSION"].." "..core.MonVersion);
+				DWP:Print(L["VERSION"].." "..core.MonVersion..". ".."|cff00cc66/rp ?".." - "..L["HELPINFO"]);
 				DWP:Print(L["LOADED"].." "..#DWPlus_RPTable.." "..L["PLAYERRECORDS"]..", "..#DWPlus_Loot.." "..L["LOOTHISTRECORDS"].." "..#DWPlus_RPHistory.." "..L["DKPHISTRECORDS"]..".");
-				DWP:Print(L["USE"].." /rp ? "..L["SUBMITBUGS"].." @ https://github.com/Firstgoer/DWPlus/issues");
 				DWP.Sync:SendData("DWPBuild", tostring(core.BuildNumber)) -- broadcasts build number to guild to check if a newer version is available
 
 				if not DWPlus_DB.defaults.installed210 then
@@ -496,33 +496,33 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if not DWPlus_DB then DWPlus_DB = {} end
 		if not DWPlus_DB.DKPBonus or not DWPlus_DB.DKPBonus.OnTimeBonus then
 			DWPlus_DB.DKPBonus = {
-    			OnTimeBonus = 15, BossKillBonus = 5, CompletionBonus = 10, NewBossKillBonus = 10, UnexcusedAbsence = -25, BidTimer = 30, DecayPercentage = 20, GiveRaidStart = false, IncStandby = false,
-    		}
+				OnTimeBonus = 15, BossKillBonus = 5, CompletionBonus = 10, NewBossKillBonus = 10, UnexcusedAbsence = -25, BidTimer = 30, DecayPercentage = 20, GiveRaidStart = false, IncStandby = false,
+			}
 		end
 		if not DWPlus_DB.defaults or not DWPlus_DB.defaults.HistoryLimit or not DWPlus_DB.defaults.DWPScaleSize then
 			DWPlus_DB.defaults = {
-    			HistoryLimit = 2500, DKPHistoryLimit = 2500, BidTimerSize = 1.0, DWPScaleSize = 1.0, supressNotifications = false, TooltipHistoryCount = 15, SupressTells = true,
-    		}
-    	end
+				HistoryLimit = 2500, DKPHistoryLimit = 2500, BidTimerSize = 1.0, DWPScaleSize = 1.0, supressNotifications = false, TooltipHistoryCount = 15, SupressTells = true,
+			}
+		end
 		if not DWPlus_DB.defaults.MiniMapButton then
 			DWPlus_DB.defaults.MiniMapButton = {shown = true, minimapPos = 200, hide = nil}
 		end
-    	if not DWPlus_DB.defaults.ChatFrames then
-    		DWPlus_DB.defaults.ChatFrames = {}
-    		for i = 1, NUM_CHAT_WINDOWS do
+		if not DWPlus_DB.defaults.ChatFrames then
+			DWPlus_DB.defaults.ChatFrames = {}
+			for i = 1, NUM_CHAT_WINDOWS do
 				local name = GetChatWindowInfo(i)
 
 				if name ~= "" then
 					DWPlus_DB.defaults.ChatFrames[name] = true
 				end
 			end
-    	end
+		end
 		if not DWPlus_DB.raiders then DWPlus_DB.raiders = {} end
 		if not DWPlus_DB.MinBidBySlot or not DWPlus_DB.MinBidBySlot.Head then
 			DWPlus_DB.MinBidBySlot = {
-    			Head = 70, Neck = 70, Shoulders = 70, Cloak = 70, Chest = 70, Bracers = 70, Hands = 70, Belt = 70, Legs = 70, Boots = 70, Ring = 70, Trinket = 70, OneHanded = 70, TwoHanded = 70, OffHand = 70, Range = 70, Other = 70,
-    		}
-    	end
+				Head = 70, Neck = 70, Shoulders = 70, Cloak = 70, Chest = 70, Bracers = 70, Hands = 70, Belt = 70, Legs = 70, Boots = 70, Ring = 70, Trinket = 70, OneHanded = 70, TwoHanded = 70, OffHand = 70, Range = 70, Other = 70,
+			}
+		end
 		if not DWPlus_DB.bossargs then DWPlus_DB.bossargs = { CurrentRaidZone = "Molten Core", LastKilledBoss = "Lucifron" } end
 		if not DWPlus_DB.modes or not DWPlus_DB.modes.mode then DWPlus_DB.modes = { mode = "Minimum Bid Values", SubZeroBidding = false, rounding = 0, AddToNegative = false, increment = 60, ZeroSumBidType = "Static", AllowNegativeBidders = false } end;
 		if not DWPlus_DB.modes.ZeroSumBank then DWPlus_DB.modes.ZeroSumBank = { balance = 0 } end
@@ -545,12 +545,13 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if not DWPlus_DB.minimap then DWPlus_DB.minimap = DWPlus_DB.defaults.MiniMapButton end
 		if not DWPlus_DB.ConfigPos then DWPlus_DB.ConfigPos = {x = -250, y = 100} end
 		if not DWPlus_DB.TabMenuShown then DWPlus_DB.TabMenuShown = false end
+		if not DWPlus_DB.ConsulFilters then DWPlus_DB.ConsulFilters = {}; end;
 
-	    ------------------------------------
-	    --	Import SavedVariables
-	    ------------------------------------
-	    core.WorkingTable 		= DWPlus_RPTable;						-- imports full DKP table to WorkingTable for list manipulation
-	    core.CurrentRaidZone	= DWPlus_DB.bossargs.CurrentRaidZone;	-- stores raid zone as a redundency
+		------------------------------------
+		--	Import SavedVariables
+		------------------------------------
+		core.WorkingTable 		= DWPlus_RPTable;						-- imports full DKP table to WorkingTable for list manipulation
+		core.CurrentRaidZone	= DWPlus_DB.bossargs.CurrentRaidZone;	-- stores raid zone as a redundency
 		core.LastKilledBoss 	= DWPlus_DB.bossargs.LastKilledBoss;	-- stores last boss killed as a redundency
 		core.LastKilledNPC		= DWPlus_DB.bossargs.LastKilledNPC 		-- Stores last 30 mobs killed in raid.
 		core.RecentZones		= DWPlus_DB.bossargs.RecentZones 		-- Stores last 30 zones entered within a raid party.
@@ -558,11 +559,11 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		table.sort(DWPlus_RPTable, function(a, b)
 			return a["player"] < b["player"]
 		end)
-		
+
 		DWP:StartBidTimer("seconds", nil)						-- initiates timer frame for use
 
 		if DWP.BidTimer then DWP.BidTimer:SetScript("OnUpdate", nil) end
-		
+
 		if #DWPlus_Loot > DWPlus_DB.defaults.HistoryLimit then
 			DWP:PurgeLootHistory()									-- purges Loot History entries that exceed the "HistoryLimit" option variable (oldest entries) and populates DWPlus_Archive with deleted values
 		end

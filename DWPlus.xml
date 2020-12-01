@@ -674,6 +674,61 @@
 			</OnLeave>
 		</Scripts>
 	</Slider>
+	<EditBox name="DWPlusSearchEditBoxTemplate" virtual="true" autoFocus="false" letters="50">
+		<Size>
+			<AbsDimension x="140" y="24"/>
+		</Size>
+		<Scripts>
+			<OnShow>
+				if (self:GetText() == "" and self.L and not self:HasFocus()) then
+					self:SetText(self.L["SEARCH"]);
+				else
+					self:SetTextColor(1, 1, 1, 1)
+				end
+			</OnShow>
+			<OnEnterPressed>
+				self:ClearFocus()
+			</OnEnterPressed>
+			<OnTabPressed>
+				self:ClearFocus()
+			</OnTabPressed>
+			<OnEditFocusGained>
+				if (self:GetText() == self.L["SEARCH"]) then
+					self:SetText("");
+					self:SetTextColor(1, 1, 1, 1)
+				else
+					self:HighlightText();
+				end
+			</OnEditFocusGained>
+			<OnEditFocusLost>
+				if (self:GetText() == "") then
+					self:SetText(self.L["SEARCH"])
+					self:SetTextColor(0.3, 0.3, 0.3, 1)
+				end
+			</OnEditFocusLost>
+		</Scripts>
+
+		<Backdrop bgFile="Textures\white.blp" edgeFile="Interface\AddOns\DWPlus\Media\Textures\edgefile.tga" tile="true">
+			<Color r="0" g="0" b="0" a="0.9" />
+			<BorderColor r="1" g="1" b="1" a="0.6" />
+			<EdgeSize>
+				<AbsValue val="3"/>
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer>
+				<FontString parentKey="Text" name="$parentText" inherits="DWPNormalLeft" wordwrap="false">
+					<Color r="0.4" g="0.4" b="0.4" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<TextInsets>
+			<AbsInset left="10" right="10" top="5" bottom="5"/>
+		</TextInsets>
+		<FontString inherits="DWPNormalLeft" wordwrap="false">
+			<Color r="0.4" g="0.4" b="0.4" />
+		</FontString>
+	</EditBox>
 </Ui>
 
 

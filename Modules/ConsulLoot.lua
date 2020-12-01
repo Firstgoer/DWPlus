@@ -30,6 +30,7 @@ local tableZoneColumn = "zone"
 local tableSorting = "zone"
 local tableSortingDirection = true; -- true -> ASC, false -> DESC
 
+local tableFilters;
 local tableHeaders;
 local drawnRows = {};
 
@@ -306,7 +307,6 @@ local function PlayersSelectorCreate()
 			UIDropDownMenu_SetText(playerDropdown, text)
 
 			playerSelected = id;
-			maxDisplayed = 30;
 			CloseDropDownMenus()
 		end
 	end
@@ -377,12 +377,15 @@ local function CreateRow(parent, id, item)
 	f.Columns[1]:SetFontObject("DWPSmallLeft");
 
 	f.Columns[2]:SetPoint("CENTER");
-	f.Columns[2]:SetFontObject("DWPSmallLeft");
+	f.Columns[2]:SetFontObject("DWPSmall");
 
 	f.Columns[3]:SetPoint("RIGHT");
 	f.Columns[3]:SetFontObject("DWPSmallRight");
 
-	f:SetScript("OnMouseDown", function(_, button)
+	f:SetScript("OnMouseDown", function(self, button)
+		if not self.Item then
+			return;
+		end
 		--if button == "LeftButton" then
 		--	LeftClickTooltip(id)
 		--end
@@ -406,6 +409,44 @@ local function CreateRow(parent, id, item)
 	return f
 end
 
+local function checkFilteredConsulItem(item)
+	if DWPlus_DB.ConsulFilters.bossSelected then
+		if item.boss ~= DWPlus_DB.ConsulFilters.bossSelected or item.zone ~= DWPlus_DB.ConsulFilters.zoneSelected then
+			return false;
+		end
+	elseif DWPlus_DB.ConsulFilters.zoneSelected then
+		if item.zone ~= DWPlus_DB.ConsulFilters.zoneSelected then
+			return false;
+		end
+	end
+	if DWPlus_DB.ConsulFilters.playerSelected then
+		if (item.player ~= DWPlus_DB.ConsulFilters.playerSelected) then
+			return false;
+		end
+	end
+	if DWPlus_DB.ConsulFilters.itemSearch then
+		local itemId = tonumber(DWPlus_DB.ConsulFilters.itemSearch);
+		if (itemId == nil or item.item ~= itemId) then
+			local itemName = GetItemInfo(item.item);
+			if string.find(itemName, DWPlus_DB.ConsulFilters.itemSearch) == nil then
+				return false;
+			end
+		end
+	end
+	return true;
+end
+
+local function getFilteredTable()
+	local resultTable = {};
+	for i = 1, #DWPlus_Consul do
+		local item = DWPlus_Consul[i];
+		if checkFilteredConsulItem(item) then
+			table.insert(resultTable, item);
+		end
+	end
+	return resultTable;
+end
+
 function DWP:ConsulUpdate()
 	if not DWP.UIConfig:IsShown() then     -- does not update list if DKP window is closed. Gets done when /rp is used anyway.
 		return;
@@ -415,8 +456,10 @@ function DWP:ConsulUpdate()
 		drawnRows[i]:Hide();
 	end
 
-	for i = 1, #DWPlus_Consul do
-		local item = DWPlus_Consul[i];
+	local resultTable = getFilteredTable();
+
+	for i = 1, #resultTable do
+		local item = resultTable[i];
 		if not drawnRows[i] then
 			drawnRows[i] = CreateRow(DWP.ConfigTab5, i, item);
 		end
@@ -428,6 +471,7 @@ function DWP:ConsulUpdate()
 		else
 			drawnRows[i]:SetPoint("TOPLEFT", drawnRows[i-1], "BOTTOMLEFT")
 		end
+		drawnRows[i].Columns[2]:SetFontObject("DWPSmallLeft");
 
 		if (tableZoneColumn == "boss") then
 			drawnRows[i].Columns[1]:SetText(getBossName(item.zone, item.boss));
@@ -452,6 +496,20 @@ function DWP:ConsulUpdate()
 			end
 		end
 		drawnRows[i].Columns[3]:SetText(player);
+	end
+
+	if (#resultTable == 0) then
+		if not drawnRows[1] then
+			drawnRows[1] = CreateRow(DWP.ConfigTab5, 1);
+		end
+
+		drawnRows[1]:SetPoint("TOPLEFT", tableHeaders, "TOPLEFT", 0, -24)
+		drawnRows[1].Columns[2]:SetFontObject("DWPSmall");
+
+		drawnRows[1].Columns[1]:SetText("")
+		drawnRows[1].Columns[2]:SetText(L["NOENTRIESFOUND"])
+		drawnRows[1].Columns[3]:SetText("")
+		drawnRows[1]:Show();
 	end
 end
 
@@ -525,12 +583,218 @@ local function changeSortConsulTable(column)
     sortConsulTable();
 end
 
+local function createTableFilters()
+	tableFilters = CreateFrame("Frame", "ConsulTableHeaders", DWP.ConfigTab5)
+	if not tableFilters.zoneBossHeader then
+		tableFilters.zoneBossHeader = tableFilters:CreateFontString(nil, "OVERLAY")
+		tableFilters.zoneBossHeader:SetFontObject("DWPNormalLeft");
+		tableFilters.zoneBossHeader:SetPoint("TOPLEFT", tableFilters, "TOPLEFT", 0, -20);
+		tableFilters.zoneBossHeader:SetText(L["ZONE"].." / "..L["BOSS"]..":")
+		tableFilters.zoneBossHeader:SetWidth(70);
+	end
+
+	if not tableFilters.zoneBossDropdown then
+		tableFilters.zoneBossDropdown = CreateFrame("FRAME", "DWPFilterZoneDropDown", tableFilters, "DWPlusUIDropDownMenuTemplate")
+		tableFilters.zoneBossDropdown:SetPoint("LEFT", tableFilters.zoneBossHeader, "RIGHT", -15, -2)
+		UIDropDownMenu_SetWidth(tableFilters.zoneBossDropdown, 120)
+		UIDropDownMenu_JustifyText(tableFilters.zoneBossDropdown, "LEFT")
+	end
+
+	if DWPlus_DB.ConsulFilters.bossSelected then
+		UIDropDownMenu_SetText(tableFilters.zoneBossDropdown, getBossName(DWPlus_DB.ConsulFilters.zoneSelected, DWPlus_DB.ConsulFilters.bossSelected));
+	elseif DWPlus_DB.ConsulFilters.zoneSelected then
+		UIDropDownMenu_SetText(tableFilters.zoneBossDropdown, getZoneName(DWPlus_DB.ConsulFilters.zoneSelected));
+	end
+
+	UIDropDownMenu_Initialize(tableFilters.zoneBossDropdown, function(self, level, menuList)
+		local filterName = UIDropDownMenu_CreateInfo()
+
+		if (level or 1) == 1 then
+			filterName.func = self.FilterSetValue
+
+			-- No filter
+			filterName.text, filterName.arg1, filterName.checked, filterName.isNotRadio = "- "..L["NOFILTER"].." -", -1, DWPlus_DB.ConsulFilters.zoneSelected == nil and DWPlus_DB.ConsulFilters.bossSelected == nil, true
+			UIDropDownMenu_AddButton(filterName)
+
+			for zoneId, _ in pairs(core.BossZonesData) do
+				filterName.text, filterName.arg1, filterName.checked, filterName.menuList, filterName.hasArrow, filterName.isNotRadio = getZoneName(zoneId), zoneId, DWPlus_DB.ConsulFilters.zoneSelected == zoneId, zoneId, true, true
+				UIDropDownMenu_AddButton(filterName)
+			end
+		else
+			filterName.func = self.FilterSetValue
+
+			for bossId = 1, #core.ItemsData[menuList] do
+				filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = getBossName(menuList, bossId), menuList, bossId, bossId == DWPlus_DB.ConsulFilters.bossSelected and DWPlus_DB.ConsulFilters.zoneSelected == menuList, true
+				UIDropDownMenu_AddButton(filterName, level)
+			end
+
+			if core.ZoneItemsExtraData[menuList] then
+				-- Extra
+				filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = L["EXTRA"], menuList, 0, DWPlus_DB.ConsulFilters.bossSelected == 0 and DWPlus_DB.ConsulFilters.zoneSelected == menuList, true
+				UIDropDownMenu_AddButton(filterName, level)
+			end
+		end
+
+		-- Dropdown Menu Function
+		function tableFilters.zoneBossDropdown:FilterSetValue(zoneId, bossId)
+			if zoneId == -1 then
+				UIDropDownMenu_SetText(tableFilters.zoneBossDropdown, "");
+				DWPlus_DB.ConsulFilters.zoneSelected = nil;
+				DWPlus_DB.ConsulFilters.bossSelected = nil;
+			elseif not bossId then
+				UIDropDownMenu_SetText(tableFilters.zoneBossDropdown, getZoneName(zoneId));
+				DWPlus_DB.ConsulFilters.zoneSelected = zoneId;
+				DWPlus_DB.ConsulFilters.bossSelected = bossId;
+			else
+				UIDropDownMenu_SetText(tableFilters.zoneBossDropdown, getBossName(zoneId, bossId));
+				DWPlus_DB.ConsulFilters.zoneSelected = zoneId;
+				DWPlus_DB.ConsulFilters.bossSelected = bossId;
+			end
+
+			CloseDropDownMenus();
+			DWP:ConsulUpdate();
+		end
+	end)
+
+	if not tableFilters.playerHeader then
+		tableFilters.playerHeader = tableFilters:CreateFontString(nil, "OVERLAY")
+		tableFilters.playerHeader:SetFontObject("DWPNormalRight");
+		tableFilters.playerHeader:SetPoint("TOPLEFT", tableFilters.zoneBossDropdown, "TOPRIGHT", -22, -7);
+		tableFilters.playerHeader:SetText(L["PLAYER"]..":");
+		tableFilters.playerHeader:SetWidth(80);
+	end
+
+	if not tableFilters.playerDropdown then
+		tableFilters.playerDropdown = CreateFrame("FRAME", "DWPFilterPlayerDropDown", tableFilters, "DWPlusUIDropDownMenuTemplate")
+		tableFilters.playerDropdown:SetPoint("LEFT", tableFilters.playerHeader, "RIGHT", -15, -2)
+
+		local playerSelectedText = "";
+		if DWPlus_DB.ConsulFilters.playerSelected == 0 then
+			playerSelectedText = L["NOTSET"];
+		elseif DWPlus_DB.ConsulFilters.playerSelected then
+			playerSelectedText = DWPlus_DB.ConsulFilters.playerSelected;
+		end
+		UIDropDownMenu_SetWidth(tableFilters.playerDropdown, 120)
+		UIDropDownMenu_SetText(tableFilters.playerDropdown, playerSelectedText)
+
+		-- Dropdown Menu Function
+		function tableFilters.playerDropdown:FilterSetValue(id, text)
+			if not id or not text then
+				return;
+			end
+			UIDropDownMenu_SetText(tableFilters.playerDropdown, text)
+
+			if id == -1 then
+				DWPlus_DB.ConsulFilters.playerSelected = nil;
+			else
+				DWPlus_DB.ConsulFilters.playerSelected = id;
+			end
+			CloseDropDownMenus();
+			DWP:ConsulUpdate();
+		end
+	end
+
+	UIDropDownMenu_Initialize(tableFilters.playerDropdown, function(self, level, menuList)
+		local filterName = UIDropDownMenu_CreateInfo()
+		local ranges = {1}
+		while ranges[#ranges] < #players do
+			table.insert(ranges, ranges[#ranges]+20)
+		end
+
+		local curSelected = 0;
+		if DWPlus_DB.ConsulFilters.playerSelected and DWPlus_DB.ConsulFilters.playerSelected ~= 0 then
+			local search = DWP:Table_Search(players, DWPlus_DB.ConsulFilters.playerSelected)
+			if search ~= false then
+				curSelected = search[1]
+			end
+		end
+
+		filterName.func = self.FilterSetValue
+		if (level or 1) == 1 then
+			local numSubs = ceil(#players/20)
+
+			filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = "- "..L["NOFILTER"].." -", -1, "", not DWPlus_DB.ConsulFilters.playerSelected, true
+			UIDropDownMenu_AddButton(filterName)
+
+			filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = L["NOTSET"], 0, L["NOTSET"], DWPlus_DB.ConsulFilters.playerSelected == 0, true
+			UIDropDownMenu_AddButton(filterName)
+
+			for i=1, numSubs do
+				local max = i*20;
+				if max > #players then max = #players end
+				filterName.text, filterName.checked, filterName.menuList, filterName.hasArrow = string.utf8sub(players[((i*20)-19)], 1, 1).."-"..string.utf8sub(players[max], 1, 1), curSelected >= (i*20)-19 and curSelected <= i*20, i, true
+				UIDropDownMenu_AddButton(filterName)
+			end
+		else
+			for i=ranges[menuList], ranges[menuList]+19 do
+				if players[i] then
+					local classSearch = DWP:Table_Search(DWPlus_RPTable, players[i])
+					local c;
+
+					if classSearch then
+						c = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
+					else
+						c = { hex="444444" }
+					end
+					filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = "|cff"..c.hex..players[i].."|r", players[i], "|cff"..c.hex..players[i].."|r", players[i] == DWPlus_DB.ConsulFilters.playerSelected, true
+					UIDropDownMenu_AddButton(filterName, level)
+				end
+			end
+		end
+	end)
+
+	if not tableFilters.itemHeader then
+		tableFilters.itemHeader = tableFilters:CreateFontString(nil, "OVERLAY")
+		tableFilters.itemHeader:SetFontObject("DWPNormalRight");
+		tableFilters.itemHeader:SetPoint("TOPRIGHT", tableFilters.zoneBossHeader, "BOTTOMRIGHT", -3, -20);
+		tableFilters.itemHeader:SetText(L["ITEM"]..":");
+		tableFilters.itemHeader:SetWidth(80);
+	end
+
+	tableFilters.itemSearch = CreateFrame("EditBox", nil, tableFilters, "DWPlusSearchEditBoxTemplate")
+	tableFilters.itemSearch.L = L;
+	tableFilters.itemSearch:SetPoint("LEFT", tableFilters.itemHeader, "RIGHT", 7, 0)
+	tableFilters.itemSearch:SetWidth(347);
+
+	if DWPlus_DB.ConsulFilters.itemSearch then
+		tableFilters.itemSearch:SetText(DWPlus_DB.ConsulFilters.itemSearch);
+	end
+
+	tableFilters.itemSearch:SetScript("OnKeyUp", function(self)    -- clears text and focus on esc
+		DWPlus_DB.ConsulFilters.itemSearch = self:GetText();
+		DWP:ConsulUpdate();
+	end)
+	tableFilters.itemSearch:SetScript("OnEscapePressed", function(self)    -- clears text and focus on esc
+		self:SetText(L["SEARCH"])
+		self:SetTextColor(0.3, 0.3, 0.3, 1)
+		self:ClearFocus()
+
+		DWPlus_DB.ConsulFilters.itemSearch = nil;
+		DWP:ConsulUpdate();
+	end)
+	tableFilters.itemSearch:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetText(L["SEARCH"], 0.25, 0.75, 0.90, 1, true);
+		GameTooltip:AddLine(L["SEARCHCONSULDESC"], 1.0, 1.0, 1.0, true);
+		GameTooltip:Show();
+	end)
+	tableFilters.itemSearch:SetScript("OnLeave", function()
+		GameTooltip:Hide();
+	end)
+end
+
 local function ConsulTableCreate(point)
+	if not tableFilters then
+		createTableFilters();
+	end
+	tableFilters:SetSize(consulItemsWidth, 120)
+	tableFilters:SetPoint(unpack(point));
+
 	if not tableHeaders then
 		tableHeaders = CreateFrame("Frame", "ConsulTableHeaders", DWP.ConfigTab5)
 	end
 	tableHeaders:SetSize(consulItemsWidth, 22)
-	tableHeaders:SetPoint(unpack(point));
+	tableHeaders:SetPoint("CENTER", tableFilters, "CENTER", 0, -33);
 	tableHeaders:SetBackdrop({
 		bgFile   = "Textures\\white.blp", tile = true,
 		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,

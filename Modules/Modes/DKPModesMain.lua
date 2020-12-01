@@ -9,7 +9,7 @@ function DWP:DKPModes_Main()
 	f.DKPModesMain.ModeDescriptionHeader = f.DKPModesMain:CreateFontString(nil, "OVERLAY")
 	f.DKPModesMain.ModeDescriptionHeader:SetFontObject("DWPLargeLeft");
 	f.DKPModesMain.ModeDescriptionHeader:SetWidth(400);
-	f.DKPModesMain.ModeDescriptionHeader:SetPoint("TOPLEFT", f.DKPModesMain, "TOPLEFT", 30, -20);
+	f.DKPModesMain.ModeDescriptionHeader:SetPoint("TOPLEFT", f.DKPModesMain, "TOPLEFT", 20, -20);
 
 	f.DKPModesMain.ModeDescription = f.DKPModesMain:CreateFontString(nil, "OVERLAY")
 	f.DKPModesMain.ModeDescription:SetPoint("TOPLEFT", f.DKPModesMain, "TOPLEFT", 20, -45);

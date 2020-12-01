@@ -375,29 +375,16 @@ function DWP:CreateMenu()
 	-- Search Box
 	------------------------------
 
-	DWP.UIConfig.search = CreateFrame("EditBox", nil, DWP.UIConfig)
-	DWP.UIConfig.search:SetPoint("BOTTOMLEFT", DWP.UIConfig, "BOTTOMLEFT", 50, 18)
-	DWP.UIConfig.search:SetAutoFocus(false)
-	DWP.UIConfig.search:SetMultiLine(false)
-	DWP.UIConfig.search:SetSize(140, 24)
-	DWP.UIConfig.search:SetBackdrop({
-		bgFile   = "Textures\\white.blp", tile = true,
-		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
-	});
-	DWP.UIConfig.search:SetBackdropColor(0,0,0,0.9)
-	DWP.UIConfig.search:SetBackdropBorderColor(1,1,1,0.6)
-	DWP.UIConfig.search:SetMaxLetters(50)
-	DWP.UIConfig.search:SetTextColor(0.4, 0.4, 0.4, 1)
-	DWP.UIConfig.search:SetFontObject("DWPNormalLeft")
-	DWP.UIConfig.search:SetTextInsets(10, 10, 5, 5)
-	DWP.UIConfig.search:SetText(L["SEARCH"])
-	DWP.UIConfig.search:SetScript("OnKeyUp", function(self)    -- clears text and focus on esc
-			if (DWP.UIConfig.search:GetText():match("[%^%$%(%)%%%.%[%]%*%+%-%?]")) then
-				DWP.UIConfig.search:SetText(string.gsub(DWP.UIConfig.search:GetText(), "[%^%$%(%)%%%.%[%]%*%+%-%?]", ""))
-				--DWP.UIConfig.search:SetText(strsub(DWP.UIConfig.search:GetText(), 1, -2))
-			else
-				DWP:FilterDKPTable(core.currentSort, "reset")
-			end
+	DWP.UIConfig.search = CreateFrame("EditBox", nil, DWP.UIConfig, "DWPlusSearchEditBoxTemplate")
+	DWP.UIConfig.search.L = L;
+	DWP.UIConfig.search:SetPoint("BOTTOMLEFT", DWP.UIConfig, "BOTTOMLEFT", 50, 18);
+	DWP.UIConfig.search:SetScript("OnKeyUp", function()    -- clears text and focus on esc
+		if (DWP.UIConfig.search:GetText():match("[%^%$%(%)%%%.%[%]%*%+%-%?]")) then
+			DWP.UIConfig.search:SetText(string.gsub(DWP.UIConfig.search:GetText(), "[%^%$%(%)%%%.%[%]%*%+%-%?]", ""))
+			--DWP.UIConfig.search:SetText(strsub(DWP.UIConfig.search:GetText(), 1, -2))
+		else
+			DWP:FilterDKPTable(core.currentSort, "reset")
+		end
 	end)
 	DWP.UIConfig.search:SetScript("OnEscapePressed", function(self)    -- clears text and focus on esc
 		self:SetText(L["SEARCH"])
@@ -405,33 +392,13 @@ function DWP:CreateMenu()
 		self:ClearFocus()
 		DWP:FilterDKPTable(core.currentSort, "reset")
 	end)
-	DWP.UIConfig.search:SetScript("OnEnterPressed", function(self)    -- clears text and focus on enter
-		self:ClearFocus()
-	end)
-	DWP.UIConfig.search:SetScript("OnTabPressed", function(self)    -- clears text and focus on tab
-		self:ClearFocus()
-	end)
-	DWP.UIConfig.search:SetScript("OnEditFocusGained", function(self)
-		if (self:GetText() ==  L["SEARCH"]) then
-			self:SetText("");
-			self:SetTextColor(1, 1, 1, 1)
-		else
-			self:HighlightText();
-		end
-	end)
-	DWP.UIConfig.search:SetScript("OnEditFocusLost", function(self)
-		if (self:GetText() == "") then
-			self:SetText(L["SEARCH"])
-			self:SetTextColor(0.3, 0.3, 0.3, 1)
-		end
-	end)
 	DWP.UIConfig.search:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 		GameTooltip:SetText(L["SEARCH"], 0.25, 0.75, 0.90, 1, true);
 		GameTooltip:AddLine(L["SEARCHDESC"], 1.0, 1.0, 1.0, true);
 		GameTooltip:Show();
 	end)
-	DWP.UIConfig.search:SetScript("OnLeave", function(self)
+	DWP.UIConfig.search:SetScript("OnLeave", function()
 		GameTooltip:Hide();
 	end)
 
