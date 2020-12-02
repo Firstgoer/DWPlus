@@ -1,8 +1,8 @@
-## Interface: 11305
+## Interface: 11306
 ## Title: DWPlus
 ## Author: Firstgoer & Tikinokys
 ## Notes: DreamWorld guild management utility.
-## Version: 1.1.0
+## Version: 1.1.1
 ## DefaultState: enabled
 ## SavedVariables: DWPlus_DB, DWPlus_Loot, DWPlus_RPTable, DWPlus_RPHistory, DWPlus_MinBids, DWPlus_Whitelist, DWPlus_Standby, DWPlus_Archive, DWPlus_Consul
 
