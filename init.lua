@@ -443,8 +443,8 @@ function DWP_OnEvent(self, event, arg1, ...)
 				item:ContinueOnItemLoad(function()
 					local icon = item:GetItemIcon()
 					table.insert(lootList, {icon=icon, link=item:GetItemLink()})
+					DWP:CheckExistingConsul(item);
 				end);
-				DWP:CheckExistingConsul(item);
 			end
 
 			DWP:LootTable_Set(lootList)
