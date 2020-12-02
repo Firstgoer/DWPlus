@@ -431,7 +431,7 @@ local function checkFilteredConsulItem(item)
 		local itemId = tonumber(DWPlus_DB.ConsulFilters.itemSearch);
 		if (itemId == nil or item.item ~= itemId) then
 			local itemName = GetItemInfo(item.item);
-			if string.find(itemName, DWPlus_DB.ConsulFilters.itemSearch) == nil then
+			if itemName and string.find(itemName, DWPlus_DB.ConsulFilters.itemSearch) == nil then
 				return false;
 			end
 		end
@@ -450,7 +450,7 @@ local function getFilteredTable()
 	return resultTable;
 end
 
-function DWP:ConsulUpdate()
+function DWP:ConsulUpdate(noLoadItems)
 	if not DWP.UIConfig:IsShown() then     -- does not update list if DKP window is closed. Gets done when /rp is used anyway.
 		return;
 	end
@@ -460,14 +460,17 @@ function DWP:ConsulUpdate()
 	end
 
 	local loadedItems = 0
-	repeat
+	if not noLoadItems then
 		for i = 1, #DWPlus_Consul do
 			local consulItemObject = Item:CreateFromItemID(DWPlus_Consul[i].item);
 			consulItemObject:ContinueOnItemLoad(function ()
 				loadedItems = loadedItems + 1;
+				if loadedItems == #DWPlus_Consul then
+					DWP:ConsulUpdate(true);
+				end
 			end)
 		end
-	until loadedItems == #DWPlus_Consul;
+	end
 
 	local resultTable = getFilteredTable();
 
@@ -1243,6 +1246,11 @@ function DWPlus_ConsulTab_Show()
 		GetPlayersOptions();
 		ConsulTableCreate({"TOPLEFT", DWP.ConfigTab5.text, "BOTTOMLEFT", 0, -15});
 	end
+
+	-- TODO: REMOVE
+	table.insert(DWPlus_Consul, {
+		player = "Учительница", zone = 123, boss = 123, item = 2592
+	});
 
 	DWP:ConsulUpdate();
 end
