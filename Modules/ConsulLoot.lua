@@ -431,7 +431,7 @@ local function checkFilteredConsulItem(item)
 		local itemId = tonumber(DWPlus_DB.ConsulFilters.itemSearch);
 		if (itemId == nil or item.item ~= itemId) then
 			local itemName = GetItemInfo(item.item);
-			if itemName and string.find(itemName, DWPlus_DB.ConsulFilters.itemSearch) == nil then
+			if itemName and string.find(string.lower(itemName), string.lower(DWPlus_DB.ConsulFilters.itemSearch)) == nil then
 				return false;
 			end
 		end
