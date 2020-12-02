@@ -449,17 +449,10 @@ function DWP:AdjustDKPTab_Create()
 			local selected = L["AREYOUSURE"].." "..DWP_round(DWP.ConfigTab2.addDKP:GetNumber(), DWPlus_DB.modes.rounding).." "..L["DKPTOFOLLOWING"]..": \n\n";
 
 			for i=1, #core.SelectedData do
-				local classSearch = DWP:Table_Search(DWPlus_RPTable, core.SelectedData[i].player)
-
-				if classSearch then
-					c = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
-				else
-					c = { hex="ffffff" }
-				end
 				if i == 1 then
-					selected = selected.."|cff"..c.hex..core.SelectedData[i].player.."|r"
+					selected = selected..DWP:GetPlayerNameWithColor(core.SelectedData[i].player);
 				else
-					selected = selected..", |cff"..c.hex..core.SelectedData[i].player.."|r"
+					selected = selected..", "..DWP:GetPlayerNameWithColor(core.SelectedData[i].player);
 				end
 			end
 			StaticPopupDialogs["ADJUST_DKP"] = {

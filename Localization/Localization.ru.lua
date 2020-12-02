@@ -209,8 +209,8 @@ if GetLocale() == "ruRU" then
     CONSULEXISTS = "Данный предмет уже зарезервирован за данным игроком",
     CONSULMODAL = "Открыть окно вывода консул лута",
     CONSULLOOT = "Консул лут",
-    CONSULFOUND = "Найдено %d записей о консул луте. Вы можете отправить эту информацию в рейд чат с помощью комманды \"/rp consul\" или используя shift + ЛКМ на иконке возле миникарты";
-    CONSULPRINT = "Консул: Предмет %s зарезервирован за %s",
+    CONSULFOUND = "Найдено %d записей о консул луте. |cff00cc66|Hdwp:showConsul|h[Поделиться]|h|r";
+    CONSULPRINT = "|cff00cc66Консул: Предмет %s|cff00cc66 зарезервирован за %s",
     CONSULPRINTEMPTY = "Консул: Предмет %s зарезервирован на усмотрение лидера",
     CREATED = "Создано",
     CREATEDMAINTAIN = "переведена Имидж@Пламегор-ПвП, создана и поддерживается",
@@ -239,6 +239,7 @@ if GetLocale() == "ruRU" then
     DELETEDENTRY = "Удаленные записи",
     DELETEDKPENTRY = "Удалить запись RP",
     DELETECONSUL = "Удалить запись бронирования",
+    DELETERECEIVEDCONSUL  = "|cff00cc66Игрок %s|cff00cc66 только что получил %s|cff00cc66. Вы хотите |cffff0000|Hdwp:deleteConsul:%s:%s|h[Удалить]|h|r|cff00cc66 запись из консула?",
     DELETEENTRYREFUNDCONF = "Любые RP, затронутые этой записью, будет возвращены/удалены у каждого игрока в списке.",
     DELETETABLES = "Удаление таблиц",
     DISABLED = "запрещены",

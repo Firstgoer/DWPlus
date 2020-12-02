@@ -2,6 +2,7 @@ local _, core = ...;
 local DWP = core.DWP;
 local L = core.L;
 local GameTooltip = GameTooltip
+local Deformat = LibStub("LibDeformat-3.0")
 
 local players = {};
 
@@ -46,11 +47,21 @@ local function tableHasItems(table)
 	return false;
 end
 
+local function pconcat(tab, delim)
+	local ctab = {}
+	local n = 1
+	for _, v in pairs(tab) do
+		ctab[n] = v
+		n = n + 1
+	end
+	return table.concat(ctab, delim)
+end
+
 local function GetPlayersOptions()
 	for i=1, #DWPlus_RPTable do
 		local playerSearch = DWP:Table_Search(players, DWPlus_RPTable[i].player)
 		if not playerSearch then
-			tinsert(players, DWPlus_RPTable[i].player)
+			table.insert(players, DWPlus_RPTable[i].player)
 		end
 	end
 	table.sort(players, function(a, b)
@@ -63,7 +74,7 @@ local function getZoneName(zoneIndex)
 	if zoneIndex == 0 then
 		return L["WORLDBOSSES"];
 	else
-		if not core.BossZonesData[zoneIndex].mapId then
+		if not core.BossZonesData[zoneIndex] or not core.BossZonesData[zoneIndex].mapId then
 			return "Zone #"..zoneIndex;
 		end
 		return C_Map.GetAreaInfo(core.BossZonesData[zoneIndex].mapId);
@@ -93,8 +104,8 @@ local function getEntryText(item)
 	return string.format("%s - %s: %s", item.player, getZoneName(item.zone), itemName);
 end
 
-local function ConsulDeleteEntry(index, item)
-	local confirm_string = "|CFFFF0000"..L["WARNING"].."\n\n|CFFFFFFFF"..L["CONFIRMDELETEENTRY1"]..":\n\n"..getEntryText(item).."?";
+local function ConsulDeleteEntry(index)
+	local confirm_string = "|CFFFF0000"..L["WARNING"].."\n\n|CFFFFFFFF"..L["CONFIRMDELETEENTRY1"]..":\n\n"..getEntryText(DWPlus_Consul[index]).."?";
 
 	StaticPopupDialogs["CONFIRM_DELETE"] = {
 		text = confirm_string,
@@ -123,7 +134,7 @@ local function RightClickMenu(index)
 		menu = {
 			{ text = getEntryText(item), isTitle = true},
 			{ text = L["DELETECONSUL"], func = function()
-				ConsulDeleteEntry(index, item)
+				ConsulDeleteEntry(index)
 			end },
 		}
 		EasyMenu(menu, menuFrame, "cursor", 0 , 0, "MENU", 2);
@@ -342,15 +353,7 @@ local function PlayersSelectorCreate()
 		else
 			for i=ranges[menuList], ranges[menuList]+19 do
 				if players[i] then
-					local classSearch = DWP:Table_Search(DWPlus_RPTable, players[i])
-					local c;
-
-					if classSearch then
-						c = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
-					else
-						c = { hex="444444" }
-					end
-					filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = "|cff"..c.hex..players[i].."|r", players[i], "|cff"..c.hex..players[i].."|r", players[i] == playerSelected, true
+					filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = DWP:GetPlayerNameWithColor(players[i]), players[i], DWP:GetPlayerNameWithColor(players[i]), players[i] == playerSelected, true
 					UIDropDownMenu_AddButton(filterName, level)
 				end
 			end
@@ -455,6 +458,16 @@ function DWP:ConsulUpdate()
 		drawnRows[i].Item = nil;
 		drawnRows[i]:Hide();
 	end
+
+	local loadedItems = 0
+	repeat
+		for i = 1, #DWPlus_Consul do
+			local consulItemObject = Item:CreateFromItemID(DWPlus_Consul[i].item);
+			consulItemObject:ContinueOnItemLoad(function ()
+				loadedItems = loadedItems + 1;
+			end)
+		end
+	until loadedItems == #DWPlus_Consul;
 
 	local resultTable = getFilteredTable();
 
@@ -728,15 +741,7 @@ local function createTableFilters()
 		else
 			for i=ranges[menuList], ranges[menuList]+19 do
 				if players[i] then
-					local classSearch = DWP:Table_Search(DWPlus_RPTable, players[i])
-					local c;
-
-					if classSearch then
-						c = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
-					else
-						c = { hex="444444" }
-					end
-					filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = "|cff"..c.hex..players[i].."|r", players[i], "|cff"..c.hex..players[i].."|r", players[i] == DWPlus_DB.ConsulFilters.playerSelected, true
+					filterName.text, filterName.arg1, filterName.arg2, filterName.checked, filterName.isNotRadio = DWP:GetPlayerNameWithColor(players[i]), players[i], DWP:GetPlayerNameWithColor(players[i]), players[i] == DWPlus_DB.ConsulFilters.playerSelected, true
 					UIDropDownMenu_AddButton(filterName, level)
 				end
 			end
@@ -781,6 +786,53 @@ local function createTableFilters()
 	tableFilters.itemSearch:SetScript("OnLeave", function()
 		GameTooltip:Hide();
 	end)
+end
+
+function DWP:DeleteConsul(player, itemId)
+	for index, consulItem in ipairs(DWPlus_Consul) do
+		if consulItem.player == player and consulItem.item == tonumber(itemId) then
+			ConsulDeleteEntry(index)
+			return;
+		end
+	end
+	message(L["NOENTRIESRETURNED"]);
+end
+
+function DWP:CheckExistingConsul(item)
+	local playersTable = {};
+	local itemId = item:GetItemID();
+	if not itemId then
+		return;
+	end
+
+	local consulTable = DWPlus_Consul;
+
+	for _, consulItem in pairs(consulTable) do
+		if consulItem.item == itemId then
+			playersTable[consulItem.player] = DWP:GetPlayerNameWithColor(consulItem.player);
+		end
+	end
+
+	if tableHasItems(playersTable) then
+		DWP:Print(string.format(L["CONSULPRINT"], item:GetItemLink(), pconcat(playersTable, ", ")));
+	end
+end
+
+local function CheckExistingConsulForPlayer(item, player)
+	local itemId = item:GetItemID();
+	if not itemId then
+		return false;
+	end
+
+	local consulTable = DWPlus_Consul;
+
+	for _, consulItem in pairs(consulTable) do
+		if consulItem.item == itemId and consulItem.player == player then
+			return true
+		end
+	end
+
+	return false;
 end
 
 local function ConsulTableCreate(point)
@@ -872,21 +924,53 @@ local function ConsulTableCreate(point)
 	SortButtons.player.t:SetText(L["PLAYER"]);
 end
 
+function DWP:CheckConsulReceived(lootText)
+	if not lootText then
+		return;
+	end
+	local lootPatters = {
+		"LOOT_ITEM_MULTIPLE", "LOOT_ITEM", "LOOT_ITEM_WHILE_PLAYER_INELIGIBLE"
+	}
+	for _, lootPattern in ipairs(lootPatters) do
+		if _G[lootPattern] then
+			local receiver, itemReceived = Deformat(lootText, _G[lootPattern])
+			if receiver and itemReceived then
+				local itemObject = Item:CreateFromItemLink(itemReceived);
+				itemObject:ContinueOnItemLoad(function()
+					if CheckExistingConsulForPlayer(itemObject, receiver) then
+						DWP:Print(string.format(L["DELETERECEIVEDCONSUL"], DWP:GetPlayerNameWithColor(receiver), itemReceived, receiver, itemObject:GetItemID()));
+					end
+				end);
+				return;
+			end
+		end
+	end
+
+	local selfLootPatters = {
+		"LOOT_ITEM_PUSHED_SELF_MULTIPLE", "LOOT_ITEM_PUSHED_SELF", "LOOT_ITEM_SELF_MULTIPLE", "LOOT_ITEM_SELF", "LOOT_ITEM_REFUND_MULTIPLE", "LOOT_ITEM_REFUND"
+	}
+	for _, lootPattern in ipairs(selfLootPatters) do
+		if _G[lootPattern] then
+			local itemReceived = Deformat(lootText, _G[lootPattern])
+			if itemReceived then
+				local receiver = UnitName("player");
+				local itemObject = Item:CreateFromItemLink(itemReceived);
+				itemObject:ContinueOnItemLoad(function()
+					if CheckExistingConsulForPlayer(itemObject, receiver) then
+						DWP:Print(string.format(L["DELETERECEIVEDCONSUL"], DWP:GetPlayerNameWithColor(receiver), itemReceived, receiver, itemObject:GetItemID()));
+					end
+				end);
+				return;
+			end
+		end
+	end
+end
+
 function DWPlus_ConsulItemsCountMessage(zoneId)
 	local found = DWP:Table_Search(DWPlus_Consul, zoneId, "zone");
 	if found ~= false then
 		DWP:Print(string.format(L["CONSULFOUND"], #found));
 	end
-end
-
-local function pconcat(tab, delim)
-	local ctab = {}
-	local n = 1
-	for _, v in pairs(tab) do
-		ctab[n] = v
-		n = n + 1
-	end
-	return table.concat(ctab, delim)
 end
 
 local function IsPlayerInPartyOrRaid(player)
@@ -956,17 +1040,17 @@ local function getConsulZones()
 	return zones;
 end
 
-function DWP:ConsulZoneShareUpdate()
+function DWP:ConsulZoneShareUpdate(forceCurrentZone)
 	if not consulDialog then
 		return;
 	end
 	local zonesWithConsul = getConsulZones();
-	if not zonesWithConsul[consulSelectedZone] then
+	if not zonesWithConsul[consulSelectedZone] or forceCurrentZone then
 		UIDropDownMenu_SetText(consulDialog.zoneDropdown, "");
 		consulSelectedZone = nil;
 	end
 
-	if not consulSelectedZone  then
+	if not consulSelectedZone then
 		local zoneId;
 		if IsInRaid() then
 			_, _, _, _, _, _, _, zoneId = GetInstanceInfo();
@@ -1006,7 +1090,7 @@ function DWP:ConsulZoneShareUpdate()
 	end)
 end
 
-function DWP:ConsulModal()
+function DWP:ConsulModal(forceCurrentZone)
 	if not consulDialog then
 		consulDialog = CreateFrame("Frame", "DWPConsulDialog", UIParent, "ShadowOverlaySmallTemplate")  --UIPanelDialogueTemplate, ShadowOverlaySmallTemplate
 		consulDialog:SetPoint("CENTER", UIParent, "CENTER", 0, 30);
@@ -1031,7 +1115,7 @@ function DWP:ConsulModal()
 
 		consulDialog.closeBtn = CreateFrame("Button", nil, consulDialog, "UIPanelCloseButton")
 		consulDialog.closeBtn:SetPoint("CENTER", consulDialog.closeContainer, "TOPRIGHT", -14, -14)
-		tinsert(UISpecialFrames, consulDialog:GetName()); -- Sets frame to close on "Escape"
+		table.insert(UISpecialFrames, consulDialog:GetName()); -- Sets frame to close on "Escape"
 
 		local dialogHeader = consulDialog:CreateFontString(nil, "OVERLAY")
 		dialogHeader:SetFontObject("DWPLargeCenter");
@@ -1088,7 +1172,7 @@ function DWP:ConsulModal()
 
 	consulDialog:Show();
 
-	DWP:ConsulZoneShareUpdate();
+	DWP:ConsulZoneShareUpdate(forceCurrentZone);
 
 	local channels = {
 		["SAY"] = CHAT_MSG_SAY,

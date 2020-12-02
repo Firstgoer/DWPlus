@@ -269,7 +269,7 @@ function DWP_OnEvent(self, event, arg1, ...)
 				DWP:CheckOfficer()
 				DWP:SortLootTable()
 				DWP:SortDKPHistoryTable()
-				DWP:Print(L["VERSION"].." "..core.MonVersion..". ".."|cff00cc66/rp ?".." - "..L["HELPINFO"]);
+				DWP:Print(L["VERSION"].." "..core.MonVersion..". ".."|cff00cc66/rp ?".." - "..L["HELPINFO"].."|r");
 				DWP:Print(L["LOADED"].." "..#DWPlus_RPTable.." "..L["PLAYERRECORDS"]..", "..#DWPlus_Loot.." "..L["LOOTHISTRECORDS"].." "..#DWPlus_RPHistory.." "..L["DKPHISTRECORDS"]..".");
 				DWP.Sync:SendData("DWPBuild", tostring(core.BuildNumber)) -- broadcasts build number to guild to check if a newer version is available
 
@@ -411,7 +411,6 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 		end--]]
 	elseif event == "LOOT_OPENED" then
-		--print("Loot opened");
 		DWP:CheckOfficer();
 		if core.IsOfficer then
 			if not IsInRaid() and arg1 == false then  -- only fires hook when autoloot is not active if not in a raid to prevent nil value error
@@ -445,11 +444,15 @@ function DWP_OnEvent(self, event, arg1, ...)
 					local icon = item:GetItemIcon()
 					table.insert(lootList, {icon=icon, link=item:GetItemLink()})
 				end);
+				DWP:CheckExistingConsul(item);
 			end
 
 			DWP:LootTable_Set(lootList)
-			--
-			--print("Added "..#lootList.." items to bid interface");
+		end
+	elseif event == "CHAT_MSG_LOOT" then
+		DWP:CheckOfficer();
+		if core.IsOfficer then
+			DWP:CheckConsulReceived(arg1);
 		end
 	end
 end
@@ -593,4 +596,24 @@ events:RegisterEvent("GUILD_ROSTER_UPDATE")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
 events:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 events:RegisterEvent("BOSS_KILL")
+events:RegisterEvent("CHAT_MSG_LOOT")
 events:SetScript("OnEvent", DWP_OnEvent); -- calls the above DWP_OnEvent function to determine what to do with the event
+
+local origChatFrame_OnHyperlinkShow = ChatFrame_OnHyperlinkShow;
+ChatFrame_OnHyperlinkShow = function(...)
+	local _, link = ...;
+	local linkStart = string.sub(link, 1, 3);
+	if linkStart == "dwp" and not IsModifiedClick() then
+		local commandString = string.sub(link, 5);
+		local command, par1, par2 = string.split(":", commandString)
+
+		if command == "showConsul" then
+			DWP:ConsulModal(true);
+		elseif command == "deleteConsul" then
+			-- player, itemId
+			DWP:DeleteConsul(par1, par2);
+		end
+		return;
+	end
+	return origChatFrame_OnHyperlinkShow(...);
+end

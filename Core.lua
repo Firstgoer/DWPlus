@@ -639,6 +639,18 @@ function DWP:Table_Search(tar, val, field)
 	end
 end
 
+function DWP:GetPlayerNameWithColor(player)
+	local color;
+	local classSearch = DWP:Table_Search(DWPlus_RPTable, player)
+
+	if classSearch then
+		color = DWP:GetCColors(DWPlus_RPTable[classSearch[1][1]].class)
+	else
+		color = { hex="ffffff" }
+	end
+	return "|cff"..color.hex..player.."|r";
+end
+
 function DWP:TableStrFind(tar, val, field)              -- same function as above, but searches values that contain the searched string rather than exact string matches
 	local value = string.upper(tostring(val));        -- ex. DWP:TableStrFind(DWPlus_RPHistory, "Player") will return the path to any table element that contains "Roeshambo"
 	local location = {}
