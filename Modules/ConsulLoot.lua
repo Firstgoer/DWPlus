@@ -792,6 +792,9 @@ local function createTableFilters()
 end
 
 function DWP:DeleteConsul(player, itemId)
+	if not DWP:canUserChangeConsul(UnitName("player")) then
+		return;
+	end
 	for index, consulItem in ipairs(DWPlus_Consul) do
 		if consulItem.player == player and consulItem.item == tonumber(itemId) then
 			ConsulDeleteEntry(index)
@@ -808,16 +811,22 @@ function DWP:CheckExistingConsul(item)
 		return;
 	end
 
-	local consulTable = DWPlus_Consul;
-
-	for _, consulItem in pairs(consulTable) do
+	local notSet = false;
+	for _, consulItem in pairs(DWPlus_Consul) do
 		if consulItem.item == itemId then
-			playersTable[consulItem.player] = DWP:GetPlayerNameWithColor(consulItem.player);
+			if consulItem.player ~= 0 then
+				playersTable[consulItem.player] = DWP:GetPlayerNameWithColor(consulItem.player);
+			end
+			if (consulItem.player == 0) then
+				notSet = true;
+			end
 		end
 	end
 
 	if tableHasItems(playersTable) then
 		DWP:Print(string.format(L["CONSULPRINT"], item:GetItemLink(), pconcat(playersTable, ", ")));
+	elseif notSet then
+		DWP:Print(string.format(L["CONSULPRINTEMPTY"], item:GetItemLink()));
 	end
 end
 
@@ -928,7 +937,7 @@ local function ConsulTableCreate(point)
 end
 
 function DWP:CheckConsulReceived(lootText)
-	if not lootText then
+	if not lootText or not DWP:canUserChangeConsul(UnitName("player")) then
 		return;
 	end
 	local lootPatters = {
@@ -1246,11 +1255,6 @@ function DWPlus_ConsulTab_Show()
 		GetPlayersOptions();
 		ConsulTableCreate({"TOPLEFT", DWP.ConfigTab5.text, "BOTTOMLEFT", 0, -15});
 	end
-
-	-- TODO: REMOVE
-	table.insert(DWPlus_Consul, {
-		player = "Учительница", zone = 123, boss = 123, item = 2592
-	});
 
 	DWP:ConsulUpdate();
 end

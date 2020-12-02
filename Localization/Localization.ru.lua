@@ -211,7 +211,7 @@ if GetLocale() == "ruRU" then
     CONSULLOOT = "Консул лут",
     CONSULFOUND = "Найдено %d записей о консул луте. |cff00cc66|Hdwp:showConsul|h[Поделиться]|h|r";
     CONSULPRINT = "|cff00cc66Консул: Предмет %s|cff00cc66 зарезервирован за %s",
-    CONSULPRINTEMPTY = "Консул: Предмет %s зарезервирован на усмотрение лидера",
+    CONSULPRINTEMPTY = "|cff00cc66Консул: Предмет %s|cff00cc66 зарезервирован на усмотрение лидера",
     CREATED = "Создано",
     CREATEDMAINTAIN = "переведена Имидж@Пламегор-ПвП, создана и поддерживается",
     CREATERAIDTIMER = "Создает Рейд-таймер (Только для офицеров) (Пример: /rp timer 120 Pizza Break!))",
