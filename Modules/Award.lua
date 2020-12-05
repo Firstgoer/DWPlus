@@ -166,9 +166,8 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 				DWP.Sync:SendData("DWPZSumBank", DWPlus_DB.modes.ZeroSumBank)
 			end
 			core.BiddingWindow:Hide()
-			ClearBidWindow()
+			DWP:ClearBidInterface();
 		end
-		core.BidInterface:Hide();
 	end
 end
 

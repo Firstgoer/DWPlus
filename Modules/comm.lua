@@ -209,7 +209,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 			if (prefix == "DWPBCastMsg") and sender ~= UnitName("player") then
 				DWP:Print(message)
 			elseif (prefix == "DWPCommand") then
-				local command, arg1, arg2, arg3 = strsplit(",", message);
+				local command, arg1, arg2, arg3, arg4 = strsplit(",", message);
 				if sender ~= UnitName("player") then
 					if command == "StartTimer" then
 						DWP:StartTimer(arg1, arg2)
@@ -225,14 +225,9 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							DWP.BidTimer:Hide()
 							core.BiddingInProgress = false;
 						end
-						if core.BidInterface and #core.BidInterface.LootTableButtons > 0 then
-							for i=1, #core.BidInterface.LootTableButtons do
-								ActionButton_HideOverlayGlow(core.BidInterface.LootTableButtons[i])
-							end
-						end
 						C_Timer.After(2, function()
 							if core.BidInterface and core.BidInterface:IsShown() and not core.BiddingInProgress then
-								core.BidInterface:Hide()
+								DWP:ClearBidInterface()
 							end
 						end)
 					elseif command == "BidInfo" then
@@ -242,7 +237,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 						if DWPlus_DB.defaults.AutoOpenBid and not core.BidInterface:IsShown() then	-- toggles bid window if option is set to
 							DWP:BidInterface_Toggle()
 						end
-						DWP:CurrItem_Set(arg1, arg2, arg3)	-- populates bid window
+						DWP:CurrItem_Set(arg1, arg2, arg3, arg4)	-- populates bid window
 					end
 				end
 			elseif prefix == "DWPRaidTime" and sender ~= UnitName("player") and core.IsOfficer and DWP.ConfigTab2 then

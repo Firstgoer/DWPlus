@@ -29,7 +29,7 @@ local lootTable = {};
 
 local width, height, numrows = 370, 18, 13
 local Bids_Submitted = {};
-local CurrItemForBid, CurrItemIcon;
+local CurrItemForBid;
 
 -- Broadcast should set LootTable_Set when loot is opened. Starting an auction will update through CurrItem_Set
 -- When bid received it will be broadcasted and handled with Bids_Set(). If bid broadcasting is off, window will be reduced in size and scrollframe removed.
@@ -39,7 +39,7 @@ function DWP:LootTable_Set(lootList)
 end
 
 local function SortBidTable()
-	mode = DWPlus_DB.modes.mode;
+	local mode = DWPlus_DB.modes.mode;
 	table.sort(Bids_Submitted, function(a, b)
 	    if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
 	    	return a["bid"] > b["bid"]
@@ -384,9 +384,8 @@ local function BidWindowCreateRow(parent, id) -- Create 3 buttons for each row i
     return f
 end
 
-function DWP:CurrItem_Set(item, value, icon)
+function DWP:CurrItem_Set(item, value, icon, boss)
 	CurrItemForBid = item;
-	CurrItemIcon = icon;
 
 	local foundItem = false;
 	for _, bidItem in pairs(lootTable) do
@@ -397,6 +396,10 @@ function DWP:CurrItem_Set(item, value, icon)
 
 	if not foundItem then
 		table.insert(lootTable, {link = item, icon = icon})
+	end
+
+	if boss then
+		DWPlus_DB.bossargs.LastKilledBoss = boss;
 	end
 
 	UpdateBidderWindow()
@@ -803,4 +806,16 @@ function DWP:BidInterface_Create()
 	end)
 
 	return f;
+end
+
+function DWP:ClearBidInterface()
+	CurrItemForBid = nil;
+	if core.BidInterface then
+		core.BidInterface:Hide();
+		if #core.BidInterface.LootTableButtons > 0 then
+			for i=1, #core.BidInterface.LootTableButtons do
+				ActionButton_HideOverlayGlow(core.BidInterface.LootTableButtons[i])
+			end
+		end
+	end;
 end

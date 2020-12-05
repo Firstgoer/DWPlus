@@ -18,7 +18,11 @@ local menuFrame = CreateFrame("Frame", "DWPBidWindowMenuFrame", UIParent, "UIDro
 local hookedSlots = {}
 
 local function UpdateBidWindow()
-	core.BiddingWindow.item:SetText(CurrItemForBid)
+	if CurrItemForBid then
+		core.BiddingWindow.item:SetText(CurrItemForBid)
+	else
+		core.BiddingWindow.item:SetText(L["NONE"])
+	end
 	core.BiddingWindow.itemIcon:SetTexture(CurrItemIcon)
 end
 
@@ -461,7 +465,11 @@ local function UpdateSelectBidWindow()
 						clickItem:ContinueOnItemLoad(function()
 							core.SelectBidWindow:Hide();
 							core.BiddingBoss = self.boss;
-							DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName());
+							if self.boss ~= BAGSLOT then
+								DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName(), self.boss);
+							else
+								DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName());
+							end
 						end);
 					end;
 				end)
@@ -498,7 +506,7 @@ local function AddBidItemsFromBags()
 			if itemLink then
 				local item = Item:CreateFromItemLink(itemLink);
 				item:ContinueOnItemLoad(function()
-					if item:GetItemQuality() >= 2 and not(DWP:IsSoulbound(bag, slot)) then
+					if item:GetItemQuality() >= 3 and not(DWP:IsSoulbound(bag, slot)) then
 						table.insert(items, itemLink);
 					end
 				end)
@@ -657,7 +665,7 @@ function DWP:BidTable_Remove(item, boss)
 	UpdateSelectBidWindow();
 end
 
-function DWP:ToggleBidWindow(loot, lootIcon, itemName)
+function DWP:ToggleBidWindow(loot, lootIcon, itemName, bossName)
 	if core.IsOfficer then
 		local minBid;
 		mode = DWPlus_DB.modes.mode;
@@ -730,7 +738,7 @@ function DWP:ToggleBidWindow(loot, lootIcon, itemName)
 	 		core.BiddingWindow.cost:SetText(DWP_round(minBid, DWPlus_DB.modes.rounding))
 	 		core.BiddingWindow.itemName:SetText(itemName)
 	 		core.BiddingWindow.bidTimer:SetText(DWPlus_DB.DKPBonus.BidTimer)
-	 		core.BiddingWindow.boss:SetText(core.LastKilledBoss)
+	 		core.BiddingWindow.boss:SetText(bossName or core.LastKilledBoss)
 	 		UpdateBidWindow()
 	 		core.BiddingWindow.ItemTooltipButton:SetSize(core.BiddingWindow.itemIcon:GetWidth() + core.BiddingWindow.item:GetStringWidth() + 10, core.BiddingWindow.item:GetHeight());
 	 		core.BiddingWindow.ItemTooltipButton:SetScript("OnEnter", function(self)
@@ -760,8 +768,8 @@ local function StartBidding()
 	if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
 		core.BiddingWindow.cost:SetNumber(DWP_round(core.BiddingWindow.minBid:GetNumber(), DWPlus_DB.modes.rounding))
 		DWP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText(), core.BiddingWindow.item:GetText().." Min Bid: "..core.BiddingWindow.minBid:GetText(), CurrItemIcon)
-		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.minBid:GetText()..","..CurrItemIcon)
-		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.minBid:GetText(), CurrItemIcon)
+		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.minBid:GetText()..","..CurrItemIcon..","..core.BiddingWindow.boss:GetText())
+		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.minBid:GetText(), CurrItemIcon, core.BiddingWindow.boss:GetText())
 
 		if DWPlus_DB.defaults.AutoOpenBid then	-- toggles bid window if option is set to
 			DWP:BidInterface_Toggle()
@@ -789,9 +797,9 @@ local function StartBidding()
 	else
 		if DWPlus_DB.modes.costvalue == "Percent" then perc = "%" else perc = " RP" end;
 		DWP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText(), core.BiddingWindow.item:GetText().." Cost: "..core.BiddingWindow.cost:GetNumber()..perc, CurrItemIcon)
-		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.cost:GetText()..perc..","..CurrItemIcon)
+		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.cost:GetText()..perc..","..CurrItemIcon..","..core.BiddingWindow.boss:GetText())
 		DWP:BidInterface_Toggle()
-		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.cost:GetText()..perc, CurrItemIcon)
+		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.cost:GetText()..perc, CurrItemIcon, core.BiddingWindow.boss:GetText())
 	end
 
 	if mode == "Roll Based Bidding" then
@@ -853,6 +861,7 @@ local function ToggleTimerBtn(self)
 		SendChatMessage(L["BIDDINGCLOSED"], "RAID_WARNING")
 		events:UnregisterEvent("CHAT_MSG_SYSTEM")
 		DWP:BroadcastStopBidTimer()
+		DWP:ClearBidInterface();
 	end
 end
 
