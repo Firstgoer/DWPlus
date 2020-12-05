@@ -554,6 +554,7 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if not DWPlus_DB.ConfigPos then DWPlus_DB.ConfigPos = {x = -250, y = 100} end
 		if not DWPlus_DB.TabMenuShown then DWPlus_DB.TabMenuShown = false end
 		if not DWPlus_DB.ConsulFilters then DWPlus_DB.ConsulFilters = {}; end;
+		if not DWPlus_DB.BiddingItems then DWPlus_DB.BiddingItems = {} end;
 
 		------------------------------------
 		--	Import SavedVariables

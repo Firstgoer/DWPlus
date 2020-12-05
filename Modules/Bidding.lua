@@ -16,7 +16,6 @@ local mode;
 local events = CreateFrame("Frame", "BiddingEventsFrame");
 local menuFrame = CreateFrame("Frame", "DWPBidWindowMenuFrame", UIParent, "UIDropDownMenuTemplate")
 local hookedSlots = {}
-local biddingItems = {}
 
 local function UpdateBidWindow()
 	core.BiddingWindow.item:SetText(CurrItemForBid)
@@ -405,7 +404,7 @@ local function UpdateSelectBidWindow()
 
 	local index = 0;
 
-	for boss, biddingBossItems in pairs(biddingItems) do
+	for boss, biddingBossItems in pairs(DWPlus_DB.BiddingItems) do
 		index = index + 1;
 		if not items[index] then
 			items[index] = createSelectBidItemRow(core.SelectBidWindow.scrollFrame, index);
@@ -416,6 +415,8 @@ local function UpdateSelectBidWindow()
 		items[index].itemText:SetTextColor(0.8, 0.65, 0);
 		items[index].itemText:SetScale(1.2);
 		items[index].itemIcon:Hide();
+		items[index]:SetScript("OnMouseDown", nil);
+		items[index]:SetHighlightTexture(nil);
 
 		for _, itemLink in ipairs(biddingBossItems) do
 			local item = Item:CreateFromItemLink(itemLink);
@@ -429,6 +430,7 @@ local function UpdateSelectBidWindow()
 				items[index].itemText:SetScale(1);
 				items[index].itemIcon:SetTexture(item:GetItemIcon());
 				items[index].itemIcon:Show();
+				items[index]:SetHighlightTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\ListBox-Highlight");
 
 				items[index].boss = boss;
 				items[index].itemLink = itemLink;
@@ -439,13 +441,29 @@ local function UpdateSelectBidWindow()
 				items[index]:SetScript("OnLeave", function()
 					GameTooltip:Hide()
 				end)
-				items[index]:SetScript("OnClick", function(self)
-					local clickItem = Item:CreateFromItemLink(self.itemLink);
-					clickItem:ContinueOnItemLoad(function()
-						core.SelectBidWindow:Hide();
-						core.BiddingBoss = self.boss;
-						DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName());
-					end);
+				items[index]:SetScript("OnMouseDown", function(self, button)
+					if button == "RightButton" then
+						StaticPopupDialogs["REMOVE_BIDDING_ITEM"] = {
+							text = "|CFFFF0000"..L["WARNING"].."|r: "..L["CONFIRMREMOVESELECT"].."\n"..self.boss..": "..self.itemLink.."?",
+							button1 = L["YES"],
+							button2 = L["NO"],
+							OnAccept = function()
+								DWP:BidTable_Remove(self.itemLink, self.boss)
+							end,
+							timeout = 0,
+							whileDead = true,
+							hideOnEscape = true,
+							preferredIndex = 3,
+						}
+						StaticPopup_Show ("REMOVE_BIDDING_ITEM")
+					else
+						local clickItem = Item:CreateFromItemLink(self.itemLink);
+						clickItem:ContinueOnItemLoad(function()
+							core.SelectBidWindow:Hide();
+							core.BiddingBoss = self.boss;
+							DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName());
+						end);
+					end;
 				end)
 				items[index]:Show();
 			end)
@@ -461,7 +479,7 @@ local function ClearSelectBidWindow()
 		button1 = L["YES"],
 		button2 = L["NO"],
 		OnAccept = function()
-			biddingItems = {};
+			DWPlus_DB.BiddingItems = {};
 			UpdateSelectBidWindow();
 		end,
 		timeout = 0,
@@ -480,7 +498,7 @@ local function AddBidItemsFromBags()
 			if itemLink then
 				local item = Item:CreateFromItemLink(itemLink);
 				item:ContinueOnItemLoad(function()
-					if item:GetItemQuality() >= 3 and not(DWP:IsSoulbound(bag, slot)) then
+					if item:GetItemQuality() >= 2 and not(DWP:IsSoulbound(bag, slot)) then
 						table.insert(items, itemLink);
 					end
 				end)
@@ -552,6 +570,13 @@ local function CreateSelectBidWindow()
 	f.closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
 	f.closeBtn:SetPoint("CENTER", f.closeContainer, "TOPRIGHT", -14, -14)
 
+	f.inst = f:CreateFontString(nil, "OVERLAY")
+	f.inst:ClearAllPoints();
+	f.inst:SetFontObject("DWPSmallRight");
+	f.inst:SetTextColor(0.3, 0.3, 0.3, 0.7)
+	f.inst:SetPoint("TOPRIGHT", f, "TOPRIGHT", -40, -43);
+	f.inst:SetText(L["LMBREMOVE"]);
+
 	f.header = f:CreateFontString(nil, "OVERLAY")
 	f.header:SetFontObject("DWPLargeCenter");
 	f.header:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -10);
@@ -606,23 +631,23 @@ end
 
 function DWP:BidTable_Set(boss, list)
 	if table.getn(list) > 0 then
-		biddingItems[boss] = list;
+		DWPlus_DB.BiddingItems[boss] = list;
 		UpdateSelectBidWindow();
 	end
 end
 
 function DWP:BidTable_Remove(item, boss)
 	local bossRemovable = boss or core.BiddingBoss;
-	if not biddingItems[bossRemovable] then
+	if not DWPlus_DB.BiddingItems[bossRemovable] then
 		return;
 	end;
 
-	for index, biddingItem in pairs(biddingItems[bossRemovable]) do
+	for index, biddingItem in pairs(DWPlus_DB.BiddingItems[bossRemovable]) do
 		if item == biddingItem then
-			table.remove(biddingItems[bossRemovable], index)
+			table.remove(DWPlus_DB.BiddingItems[bossRemovable], index)
 
-			if table.getn(biddingItems[bossRemovable]) == 0 then
-				biddingItems[bossRemovable] = nil
+			if table.getn(DWPlus_DB.BiddingItems[bossRemovable]) == 0 then
+				DWPlus_DB.BiddingItems[bossRemovable] = nil
 			end;
 
 			UpdateSelectBidWindow();

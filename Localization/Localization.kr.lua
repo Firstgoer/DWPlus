@@ -380,7 +380,7 @@ if GetLocale() == "koKR" then
     LOOTHISTINST1 = [=[Shift + 클릭하여 항목 연결
     Alt + 클릭하여 연결 선]=],
     LOOTHISTINST2 = "항목을 편집하려면 마우스 오른쪽 버튼을 클릭하십시오",
-    LOOTHISTINST3 = "항목을 마우스 오른쪽 버튼으로 클릭하여 삭제",
+    LMBREMOVE = "항목을 마우스 오른쪽 버튼으로 클릭하여 삭제",
     LOOTHISTLIMITTTDESC = "저장된 최대 전리품 기록 항목.",
     LOOTHISTLIMITTTWARN = "경고 :이 값을 현재 저장된 항목 수 아래로 줄이면 가장 오래된 항목이 제한을 충족하도록 삭제됩니다.",
     LOOTHISTORY = "전리품 역사",

@@ -260,7 +260,7 @@ function DWP:LootHistory_Update(filter)				-- if "filter" is included in call, r
 	DWP.ConfigTab6.inst:SetText(L["LOOTHISTINST1"]);
 	if core.IsOfficer == true then
 		DWP.ConfigTab6.inst:SetText(DWP.ConfigTab6.inst:GetText().."\n"..L["LOOTHISTINST2"])
-		DWP.ConfigTab6.inst:SetText(L["LOOTHISTINST3"])
+		DWP.ConfigTab6.inst:SetText(L["LMBREMOVE"])
 	end
 
 	if CurrentLimit > #LootTable then CurrentLimit = #LootTable end;

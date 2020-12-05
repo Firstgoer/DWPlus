@@ -378,7 +378,7 @@ if GetLocale() == "zhTW" then
     LOOTHISTINST1 = [=[按住SHIFT鍵並按一下以連結項目
     Alt鍵並按一下以連結行]=],
     LOOTHISTINST2 = "右擊可編輯條目",
-    LOOTHISTINST3 = "按右鍵可删除條目",
+    LMBREMOVE = "按右鍵可删除條目",
     LOOTHISTLIMITTTDESC = "存儲的最大戰利品歷史記錄條目。",
     LOOTHISTLIMITTTWARN = "警告：如果將其減少到當前存儲的條目數以下，則最早的將被刪除以達到限制。",
     LOOTHISTORY = "搶劫歷史",

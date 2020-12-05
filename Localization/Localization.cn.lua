@@ -380,7 +380,7 @@ if GetLocale() == "zhCN" then
     LOOTHISTINST1 = [=[Shift+单击以链接项目
     Alt+单击以链接行]=],
     LOOTHISTINST2 = "右键单击以编辑条目",
-    LOOTHISTINST3 = "右键单击以删除条目",
+    LMBREMOVE = "右键单击以删除条目",
     LOOTHISTLIMITTTDESC = "存储的最大战利品历史记录条目。",
     LOOTHISTLIMITTTWARN = "警告：如果将其减少到当前存储的条目数以下，则最早的将被删除以达到限制。",
     LOOTHISTORY = "战利品历史",

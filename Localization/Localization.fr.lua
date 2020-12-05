@@ -380,7 +380,7 @@ if GetLocale() == "frFR" then
     LOOTHISTINST1 = [=[Shift + Cliquez pour lier l'élément
     Alt + Cliquer pour lier la ligne]=],
     LOOTHISTINST2 = "Clic droit pour modifier l'entrée",
-    LOOTHISTINST3 = "Clic droit pour supprimer une entrée",
+    LMBREMOVE = "Clic droit pour supprimer une entrée",
     LOOTHISTLIMITTTDESC = "Nombre maximal d'entrées de l'historique de butin stockées.",
     LOOTHISTLIMITTTWARN = "Avertissement: Si vous réduisez ce nombre en deçà du nombre d'entrées actuellement stockées, les plus anciennes seront supprimées pour respecter la limite.",
     LOOTHISTORY = "Histoire du butin",

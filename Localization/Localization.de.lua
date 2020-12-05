@@ -388,7 +388,7 @@ if GetLocale() == "deDE" then
     LOOTHISTINST1 = [=[Umschalttaste + Klicken, um Element zu verknüpfen
     Alte + Klicken, um Zeile zu verknüpfen]=],
     LOOTHISTINST2 = "Klicken Sie mit der rechten Maustaste, um den Eintrag zu bearbeiten",
-    LOOTHISTINST3 = "Klicken Sie mit der rechten Maustaste, um den Eintrag zu löschen",
+    LMBREMOVE = "Klicken Sie mit der rechten Maustaste, um den Eintrag zu löschen",
     LOOTHISTLIMITTTDESC = "Maximal gespeicherte Einträge in der Beute-Historie.",
     LOOTHISTLIMITTTWARN = "Warnung: Wenn Sie die Anzahl der aktuell gespeicherten Einträge unterschreiten, wird der älteste gelöscht, um das Limit zu erreichen.",
     LOOTHISTORY = "Beute-Geschichte",

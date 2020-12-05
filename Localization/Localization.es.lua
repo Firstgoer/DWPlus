@@ -380,7 +380,7 @@ if GetLocale() == "esES" or GetLocale() == "esMX" then
     LOOTHISTINST1 = [=[Mayús + clic para vincular elemento
     Alt + clic para vincular línea]=],
     LOOTHISTINST2 = "Haga clic derecho para editar la entrada",
-    LOOTHISTINST3 = "Haga clic derecho para eliminar la entrada",
+    LMBREMOVE = "Haga clic derecho para eliminar la entrada",
     LOOTHISTLIMITTTDESC = "Entradas máximas de historial de botín almacenadas.",
     LOOTHISTLIMITTTWARN = "Advertencia: si reduce esto por debajo del número de entradas almacenadas actualmente, la más antigua se eliminará para cumplir con el límite.",
     LOOTHISTORY = "Historia de botín",
