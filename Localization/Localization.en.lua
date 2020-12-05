@@ -557,6 +557,7 @@ core.L = {
   SHOULDERS             = "Shoulders",
   SLASHCOMMANDLIST      = "List of slash commands",
   SPEC                  = "Spec",
+  STARTROLL             = "{circle}Start roll{circle}",
   STANDBYOPTIN          = "Standby Opt In",
   STANDBYOPTINBEGIN     = " has been killed. Please post !standby (or !standby Mains_Name if on an alt, spelling must be precise.) to Guild chat to receive DKP. Opt in will expire in 120 seconds.",
   STANDBYOPTINEND       = "Standby Opt in has expired for: ",

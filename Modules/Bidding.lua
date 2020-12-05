@@ -830,14 +830,14 @@ local function StartBidding()
 		end
 
 		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-			SendChatMessage(L["TAKINGBIDSON"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.minBid:GetText().." "..L["DKPMINBID"]..")", "RAID_WARNING")
-			SendChatMessage(L["TOBIDUSE"].." "..channelText.." "..L["TOSEND"].." !bid <"..L["VALUE"].."> (ex: !bid "..core.BiddingWindow.minBid:GetText().."). "..L["OR"].." !bid cancel "..L["TOWITHDRAWBID"], "RAID_WARNING")
+			DWP:SendToRWorRaidChat(L["TAKINGBIDSON"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.minBid:GetText().." "..L["DKPMINBID"]..")")
+			DWP:SendToRWorRaidChat(L["TOBIDUSE"].." "..channelText.." "..L["TOSEND"].." !bid <"..L["VALUE"].."> (ex: !bid "..core.BiddingWindow.minBid:GetText().."). "..L["OR"].." !bid cancel "..L["TOWITHDRAWBID"])
 		elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
-			SendChatMessage(L["TAKINGBIDSON"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.cost:GetText()..perc..")", "RAID_WARNING")
-			SendChatMessage(L["TOBIDUSE"].." "..channelText.." "..L["TOSEND"].." !bid. "..L["OR"].." !bid cancel "..L["TOWITHDRAWBID"], "RAID_WARNING")
+			DWP:SendToRWorRaidChat(L["TAKINGBIDSON"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.cost:GetText()..perc..")")
+			DWP:SendToRWorRaidChat(L["TOBIDUSE"].." "..channelText.." "..L["TOSEND"].." !bid. "..L["OR"].." !bid cancel "..L["TOWITHDRAWBID"])
 		elseif mode == "Roll Based Bidding" then
-			SendChatMessage(L["STARTROLL"], "RAID_WARNING")
-			SendChatMessage(L["ROLLFOR"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.cost:GetText()..perc..")", "RAID_WARNING")
+			DWP:SendToRWorRaidChat(L["STARTROLL"])
+			DWP:SendToRWorRaidChat(L["ROLLFOR"].." "..core.BiddingWindow.item:GetText().." ("..core.BiddingWindow.cost:GetText()..perc..")")
 		end
 	end
 end
@@ -858,7 +858,7 @@ local function ToggleTimerBtn(self)
 		timerToggle = 0;
 		core.BidInProgress = false;
 		self:SetText(L["STARTBIDDING"])
-		SendChatMessage(L["BIDDINGCLOSED"], "RAID_WARNING")
+		DWP:SendToRWorRaidChat(L["BIDDINGCLOSED"])
 		events:UnregisterEvent("CHAT_MSG_SYSTEM")
 		DWP:BroadcastStopBidTimer()
 		DWP:ClearBidInterface();
@@ -1084,33 +1084,25 @@ function DWP:StartBidTimer(seconds, title, itemIcon)
 			if audioPlayed == false then
 	        	PlaySound(23639);
 	        end
-			DWP:Print(L["TENSECONDSTOBID"])
+			DWP:SendToRWorRaidChat(L["TENSECONDSTOBID"])
 			messageSent[1] = true;
 		end
-		if tonumber(timerText) == 5 and messageSent[2] == false then
-			DWP:Print("5")
+		if tonumber(timerText) == 3 and messageSent[2] == false then
+			DWP:SendToRWorRaidChat("3")
 			messageSent[2] = true;
 		end
-		if tonumber(timerText) == 4 and messageSent[3] == false then
-			DWP:Print("4")
+		if tonumber(timerText) == 2 and messageSent[3] == false then
+			DWP:SendToRWorRaidChat("2")
 			messageSent[3] = true;
 		end
-		if tonumber(timerText) == 3 and messageSent[4] == false then
-			DWP:Print("3")
+		if tonumber(timerText) == 1 and messageSent[4] == false then
+			DWP:SendToRWorRaidChat("1")
 			messageSent[4] = true;
-		end
-		if tonumber(timerText) == 2 and messageSent[5] == false then
-			DWP:Print("2")
-			messageSent[5] = true;
-		end
-		if tonumber(timerText) == 1 and messageSent[6] == false then
-			DWP:Print("1")
-			messageSent[6] = true;
 		end
 		self:SetValue(timer)
 		if timer >= duration then
 			if CurrItemForBid and core.BidInProgress then
-				SendChatMessage(L["BIDDINGCLOSED"], "RAID_WARNING")
+				DWP:SendToRWorRaidChat(L["BIDDINGCLOSED"])
 				events:UnregisterEvent("CHAT_MSG_SYSTEM")
 			end
 			core.BidInProgress = false;

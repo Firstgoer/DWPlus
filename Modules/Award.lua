@@ -134,7 +134,7 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 			if DWPlus_DB.modes.AnnounceAward then
 				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..math.abs(cost).." "..L["DKP"], "GUILD")
 			else
-				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..math.abs(cost).." "..L["DKP"], "RAID_WARNING")
+				DWP:SendToRWorRaidChat(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..math.abs(cost).." "..L["DKP"])
 			end
 				
 			if mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then

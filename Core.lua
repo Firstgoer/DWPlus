@@ -368,6 +368,20 @@ function DWP:IsLootMaster()
 	return lootMethod == "master" and masterLooterPartyID == 0;
 end
 
+function DWP:SendToRWorRaidChat(message)
+	if IsInRaid() then
+		if UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
+			SendChatMessage(message, "RAID_WARNING");
+		else
+			SendChatMessage(message, "RAID");
+		end
+	elseif UnitInParty() then
+		SendChatMessage(message, "RAID");
+	else
+		DWP:Print(message);
+	end
+end
+
 function DWP:CreateContainer(parent, name, header)
 	local f = CreateFrame("Frame", "DWP"..name, parent);
 	f:SetBackdrop( {
