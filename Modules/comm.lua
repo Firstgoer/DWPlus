@@ -735,7 +735,7 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							end
 
 							DWP:LootTable_Set(lootList)
-							DWP:BidTable_Set(startBidList)
+							DWP:BidTable_Set(deserialized.boss, startBidList)
 						elseif prefix == "DWPConsul" then
 							if (DWP:canUserChangeConsul(sender)) then
 								DWPlus_Consul = deserialized;

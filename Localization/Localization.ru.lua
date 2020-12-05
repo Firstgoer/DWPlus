@@ -130,6 +130,7 @@ if GetLocale() == "ruRU" then
     BELT = "Пояс",
     BESTPRACTICES = "Добро пожаловать в Мир Грез!",
     BID = "Ставка",
+    BIDDINGITEM = "В розыгрыше",
     BIDACCEPTEDFILTER = "Ваша ставка была принята.",
     BIDCANCELLED = "Ваша ставка была отменена.",
     BIDDENIEDEXCEEDMAX = "Ставка отклонена! Ваша ставка превысила максимальное значение ставки.",

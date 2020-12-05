@@ -452,7 +452,7 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 
 			DWP:LootTable_Set(lootList)
-			DWP:BidTable_Set(startBidList)
+			DWP:BidTable_Set(name, startBidList)
 		end
 	elseif event == "CHAT_MSG_LOOT" then
 		DWP:CheckOfficer();

@@ -403,33 +403,54 @@ local function UpdateSelectBidWindow()
 
 	local items = core.SelectBidWindow.items or {};
 
-	for index, itemLink in pairs(biddingItems) do
-		local item = Item:CreateFromItemLink(itemLink);
-		item:ContinueOnItemLoad(function()
-			if not items[index] then
-				items[index] = createSelectBidItemRow(core.SelectBidWindow.scroll, index);
-			end
-			items[index].itemText:SetText(itemLink);
-			items[index].itemIcon:SetTexture(item:GetItemIcon());
+	local index = 0;
 
-			items[index].itemLink = itemLink;
-			items[index]:SetScript("OnEnter", function(self)
-				GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT", 0, 500);
-				GameTooltip:SetHyperlink(self.itemLink)
+	for boss, biddingBossItems in pairs(biddingItems) do
+		index = index + 1;
+		if not items[index] then
+			items[index] = createSelectBidItemRow(core.SelectBidWindow.scrollFrame, index);
+		end
+		items[index]:Show();
+
+		items[index].itemText:SetText(boss..":");
+		items[index].itemText:SetTextColor(0.8, 0.65, 0);
+		items[index].itemText:SetScale(1.2);
+		items[index].itemIcon:Hide();
+
+		for _, itemLink in ipairs(biddingBossItems) do
+			local item = Item:CreateFromItemLink(itemLink);
+			item:ContinueOnItemLoad(function()
+				index = index + 1;
+				if not items[index] then
+					items[index] = createSelectBidItemRow(core.SelectBidWindow.scrollFrame, index);
+				end
+				items[index].itemText:SetText(itemLink);
+				items[index].itemText:SetTextColor(1, 1, 1);
+				items[index].itemText:SetScale(1);
+				items[index].itemIcon:SetTexture(item:GetItemIcon());
+				items[index].itemIcon:Show();
+
+				items[index].boss = boss;
+				items[index].itemLink = itemLink;
+				items[index]:SetScript("OnEnter", function(self)
+					GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT", 0, 500);
+					GameTooltip:SetHyperlink(self.itemLink)
+				end)
+				items[index]:SetScript("OnLeave", function()
+					GameTooltip:Hide()
+				end)
+				items[index]:SetScript("OnClick", function(self)
+					local clickItem = Item:CreateFromItemLink(self.itemLink);
+					clickItem:ContinueOnItemLoad(function()
+						core.SelectBidWindow:Hide();
+						core.BiddingBoss = self.boss;
+						DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName());
+					end);
+				end)
+				items[index]:Show();
 			end)
-			items[index]:SetScript("OnLeave", function()
-				GameTooltip:Hide()
-			end)
-			items[index]:SetScript("OnClick", function(self)
-				local clickItem = Item:CreateFromItemLink(self.itemLink);
-				clickItem:ContinueOnItemLoad(function()
-					core.SelectBidWindow:Hide();
-					DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName());
-				end);
-			end)
-			items[index]:Show();
-		end)
-	end
+		end
+	end;
 
 	core.SelectBidWindow.items = items;
 end
@@ -452,6 +473,7 @@ local function ClearSelectBidWindow()
 end
 
 local function AddBidItemsFromBags()
+	local items = {};
 	for bag = 0, 4 do
 		for slot = 1, GetContainerNumSlots(bag) do
 			local itemLink = GetContainerItemLink(bag, slot);
@@ -459,13 +481,13 @@ local function AddBidItemsFromBags()
 				local item = Item:CreateFromItemLink(itemLink);
 				item:ContinueOnItemLoad(function()
 					if item:GetItemQuality() >= 3 and not(DWP:IsSoulbound(bag, slot)) then
-						table.insert(biddingItems, itemLink);
+						table.insert(items, itemLink);
 					end
 				end)
 			end
 		end
 	end
-	UpdateSelectBidWindow();
+	DWP:BidTable_Set(BAGSLOT, items)
 end
 
 local function CreateSelectBidWindow()
@@ -535,11 +557,17 @@ local function CreateSelectBidWindow()
 	f.header:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -10);
 	f.header:SetText(L["SELECTBID"]);
 
+	f.scrollFrame = CreateFrame("Frame");
+
 	f.scroll = CreateFrame("ScrollFrame", "DWPSelectBidScrollFrame", f, "UIPanelScrollFrameTemplate")
+	f.scroll:ClearAllPoints(f)
 	f.scroll:SetPoint("LEFT", 20, 0)
 	f.scroll:SetPoint("RIGHT", -32, 0)
 	f.scroll:SetPoint("TOP", 0, -50)
 	f.scroll:SetPoint("BOTTOM", 0, 60)
+	f.scroll:SetScrollChild(f.scrollFrame);
+
+	f.scrollFrame:SetSize(f.scroll:GetWidth(), f.scroll:GetHeight())
 
 	f.ClearSelectBidWindow = DWP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 10, L["CLEARBIDWINDOW"]);
 	f.ClearSelectBidWindow:SetSize(90, 25)
@@ -576,9 +604,27 @@ function DWP:ToggleSelectBidWindow()
 	end
 end
 
-function DWP:BidTable_Set(list)
-	for _, itemLink in pairs(list) do
-		table.insert(biddingItems, itemLink);
+function DWP:BidTable_Set(boss, list)
+	if table.getn(list) > 0 then
+		biddingItems[boss] = list;
+		UpdateSelectBidWindow();
+	end
+end
+
+function DWP:BidTable_Remove(item, boss)
+	local bossRemovable = boss or core.BiddingBoss;
+	if not biddingItems[bossRemovable] then
+		return;
+	end;
+
+	for index, biddingItem in pairs(biddingItems[bossRemovable]) do
+		if item == biddingItem then
+			table.remove(biddingItems[bossRemovable], index)
+
+			if table.getn(biddingItems[bossRemovable]) == 0 then
+				biddingItems[bossRemovable] = nil
+			end;
+		end
 	end
 	UpdateSelectBidWindow();
 end

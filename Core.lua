@@ -6,6 +6,7 @@
 local _, core = ...;
 local _G = _G;
 local L = core.L;
+local Deformat = LibStub("LibDeformat-3.0")
 
 core.DWP = {};       -- UI Frames global
 local DWP = core.DWP;
@@ -744,8 +745,14 @@ function DWP:IsSoulbound(bag, slot)
 	cTip:Show()
 	for i = 1, cTip:NumLines() do
 		if(_G["PrivTooltipTextLeft"..i]:GetText() == ITEM_SOULBOUND) then
-			cTip:Hide()
-			return true
+			local time;
+			for j = 1, cTip:NumLines() do
+				time = time or Deformat(_G["PrivTooltipTextLeft"..j]:GetText(), BIND_TRADE_TIME_REMAINING);
+			end
+			if not time then
+				cTip:Hide()
+				return true
+			end
 		end
 	end
 	cTip:Hide()

@@ -109,6 +109,7 @@ core.L = {
   BELT                  = "Belt",
   BESTPRACTICES         = "Due to recurring issues with the sync system, the old broadcast system was brought back with some improvements. 2.1.0 is not compatible with earlier versions and all raiders must be on 2.1.0 or above. The new broadcast UI is available to officers by clicking the status indicator in the bottom left corner of the main DKP interface. There is also a repair option available to officers if your tables were corrupted by migration issues with 2.0.x. You can view how to use that via the YouTube video linked on the Curse page.",
   BID                   = "Bid",
+  BIDDINGITEM           = "Bidding",
   BIDACCEPTEDFILTER     = "Your bid was Accepted.",
   BIDCANCELLED          = "Your bid has been canceled.",
   BIDDENIEDEXCEEDMAX    = "Bid Denied! Your bid exceeded the maximum bid value of",

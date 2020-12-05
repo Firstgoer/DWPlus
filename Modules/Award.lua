@@ -117,6 +117,7 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 		DWP:DKPTable_Set(winner, "dkp", DWP_round(cost, DWPlus_DB.modes.rounding), true)
 		DWP:LootHistory_Reset();
 		DWP:LootHistory_Update(L["NOFILTER"])
+		DWP:BidTable_Remove(loot)
 
 		if core.BiddingWindow and core.BiddingWindow:IsShown() then  -- runs below if award is through bidding window (update minbids and zerosum bank)
 			if _G["DWPBiddingStartBiddingButton"] then
@@ -131,9 +132,9 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 			DWP:BroadcastStopBidTimer()
 			
 			if DWPlus_DB.modes.AnnounceAward then
-				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..-cost.." "..L["DKP"], "GUILD")
+				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..math.abs(cost).." "..L["DKP"], "GUILD")
 			else
-				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..-cost.." "..L["DKP"], "RAID_WARNING")
+				SendChatMessage(L["CONGRATS"].." "..winner.." "..L["ON"].." "..loot.." @ "..math.abs(cost).." "..L["DKP"], "RAID_WARNING")
 			end
 				
 			if mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
@@ -167,6 +168,7 @@ local function AwardItem(player, cost, boss, zone, loot, reassign)
 			core.BiddingWindow:Hide()
 			ClearBidWindow()
 		end
+		core.BidInterface:Hide();
 	end
 end
 

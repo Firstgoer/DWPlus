@@ -124,6 +124,7 @@ local function UpdateBidderWindow()
 		i = i+1
 	end
 	if haveItems then
+		core.BidInterface.lootHeader:Show();
 		core.BidInterface.lootContainer:SetSize(43*(i-1), 35)
 		core.BidInterface.itemHeader:Show();
 		core.BidInterface.item:SetText(CurrItemForBid)
@@ -133,10 +134,11 @@ local function UpdateBidderWindow()
 		core.BidInterface.MinBidHeader:SetPoint("TOP", core.BidInterface, "TOP", -160, -170);
 	else
 		itemsHeight = 0;
+		core.BidInterface.lootHeader:Hide();
+		core.BidInterface.lootContainer:SetSize(35, 35)
 		core.BidInterface.itemHeader:Hide();
 		core.BidInterface.item:Hide();
 		core.BidInterface.Boss:Hide();
-		core.BidInterface.lootContainer:SetSize(35, 35)
 		core.BidInterface.MinBidHeader:SetPoint("TOP", core.BidInterface, "TOP", -160, -15);
 	end
 
@@ -522,8 +524,14 @@ function DWP:BidInterface_Create()
 	f.LootTableIcons = {}
 	f.LootTableButtons = {}
 
+	f.lootHeader = f:CreateFontString(nil, "OVERLAY")
+	f.lootHeader:SetFontObject("DWPLargeRight");
+	f.lootHeader:SetScale(0.7)
+	f.lootHeader:SetPoint("TOP", f, "TOP", 0, -50);
+	f.lootHeader:SetText(L["LOOTBANKED"]..":");
+
 	f.lootContainer = CreateFrame("Frame", "DWPlus_LootContainer", UIParent);
-	f.lootContainer:SetPoint("TOP", f, "TOP", 0, -40);
+	f.lootContainer:SetPoint("TOP", f, "TOP", 0, -58);
 	f.lootContainer:SetSize(35, 35)
 
 	f.Boss = f:CreateFontString(nil, "OVERLAY")
@@ -551,12 +559,13 @@ function DWP:BidInterface_Create()
 	f.itemHeader:SetFontObject("DWPLargeRight");
 	f.itemHeader:SetScale(0.7)
 	f.itemHeader:SetPoint("TOP", f, "TOP", -160, -135);
-	f.itemHeader:SetText(L["ITEM"]..":")
+	f.itemHeader:SetText(L["BIDDINGITEM"]..":")
 
 	f.item = f:CreateFontString(nil, "OVERLAY")
 	f.item:SetFontObject("DWPNormalLeft");
 	f.item:SetPoint("LEFT", f.itemHeader, "RIGHT", 5, 2);
 	f.item:SetSize(200, 28)
+	f.item:SetText(L["NONE"])
 
 	f.MinBidHeader = f:CreateFontString(nil, "OVERLAY")
 	f.MinBidHeader:SetFontObject("DWPLargeRight");
@@ -566,7 +575,7 @@ function DWP:BidInterface_Create()
 
 	f.MinBid = f:CreateFontString(nil, "OVERLAY")
 	f.MinBid:SetFontObject("DWPNormalLeft");
-	f.MinBid:SetPoint("LEFT", f.MinBidHeader, "RIGHT", 8, -2);
+	f.MinBid:SetPoint("LEFT", f.MinBidHeader, "RIGHT", 8, 0);
 	f.MinBid:SetSize(200, 28)
 
     f.BidHeader = f:CreateFontString(nil, "OVERLAY")
