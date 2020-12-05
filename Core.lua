@@ -88,8 +88,8 @@ core.EncounterList = {      -- Event IDs must be in the exact same order as core
 }
 
 core.DWPUI = {}        -- global storing entire Configuration UI to hide/show UI
-core.MonVersion = "v1.1.1";
-core.BuildNumber = 10101;
+core.MonVersion = "v1.1.2";
+core.BuildNumber = 10102;
 core.TableWidth, core.TableRowHeight, core.TableNumRows = 500, 18, 27; -- width, row height, number of rows
 core.SelectedData = { player="none"};         -- stores data of clicked row for manipulation.
 core.classFiltered = {};   -- tracks classes filtered out with checkboxes
@@ -360,6 +360,11 @@ function DWP:BroadcastTimer(seconds, ...)       -- broadcasts timer and starts i
 		DWP:StartTimer(seconds, ...)
 		DWP.Sync:SendData("DWPCommand", "StartTimer,"..seconds..","..title)
 	end
+end
+
+function DWP:IsLootMaster()
+	local lootMethod, masterLooterPartyID = GetLootMethod();
+	return lootMethod == "master" and masterLooterPartyID == 0;
 end
 
 function DWP:CreateContainer(parent, name, header)
@@ -730,6 +735,21 @@ function DWP:DKPTable_Set(tar, field, value, loot)                -- updates fie
 		end
 	end
 	DKPTable_Update()
+end
+
+local cTip = CreateFrame("GameTooltip","PrivTooltip",nil,"GameTooltipTemplate")
+function DWP:IsSoulbound(bag, slot)
+	cTip:SetOwner(UIParent, "ANCHOR_NONE")
+	cTip:SetBagItem(bag, slot)
+	cTip:Show()
+	for i = 1, cTip:NumLines() do
+		if(_G["PrivTooltipTextLeft"..i]:GetText() == ITEM_SOULBOUND) then
+			cTip:Hide()
+			return true
+		end
+	end
+	cTip:Hide()
+	return false
 end
 
 -- instance id can be get by -> _, _, _, _, _, _, _, instanceID = GetInstanceInfo()

@@ -5,6 +5,22 @@ local L = core.L;
 
 local lootTable = {};
 
+--local item1 = Item:CreateFromItemID(16862);
+--local item2 = Item:CreateFromItemID(16963);
+--local item3 = Item:CreateFromItemID(16961);
+--item1:ContinueOnItemLoad(function()
+--	table.insert(lootTable, {link = item1:GetItemLink(), icon = item1:GetItemIcon()})
+--	C_Timer.After(2, function()
+--		DWP:CurrItem_Set(item1:GetItemLink(), "", item1:GetItemIcon());
+--	end)
+--end)
+--item2:ContinueOnItemLoad(function()
+--	table.insert(lootTable, {link = item2:GetItemLink(), icon = item2:GetItemIcon()})
+--end)
+--item3:ContinueOnItemLoad(function()
+--	table.insert(lootTable, {link = item3:GetItemLink(), icon = item3:GetItemIcon()})
+--end)
+
 	--[[["132744"] = "|cffa335ee|Hitem:12895::::::::60:::::|h[Breastplate of the Chromatic Flight]|h|r",
 	["132585"] = "|cffa335ee|Hitem:16862::::::::60:::::|h[Sabatons of Might]|h|r",
 	["133066"] = "|cffff8000|Hitem:17182::::::::60:::::|h[Sulfuras, Hand of Ragnaros]|h|r",
@@ -64,8 +80,20 @@ end
 
 local function UpdateBidderWindow()
 	local i = 1;
+	local haveItems = table.getn(lootTable) > 0;
 	local mode = DWPlus_DB.modes.mode;
-	local _,_,_,_,_,_,_,_,_,icon = GetItemInfo(CurrItemForBid)
+	local icon;
+	local itemsHeight = 130;
+
+	if CurrItemForBid then
+		_,_,_,_,_,_,_,_,_,icon = GetItemInfo(CurrItemForBid)
+	end
+
+	if CurrItemForBid and not haveItems then
+		table.insert(lootTable, {link = CurrItemForBid, icon = icon})
+		UpdateBidderWindow();
+		return;
+	end
 
 	if not core.BidInterface then
 		core.BidInterface = core.BidInterface or DWP:BidInterface_Create()
@@ -77,7 +105,7 @@ local function UpdateBidderWindow()
 	end
 	core.BidInterface.lootContainer:SetSize(35, 35)
 
-	for k,v in pairs(lootTable) do
+	for _,v in pairs(lootTable) do
 		core.BidInterface.LootTableIcons[i]:SetTexture(tonumber(v.icon))
 		core.BidInterface.LootTableIcons[i]:Show()
 		core.BidInterface.LootTableButtons[i]:Show();
@@ -95,12 +123,21 @@ local function UpdateBidderWindow()
 		end
 		i = i+1
 	end
-
-	if i==1 then
-		core.BidInterface.lootContainer:SetSize(35, 35)
+	if haveItems then
+		core.BidInterface.lootContainer:SetSize(43*(i-1), 35)
+		core.BidInterface.itemHeader:Show();
+		core.BidInterface.item:SetText(CurrItemForBid)
+		core.BidInterface.item:Show();
+		core.BidInterface.Boss:SetText(DWPlus_DB.bossargs.LastKilledBoss)
+		core.BidInterface.Boss:Show();
+		core.BidInterface.MinBidHeader:SetPoint("TOP", core.BidInterface, "TOP", -160, -170);
 	else
-		i = i-1
-		core.BidInterface.lootContainer:SetSize(43*i, 35)
+		itemsHeight = 0;
+		core.BidInterface.itemHeader:Hide();
+		core.BidInterface.item:Hide();
+		core.BidInterface.Boss:Hide();
+		core.BidInterface.lootContainer:SetSize(35, 35)
+		core.BidInterface.MinBidHeader:SetPoint("TOP", core.BidInterface, "TOP", -160, -15);
 	end
 
 	if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
@@ -112,6 +149,7 @@ local function UpdateBidderWindow()
 		core.BidInterface.Pass:Show();
 	elseif mode == "Roll Based Bidding" then
 		core.BidInterface.MinBidHeader:SetText(L["ITEMCOST"]..":")
+		core.BidInterface.MinBid:SetText(L["ROLL"])
 		core.BidInterface.SubmitBid:SetPoint("LEFT", core.BidInterface.BidHeader, "RIGHT", 8, 0)
 		core.BidInterface.SubmitBid:SetText(L["ROLL"])
 		core.BidInterface.Bid:Hide();
@@ -126,9 +164,92 @@ local function UpdateBidderWindow()
 		core.BidInterface.Pass:Show();
 	end
 
+	if DWPlus_DB.modes.BroadcastBids and not core.BiddingWindow then
+		core.BidInterface:SetHeight(itemsHeight + 374);
+		core.BidInterface.bidTable:Show();
+		for k, v in pairs(core.BidInterface.headerButtons) do
+			v:SetHighlightTexture("Interface\\BUTTONS\\BlueGrad64_faded.blp");
+			if k == "player" then
+				if mode == "Minimum Bid Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
+					v:SetSize((width/2)-1, height)
+					v:Show()
+				elseif mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
+					v:SetSize((width*0.75)-1, height)
+					v:Show()
+				end
+			else
+				if mode == "Minimum Bid Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
+					v:SetSize((width/4)-1, height)
+					v:Show();
+				elseif mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
+					if k == "bid" then
+						v:Hide()
+					else
+						v:SetSize((width/4)-1, height)
+						v:Show();
+					end
+				end
 
-	core.BidInterface.item:SetText(CurrItemForBid)
-	core.BidInterface.Boss:SetText(DWPlus_DB.bossargs.LastKilledBoss)
+			end
+		end
+
+		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
+			core.BidInterface.headerButtons.bid.t:SetText(L["BID"]);
+			core.BidInterface.headerButtons.bid.t:Show();
+		elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
+			core.BidInterface.headerButtons.bid.t:Hide();
+		elseif mode == "Roll Based Bidding" then
+			core.BidInterface.headerButtons.bid.t:SetText(L["PLAYERROLL"])
+			core.BidInterface.headerButtons.bid.t:Show()
+		end
+
+		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
+			core.BidInterface.headerButtons.dkp.t:SetText(L["TOTALDKP"]);
+			core.BidInterface.headerButtons.dkp.t:Show();
+		elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
+			core.BidInterface.headerButtons.dkp.t:SetText(L["DKP"]);
+			core.BidInterface.headerButtons.dkp.t:Show()
+		elseif mode == "Roll Based Bidding" then
+			core.BidInterface.headerButtons.dkp.t:SetText(L["EXPECTEDROLL"])
+			core.BidInterface.headerButtons.dkp.t:Show();
+		end
+	elseif not core.BiddingWindow then
+		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and MonDKP_DB.modes.ZeroSumBidType == "Minimum Bid") then
+			core.BidInterface:SetHeight(itemsHeight + 129);
+		else
+			core.BidInterface:SetHeight(itemsHeight + 101);
+		end
+	end
+
+	if DWPlus_DB.modes.BroadcastBids then
+		local pass, err = pcall(BidInterface_Update)
+
+		if not pass then
+			DWP:Print("|CFFFF0000"..err)
+			core.DWPUI:SetShown(false)
+			StaticPopupDialogs["SUGGEST_RELOAD"] = {
+				text = "|CFFFF0000"..L["WARNING"].."|r: "..L["MUSTRELOADUI"],
+				button1 = L["YES"],
+				button2 = L["NO"],
+				OnAccept = function()
+					ReloadUI();
+				end,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+			StaticPopup_Show ("SUGGEST_RELOAD")
+		end
+	end
+
+	if not DWPlus_DB.modes.BroadcastBids or core.BiddingWindow then
+		core.BidInterface:SetHeight(itemsHeight + 101);
+		core.BidInterface.bidTable:Hide();
+	else
+		core.BidInterface:SetHeight(itemsHeight + 374);
+		core.BidInterface.bidTable:Show();
+	end
 end
 
 function BidInterface_Update()
@@ -216,8 +337,6 @@ end
 
 function DWP:BidInterface_Toggle()
 	core.BidInterface = core.BidInterface or DWP:BidInterface_Create()
-	local f = core.BidInterface;
-	local mode = DWPlus_DB.modes.mode;
 
 	if DWPlus_DB.bidintpos then
 		core.BidInterface:ClearAllPoints()
@@ -227,94 +346,8 @@ function DWP:BidInterface_Toggle()
 
 	if core.BidInterface:IsShown() then core.BidInterface:Hide(); end
 	if DWP.BidTimer.OpenBid and DWP.BidTimer.OpenBid:IsShown() then DWP.BidTimer.OpenBid:Hide() end
-	if DWPlus_DB.modes.BroadcastBids and not core.BiddingWindow then
-		core.BidInterface:SetHeight(504);
-		core.BidInterface.bidTable:Show();
-		for k, v in pairs(f.headerButtons) do
-			v:SetHighlightTexture("Interface\\BUTTONS\\BlueGrad64_faded.blp");
-			if k == "player" then
-				if mode == "Minimum Bid Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-					v:SetSize((width/2)-1, height)
-					v:Show()
-				elseif mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
-					v:SetSize((width*0.75)-1, height)
-					v:Show()
-				end
-			else
-				if mode == "Minimum Bid Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-					v:SetSize((width/4)-1, height)
-					v:Show();
-				elseif mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
-					if k == "bid" then
-						v:Hide()
-					else
-						v:SetSize((width/4)-1, height)
-						v:Show();
-					end
-				end
-				
-			end
-		end
-
-		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-			f.headerButtons.bid.t:SetText(L["BID"]);
-			f.headerButtons.bid.t:Show();
-		elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
-			f.headerButtons.bid.t:Hide(); 
-		elseif mode == "Roll Based Bidding" then
-			f.headerButtons.bid.t:SetText(L["PLAYERROLL"])
-			f.headerButtons.bid.t:Show()
-		end
-
-		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-			f.headerButtons.dkp.t:SetText(L["TOTALDKP"]);
-			f.headerButtons.dkp.t:Show();
-		elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
-			f.headerButtons.dkp.t:SetText(L["DKP"]);
-			f.headerButtons.dkp.t:Show()
-		elseif mode == "Roll Based Bidding" then
-			f.headerButtons.dkp.t:SetText(L["EXPECTEDROLL"])
-			f.headerButtons.dkp.t:Show();
-		end
-	elseif not core.BiddingWindow then
-		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and MonDKP_DB.modes.ZeroSumBidType == "Minimum Bid") then
-			core.BidInterface:SetHeight(259);
-		else
-			core.BidInterface:SetHeight(231);
-		end
-	end
-
-	if DWPlus_DB.modes.BroadcastBids then
-		local pass, err = pcall(BidInterface_Update)
-
-		if not pass then
-			print(err)
-			core.DWPUI:SetShown(false)
-			StaticPopupDialogs["SUGGEST_RELOAD"] = {
-				text = "|CFFFF0000"..L["WARNING"].."|r: "..L["MUSTRELOADUI"],
-				button1 = L["YES"],
-				button2 = L["NO"],
-				OnAccept = function()
-					ReloadUI();
-				end,
-				timeout = 0,
-				whileDead = true,
-				hideOnEscape = true,
-				preferredIndex = 3,
-			}
-			StaticPopup_Show ("SUGGEST_RELOAD")
-		end
-	end
-
-	if not DWPlus_DB.modes.BroadcastBids or core.BiddingWindow then
-		core.BidInterface:SetHeight(231);
-		core.BidInterface.bidTable:Hide();
-	else
-		core.BidInterface:SetHeight(504);
-		core.BidInterface.bidTable:Show();
-	end	
-
 	core.BidInterface:SetShown(true)
+	UpdateBidderWindow();
 end
 
 local function BidWindowCreateRow(parent, id) -- Create 3 buttons for each row in the list
@@ -352,6 +385,17 @@ end
 function DWP:CurrItem_Set(item, value, icon)
 	CurrItemForBid = item;
 	CurrItemIcon = icon;
+
+	local foundItem = false;
+	for _, bidItem in pairs(lootTable) do
+		if (item == bidItem.link) then
+			foundItem = true;
+		end
+	end
+
+	if not foundItem then
+		table.insert(lootTable, {link = item, icon = icon})
+	end
 
 	UpdateBidderWindow()
 
@@ -522,7 +566,7 @@ function DWP:BidInterface_Create()
 
 	f.MinBid = f:CreateFontString(nil, "OVERLAY")
 	f.MinBid:SetFontObject("DWPNormalLeft");
-	f.MinBid:SetPoint("LEFT", f.MinBidHeader, "RIGHT", 8, 0);
+	f.MinBid:SetPoint("LEFT", f.MinBidHeader, "RIGHT", 8, -2);
 	f.MinBid:SetSize(200, 28)
 
     f.BidHeader = f:CreateFontString(nil, "OVERLAY")
@@ -651,7 +695,7 @@ function DWP:BidInterface_Create()
 	f.AutoOpenCheckbox.text:ClearAllPoints()
 	f.AutoOpenCheckbox.text:SetPoint("RIGHT", f.AutoOpenCheckbox, "LEFT", -2, 0)
 	f.AutoOpenCheckbox.text:SetFontObject("DWPSmallLeft")
-	f.AutoOpenCheckbox:SetPoint("TOPRIGHT", f.CancelBid, "BOTTOMRIGHT", -5, -53)
+	f.AutoOpenCheckbox:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -15, 15)
 	f.AutoOpenCheckbox:SetScript("OnClick", function(self)
 		DWPlus_DB.defaults.AutoOpenBid = self:GetChecked()
 	end)

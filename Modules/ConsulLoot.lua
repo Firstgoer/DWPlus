@@ -451,7 +451,7 @@ local function getFilteredTable()
 end
 
 function DWP:ConsulUpdate(noLoadItems)
-	if not DWP.UIConfig:IsShown() then     -- does not update list if DKP window is closed. Gets done when /rp is used anyway.
+	if not DWP.UIConfig:IsShown() then     -- does not update list if DKP window is closed. Gets done when /dwp is used anyway.
 		return;
 	end
 	for i = 1, #drawnRows do

@@ -43,7 +43,7 @@ DWP.Commands = {
 
 			if core.IsOfficer then	
 				if ... == nil then
-					DWP.ToggleBidWindow()
+					DWP.ToggleSelectBidWindow()
 				else
 					local itemName,_,_,_,_,_,_,_,_,itemIcon = GetItemInfo(item)
 					DWP:Print("Opening Bid Window for: ".. item)
@@ -119,19 +119,19 @@ DWP.Commands = {
 	["help"] = function()
 		DWP:Print(" ");
 		DWP:Print(L["SLASHCOMMANDLIST"]..":")
-		DWP:Print("|cff00cc66/rp|r - "..L["DKPLAUNCH"]);
-		DWP:Print("|cff00cc66/rp ?|r - "..L["HELPINFO"]);
-		DWP:Print("|cff00cc66/rp reset|r - "..L["DKPRESETPOS"]);
-		DWP:Print("|cff00cc66/rp lockouts|r - "..L["DKPLOCKOUT"]);
-		DWP:Print("|cff00cc66/rp timer|r - "..L["CREATERAIDTIMER"]);
-		DWP:Print("|cff00cc66/rp bid|r - "..L["OPENBIDWINDOWHELP"]);
-		DWP:Print("|cff00cc66/rp bid [itemlink]|r - "..L["OPENAUCWINHELP"]);
-		DWP:Print("|cff00cc66/rp award [item link]|r - "..L["DKPAWARDHELP"]);
-		DWP:Print("|cff00cc66/rp modes|r - "..L["DKPMODESHELP"]);
-		DWP:Print("|cff00cc66/rp export|r - "..L["DKPEXPORTHELP"]);
-		DWP:Print("|cff00cc66/rp mmb|r - "..L["MINIMAPTOGGLE"]);
-		DWP:Print("|cff00cc66/rp changelog|r - "..L["CHANGELOGCOMMAND"]);
-		DWP:Print("|cff00cc66/rp consul|r - "..L["CONSULMODAL"]);
+		DWP:Print("|cff00cc66/dwp|r - "..L["DKPLAUNCH"]);
+		DWP:Print("|cff00cc66/dwp ?|r - "..L["HELPINFO"]);
+		DWP:Print("|cff00cc66/dwp reset|r - "..L["DKPRESETPOS"]);
+		DWP:Print("|cff00cc66/dwp lockouts|r - "..L["DKPLOCKOUT"]);
+		DWP:Print("|cff00cc66/dwp timer|r - "..L["CREATERAIDTIMER"]);
+		DWP:Print("|cff00cc66/dwp bid|r - "..L["OPENBIDWINDOWHELP"]);
+		DWP:Print("|cff00cc66/dwp bid [itemlink]|r - "..L["OPENAUCWINHELP"]);
+		DWP:Print("|cff00cc66/dwp award [item link]|r - "..L["DKPAWARDHELP"]);
+		DWP:Print("|cff00cc66/dwp modes|r - "..L["DKPMODESHELP"]);
+		DWP:Print("|cff00cc66/dwp export|r - "..L["DKPEXPORTHELP"]);
+		DWP:Print("|cff00cc66/dwp mmb|r - "..L["MINIMAPTOGGLE"]);
+		DWP:Print("|cff00cc66/dwp changelog|r - "..L["CHANGELOGCOMMAND"]);
+		DWP:Print("|cff00cc66/dwp consul|r - "..L["CONSULMODAL"]);
 		DWP:Print(" ");
 		DWP:Print(L["WHISPERCMDSHELP"]);
 		DWP:Print("|cff00cc66!bid (or !bid <"..L["VALUE"]..">)|r - "..L["BIDHELP"]);
@@ -269,7 +269,7 @@ function DWP_OnEvent(self, event, arg1, ...)
 				DWP:CheckOfficer()
 				DWP:SortLootTable()
 				DWP:SortDKPHistoryTable()
-				DWP:Print(L["VERSION"].." "..core.MonVersion..". ".."|cff00cc66/rp ?".." - "..L["HELPINFO"].."|r");
+				DWP:Print(L["VERSION"].." "..core.MonVersion..". ".."|cff00cc66/dwp ?".." - "..L["HELPINFO"].."|r");
 				DWP:Print(L["LOADED"].." "..#DWPlus_RPTable.." "..L["PLAYERRECORDS"]..", "..#DWPlus_Loot.." "..L["LOOTHISTRECORDS"].." "..#DWPlus_RPHistory.." "..L["DKPHISTRECORDS"]..".");
 				DWP.Sync:SendData("DWPBuild", tostring(core.BuildNumber)) -- broadcasts build number to guild to check if a newer version is available
 
@@ -420,12 +420,16 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 			local lootTable = {}
 			local lootList = {};
+			local startBidList = {};
 
 			for i=1, GetNumLootItems() do
 				if LootSlotHasItem(i) and GetLootSlotLink(i) then
 					local _,link,quality = GetItemInfo(GetLootSlotLink(i))
-					if quality >= 4 then
+					if quality >= 3 then
 						table.insert(lootTable, link)
+						if DWP:IsLootMaster() then
+							table.insert(startBidList, link);
+						end
 					end
 				end
 			end
@@ -448,6 +452,7 @@ function DWP_OnEvent(self, event, arg1, ...)
 			end
 
 			DWP:LootTable_Set(lootList)
+			DWP:BidTable_Set(startBidList)
 		end
 	elseif event == "CHAT_MSG_LOOT" then
 		DWP:CheckOfficer();
@@ -468,7 +473,7 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 	----------------------------------
 	-- Register Slash Commands
 	----------------------------------
-	SLASH_DWPlus1 = "/rp";
+	SLASH_DWPlus1 = "/dwp";
 	SLASH_DWPlus2 = "/dwplus";
 	SlashCmdList.DWPlus = HandleSlashCommands;
 

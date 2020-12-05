@@ -1,5 +1,4 @@
 local _, core = ...;
-local _G = _G;
 local L = core.L;
 
 -- ----------------------------------------------------------------------------
@@ -28,22 +27,25 @@ local MiniMapLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("DWPlus
 		tooltip:AddLine(" ")
 		tooltip:AddLine(format(TT_ENTRY, L["MINIMAPLEFTCLICK"], L["MINIMAPSETTINGS"]))
 		tooltip:AddLine(format(TT_ENTRY, "Shift + " .. L["MINIMAPLEFTCLICK"], L["CONSULMODAL"]))
-		--tooltip:AddLine(format(TT_ENTRY, L["Right Click"], L["Open Favourites"]))
+		tooltip:AddLine(format(TT_ENTRY, L["MINIMAPRIGHTCLICK"], L["OPENBIDWINDOWHELP"]))
 	end,
-	OnClick = function(self, button)
-		--if button == "RightButton" then
-		--	AtlasLoot.Addons:GetAddon("Favourites").GUI:Toggle()
-		--elseif button == "MiddleButton" and DWPlus_DB.enableAutoSelect then
-		--	DWPlus_DB.enableAutoSelect = false
-		--	SlashCommands:Run("")
-		--	DWPlus_DB.enableAutoSelect = true
-		--else
-		if IsShiftKeyDown() then
-			DWP:ConsulModal();
-		else
-			DWP:Toggle();
+	OnClick = function(_, button)
+		if button == "LeftButton" then
+			if IsShiftKeyDown() then
+				DWP:ConsulModal();
+			else
+				DWP:Toggle();
+			end
+		elseif button == "RightButton" then
+			DWP:CheckOfficer()
+			DWP:StatusVerify_Update()
+
+			if core.IsOfficer then
+				DWP.ToggleSelectBidWindow()
+			end
+
+			DWP:BidInterface_Toggle()
 		end
-		--end
 	end,
 })
 

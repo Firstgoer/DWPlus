@@ -721,17 +721,21 @@ function DWP.Sync:OnCommReceived(prefix, message, distribution, sender)
 							return
 						elseif prefix == "DWPBossLoot" then
 							local lootList = {};
+							local startBidList = {};
 							DWPlus_DB.bossargs.LastKilledBoss = deserialized.boss;
 						
 							for i=1, #deserialized do
 								local item = Item:CreateFromItemLink(deserialized[i]);
 								item:ContinueOnItemLoad(function()
-									local icon = item:GetItemIcon()
-									table.insert(lootList, {icon=icon, link=item:GetItemLink()})
+									table.insert(lootList, {icon= item:GetItemIcon(), link=item:GetItemLink()})
+									if DWP:IsLootMaster() then
+										table.insert(startBidList, item:GetItemLink());
+									end
 								end);
 							end
 
 							DWP:LootTable_Set(lootList)
+							DWP:BidTable_Set(startBidList)
 						elseif prefix == "DWPConsul" then
 							if (DWP:canUserChangeConsul(sender)) then
 								DWPlus_Consul = deserialized;

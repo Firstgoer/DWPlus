@@ -16,6 +16,7 @@ local mode;
 local events = CreateFrame("Frame", "BiddingEventsFrame");
 local menuFrame = CreateFrame("Frame", "DWPBidWindowMenuFrame", UIParent, "UIDropDownMenuTemplate")
 local hookedSlots = {}
+local biddingItems = {}
 
 local function UpdateBidWindow()
 	core.BiddingWindow.item:SetText(CurrItemForBid)
@@ -365,11 +366,228 @@ function DWP:GetMinBid(itemLink)
 	end
 end
 
-function DWP:ToggleBidWindow(loot, lootIcon, itemName)
-	local minBid;
-	mode = DWPlus_DB.modes.mode;
+local function createSelectBidItemRow(parent, index)
+	local f = CreateFrame("Button", "$parent"..index, parent);
+	f:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, (index - 1) * -30);
+	f:SetSize(335, 32);
+	f:SetHighlightTexture("Interface\\AddOns\\DWPlus\\Media\\Textures\\ListBox-Highlight");
 
+	f.itemIcon = f:CreateTexture(nil, "OVERLAY", nil);
+	f.itemIcon:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -2);
+	f.itemIcon:SetColorTexture(0, 0, 0, 1)
+	f.itemIcon:SetSize(28, 28);
+
+	f.ItemIconButton = CreateFrame("Button", "DWPBiddingItemTooltipButtonButton", f)
+	f.ItemIconButton:SetPoint("TOPLEFT", f.itemIcon, "TOPLEFT", 0, 0);
+	f.ItemIconButton:SetSize(28, 28);
+
+	f.itemText = f:CreateFontString(nil, "OVERLAY")
+	f.itemText:SetFontObject("DWPNormalLeft");
+	f.itemText:SetPoint("LEFT", f.itemIcon, "RIGHT", 5, 2);
+	f.itemText:SetSize(300, 28)
+
+	f.ItemTooltipButton = CreateFrame("Button", "DWPBiddingItemTooltipButtonButton", f)
+	f.ItemTooltipButton:SetPoint("TOPLEFT", f.itemIcon, "TOPLEFT", 0, 0);
+
+	return f;
+end
+
+local function UpdateSelectBidWindow()
+	if not core.SelectBidWindow then
+		return;
+	end
+
+	for _, item in pairs(core.SelectBidWindow.items) do
+		item:Hide();
+	end
+
+	local items = core.SelectBidWindow.items or {};
+
+	for index, itemLink in pairs(biddingItems) do
+		local item = Item:CreateFromItemLink(itemLink);
+		item:ContinueOnItemLoad(function()
+			if not items[index] then
+				items[index] = createSelectBidItemRow(core.SelectBidWindow.scroll, index);
+			end
+			items[index].itemText:SetText(itemLink);
+			items[index].itemIcon:SetTexture(item:GetItemIcon());
+
+			items[index].itemLink = itemLink;
+			items[index]:SetScript("OnEnter", function(self)
+				GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT", 0, 500);
+				GameTooltip:SetHyperlink(self.itemLink)
+			end)
+			items[index]:SetScript("OnLeave", function()
+				GameTooltip:Hide()
+			end)
+			items[index]:SetScript("OnClick", function(self)
+				local clickItem = Item:CreateFromItemLink(self.itemLink);
+				clickItem:ContinueOnItemLoad(function()
+					core.SelectBidWindow:Hide();
+					DWP:ToggleBidWindow(clickItem:GetItemLink(), clickItem:GetItemIcon(), clickItem:GetItemName());
+				end);
+			end)
+			items[index]:Show();
+		end)
+	end
+
+	core.SelectBidWindow.items = items;
+end
+
+local function ClearSelectBidWindow()
+	StaticPopupDialogs["CONFIRM_DELETE_SELECT_BID"] = {
+		text = L["CONFIRMBIDDINGCLEAAR"],
+		button1 = L["YES"],
+		button2 = L["NO"],
+		OnAccept = function()
+			biddingItems = {};
+			UpdateSelectBidWindow();
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3,
+	}
+	StaticPopup_Show ("CONFIRM_DELETE_SELECT_BID")
+end
+
+local function AddBidItemsFromBags()
+	for bag = 0, 4 do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local itemLink = GetContainerItemLink(bag, slot);
+			if itemLink then
+				local item = Item:CreateFromItemLink(itemLink);
+				item:ContinueOnItemLoad(function()
+					if item:GetItemQuality() >= 3 and not(DWP:IsSoulbound(bag, slot)) then
+						table.insert(biddingItems, itemLink);
+					end
+				end)
+			end
+		end
+	end
+	UpdateSelectBidWindow();
+end
+
+local function CreateSelectBidWindow()
+	local f = CreateFrame("Frame", "DWP_SelectBiddingWindow", UIParent, "ShadowOverlaySmallTemplate");
+	f:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 300, -200);
+	f:SetSize(400, 500);
+	f:SetClampedToScreen(true)
+	f:SetBackdrop( {
+		bgFile = "Textures\\white.blp", tile = true,                -- White backdrop allows for black background with 1.0 alpha on low alpha containers
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 3,
+		insets = { left = 0, right = 0, top = 0, bottom = 0 }
+	});
+	f:SetBackdropColor(0,0,0,0.9);
+	f:SetBackdropBorderColor(1,1,1,1)
+	f:SetFrameStrata("DIALOG")
+	f:SetFrameLevel(5)
+	f:SetMovable(true);
+	f:EnableMouse(true);
+	f:RegisterForDrag("LeftButton");
+	f:SetScript("OnDragStart", f.StartMoving);
+	f:SetScript("OnDragStop", function()
+		f:StopMovingOrSizing();
+		local point, relativeTo, relativePoint ,xOff,yOff = f:GetPoint(1)
+		if not DWPlus_DB.selectbidpos then
+			DWPlus_DB.selectbidpos = {}
+		end
+		DWPlus_DB.selectbidpos.point = point;
+		DWPlus_DB.selectbidpos.relativeTo = relativeTo;
+		DWPlus_DB.selectbidpos.relativePoint = relativePoint;
+		DWPlus_DB.selectbidpos.x = xOff;
+		DWPlus_DB.selectbidpos.y = yOff;
+	end);
+	f:SetScript("OnHide", function ()
+		if core.BidInProgress then
+			DWP:Print(L["CLOSEDBIDINPROGRESS"])
+		end
+	end)
+	f:SetScript("OnMouseDown", function(self)
+		self:SetFrameLevel(10)
+		if core.ModesWindow then core.ModesWindow:SetFrameLevel(6) end
+		if DWP.UIConfig then DWP.UIConfig:SetFrameLevel(2) end
+	end)
+	tinsert(UISpecialFrames, f:GetName()); -- Sets frame to close on "Escape"
+
+	if DWPlus_DB.selectbidpos then
+		f:ClearAllPoints()
+		local coords = DWPlus_DB.selectbidpos
+		f:SetPoint(coords.point, coords.relativeTo, coords.relativePoint, coords.x, coords.y)
+	end
+
+	-- Close Button
+	f.closeContainer = CreateFrame("Frame", "DWPSelectBidClose", f)
+	f.closeContainer:SetPoint("CENTER", f, "TOPRIGHT", -4, 0)
+	f.closeContainer:SetBackdrop({
+		bgFile   = "Textures\\white.blp", tile = true,
+		edgeFile = "Interface\\AddOns\\DWPlus\\Media\\Textures\\edgefile.tga", tile = true, tileSize = 1, edgeSize = 2,
+	});
+	f.closeContainer:SetBackdropColor(0,0,0,0.9)
+	f.closeContainer:SetBackdropBorderColor(1,1,1,0.2)
+	f.closeContainer:SetSize(28, 28)
+
+	f.closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+	f.closeBtn:SetPoint("CENTER", f.closeContainer, "TOPRIGHT", -14, -14)
+
+	f.header = f:CreateFontString(nil, "OVERLAY")
+	f.header:SetFontObject("DWPLargeCenter");
+	f.header:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -10);
+	f.header:SetText(L["SELECTBID"]);
+
+	f.scroll = CreateFrame("ScrollFrame", "DWPSelectBidScrollFrame", f, "UIPanelScrollFrameTemplate")
+	f.scroll:SetPoint("LEFT", 20, 0)
+	f.scroll:SetPoint("RIGHT", -32, 0)
+	f.scroll:SetPoint("TOP", 0, -50)
+	f.scroll:SetPoint("BOTTOM", 0, 60)
+
+	f.ClearSelectBidWindow = DWP:CreateButton("BOTTOMLEFT", f, "BOTTOMLEFT", 20, 10, L["CLEARBIDWINDOW"]);
+	f.ClearSelectBidWindow:SetSize(90, 25)
+	f.ClearSelectBidWindow:SetScript("OnClick", ClearSelectBidWindow)
+
+	f.AddItemsFromBag = DWP:CreateButton("TOPLEFT", f.ClearSelectBidWindow, "TOPRIGHT", 15, 0, L["ADDITEMSTOBIDWINDOW"]);
+	f.AddItemsFromBag:SetSize(150, 25)
+	f.AddItemsFromBag:SetScript("OnClick", AddBidItemsFromBags)
+
+	f.AddItemsFromBag:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetText(L["ADDITEMSTOBIDWINDOW"], 0.25, 0.75, 0.90, 1, true);
+		GameTooltip:AddLine(L["ADDITEMSTOBIDWINDOWDESC"], 1.0, 1.0, 1.0, true);
+		GameTooltip:Show();
+	end)
+	f.AddItemsFromBag:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+
+	f.items = {};
+
+	return f;
+end
+
+function DWP:ToggleSelectBidWindow()
 	if core.IsOfficer then
+		if not core.SelectBidWindow then
+			core.SelectBidWindow = CreateSelectBidWindow();
+		end
+		UpdateSelectBidWindow();
+		core.SelectBidWindow:Show();
+	else
+		DWP:Print(L["NOPERMISSION"])
+	end
+end
+
+function DWP:BidTable_Set(list)
+	for _, itemLink in pairs(list) do
+		table.insert(biddingItems, itemLink);
+	end
+	UpdateSelectBidWindow();
+end
+
+function DWP:ToggleBidWindow(loot, lootIcon, itemName)
+	if core.IsOfficer then
+		local minBid;
+		mode = DWPlus_DB.modes.mode;
+
 		core.BiddingWindow = core.BiddingWindow or DWP:CreateBidWindow();
 
 	 	if DWPlus_DB.bidpos then
@@ -1338,8 +1556,8 @@ function DWP:CreateBidWindow()
 		f.bidTimerFooter:SetText(L["SECONDS"])
 
 		f.StartBidding = CreateFrame("Button", "DWPBiddingStartBiddingButton", f, "DWPlusButtonTemplate")
-		f.StartBidding:SetPoint("TOPRIGHT", f, "TOPRIGHT", -15, -100);
-		f.StartBidding:SetSize(90, 25);
+		f.StartBidding:SetPoint("TOPRIGHT", f, "TOPRIGHT", -25, -100);
+		f.StartBidding:SetSize(100, 25);
 		f.StartBidding:SetText(L["STARTBIDDING"]);
 		f.StartBidding:GetFontString():SetTextColor(1, 1, 1, 1)
 		f.StartBidding:SetNormalFontObject("DWPSmallCenter");
@@ -1381,7 +1599,7 @@ function DWP:CreateBidWindow()
 		end)
 
 		f.ClearBidWindow = DWP:CreateButton("TOP", f.StartBidding, "BOTTOM", 0, -10, L["CLEARBIDWINDOW"]);
-		f.ClearBidWindow:SetSize(90,25)
+		f.ClearBidWindow:SetSize(100,25)
 		f.ClearBidWindow:SetScript("OnClick", ClearBidWindow)
 		f.ClearBidWindow:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");

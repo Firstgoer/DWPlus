@@ -643,7 +643,7 @@ local function CreateRow(parent, id) -- Create 3 buttons for each row in the lis
 end
 
 function DKPTable_Update()
-	if not DWP.UIConfig:IsShown() then     -- does not update list if DKP window is closed. Gets done when /rp is used anyway.
+	if not DWP.UIConfig:IsShown() then     -- does not update list if DKP window is closed. Gets done when /dwp is used anyway.
 		return;
 	end
 
