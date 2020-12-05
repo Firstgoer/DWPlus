@@ -920,7 +920,7 @@ end
 function DWP:BroadcastBidTimer(seconds, title, itemIcon)       -- broadcasts timer and starts it natively
 	local title = title;
 	DWP.Sync:SendData("DWPCommand", "StartBidTimer,"..seconds..","..title..","..itemIcon)
-	DWP:StartBidTimer(seconds, title, itemIcon)
+	DWP:StartBidTimer(seconds, title, itemIcon, true)
 
 	if strfind(seconds, "{") then
 		DWP:Print("Bid timer extended by "..tonumber(strsub(seconds, strfind(seconds, "{")+1)).." seconds.")
@@ -1010,7 +1010,7 @@ function DWP_Register_ShiftClickLootWindowHook()			-- hook function into LootFra
 	end
 end
 
-function DWP:StartBidTimer(seconds, title, itemIcon)
+function DWP:StartBidTimer(seconds, title, itemIcon, sendToChat)
 	local duration, timer, timerText, modulo, timerMinute, expiring;
 	local title = title;
 	local alpha = 1;
@@ -1079,25 +1079,27 @@ function DWP:StartBidTimer(seconds, title, itemIcon)
 		else
 			DWP.BidTimer:SetStatusBarColor(0, 0.8, 0)
 		end
-		
-		if tonumber(timerText) == 10 and messageSent[1] == false then
-			if audioPlayed == false then
-	        	PlaySound(23639);
-	        end
-			DWP:SendToRWorRaidChat(L["TENSECONDSTOBID"])
-			messageSent[1] = true;
-		end
-		if tonumber(timerText) == 3 and messageSent[2] == false then
-			DWP:SendToRWorRaidChat("3")
-			messageSent[2] = true;
-		end
-		if tonumber(timerText) == 2 and messageSent[3] == false then
-			DWP:SendToRWorRaidChat("2")
-			messageSent[3] = true;
-		end
-		if tonumber(timerText) == 1 and messageSent[4] == false then
-			DWP:SendToRWorRaidChat("1")
-			messageSent[4] = true;
+
+		if sendToChat then
+			if tonumber(timerText) == 10 and messageSent[1] == false then
+				if audioPlayed == false then
+					PlaySound(23639);
+				end
+				DWP:SendToRWorRaidChat(L["TENSECONDSTOBID"])
+				messageSent[1] = true;
+			end
+			if tonumber(timerText) == 3 and messageSent[2] == false then
+				DWP:SendToRWorRaidChat("3")
+				messageSent[2] = true;
+			end
+			if tonumber(timerText) == 2 and messageSent[3] == false then
+				DWP:SendToRWorRaidChat("2")
+				messageSent[3] = true;
+			end
+			if tonumber(timerText) == 1 and messageSent[4] == false then
+				DWP:SendToRWorRaidChat("1")
+				messageSent[4] = true;
+			end
 		end
 		self:SetValue(timer)
 		if timer >= duration then
