@@ -624,6 +624,9 @@ function DWP:BidTable_Remove(item, boss)
 			if table.getn(biddingItems[bossRemovable]) == 0 then
 				biddingItems[bossRemovable] = nil
 			end;
+
+			UpdateSelectBidWindow();
+			return;
 		end
 	end
 	UpdateSelectBidWindow();
