@@ -43,7 +43,7 @@ DWP.Commands = {
 
 			if core.IsOfficer then	
 				if ... == nil then
-					DWP.ToggleSelectBidWindow()
+					DWP:ToggleSelectBidWindow()
 				else
 					local itemName,_,_,_,_,_,_,_,_,itemIcon = GetItemInfo(item)
 					DWP:Print("Opening Bid Window for: ".. item)
@@ -555,6 +555,8 @@ function DWP:OnInitialize(event, name)		-- This is the FIRST function to run on 
 		if not DWPlus_DB.TabMenuShown then DWPlus_DB.TabMenuShown = false end
 		if not DWPlus_DB.ConsulFilters then DWPlus_DB.ConsulFilters = {}; end;
 		if not DWPlus_DB.BiddingItems then DWPlus_DB.BiddingItems = {} end;
+		if not DWPlus_DB.BidsSubmitted then DWPlus_DB.BidsSubmitted = {} end;
+		if not DWPlus_DB.BidParams then DWPlus_DB.BidParams = {} end;
 
 		------------------------------------
 		--	Import SavedVariables

@@ -222,7 +222,7 @@ local function UpdateBidderWindow()
 			core.BidInterface.headerButtons.dkp.t:Show();
 		end
 	elseif not core.BiddingWindow then
-		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and MonDKP_DB.modes.ZeroSumBidType == "Minimum Bid") then
+		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
 			core.BidInterface:SetHeight(itemsHeight + 129);
 		else
 			core.BidInterface:SetHeight(itemsHeight + 101);

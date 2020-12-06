@@ -3,11 +3,7 @@ local _G = _G;
 local DWP = core.DWP;
 local L = core.L;
 
-local Bids_Submitted = {};
-local upper = string.upper
 local width, height, numrows = 370, 18, 13
-local CurrItemForBid;
-local CurrItemIcon;
 local SelectedBidder = {}
 local CurZone;
 local Timer = 0;
@@ -18,20 +14,20 @@ local menuFrame = CreateFrame("Frame", "DWPBidWindowMenuFrame", UIParent, "UIDro
 local hookedSlots = {}
 
 local function UpdateBidWindow()
-	if CurrItemForBid then
-		core.BiddingWindow.item:SetText(CurrItemForBid)
+	if DWPlus_DB.BidParams.CurrItemForBid then
+		core.BiddingWindow.item:SetText(DWPlus_DB.BidParams.CurrItemForBid)
 	else
 		core.BiddingWindow.item:SetText(L["NONE"])
 	end
-	core.BiddingWindow.itemIcon:SetTexture(CurrItemIcon)
+	core.BiddingWindow.itemIcon:SetTexture(DWPlus_DB.BidParams.CurrItemIcon)
 end
 
 function DWP:BidsSubmitted_Get()
-	return Bids_Submitted;
+	return DWPlus_DB.BidsSubmitted;
 end
 
 function DWP:BidsSubmitted_Clear()
-	Bids_Submitted = {};
+	DWPlus_DB.BidsSubmitted = {};
 end
 
 local function Roll_OnEvent(self, event, arg1, ...)
@@ -78,17 +74,17 @@ local function Roll_OnEvent(self, event, arg1, ...)
         		return;
             end
 
-			if not DWP:Table_Search(Bids_Submitted, name) and search then
-				if DWPlus_DB.modes.AnnounceBid and ((Bids_Submitted[1] and Bids_Submitted[1].roll < roll) or not Bids_Submitted[1]) then
+			if not DWP:Table_Search(DWPlus_DB.BidsSubmitted, name) and search then
+				if DWPlus_DB.modes.AnnounceBid and ((DWPlus_DB.BidsSubmitted[1] and DWPlus_DB.BidsSubmitted[1].roll < roll) or not DWPlus_DB.BidsSubmitted[1]) then
 					if not DWPlus_DB.modes.AnnounceBidName then
 						SendChatMessage(L["NEWHIGHROLL"].." "..roll.." ("..low.."-"..high..")", "RAID")
 					else
 						SendChatMessage(L["NEWHIGHROLLER"].." "..name..": "..roll.." ("..low.."-"..high..")", "RAID")
 					end
 				end
-				table.insert(Bids_Submitted, {player=name, roll=roll, range=" ("..low.."-"..high..")"})
+				table.insert(DWPlus_DB.BidsSubmitted, {player=name, roll=roll, range=" ("..low.."-"..high..")"})
 				if DWPlus_DB.modes.BroadcastBids then
-					DWP.Sync:SendData("DWPBidShare", Bids_Submitted)
+					DWP.Sync:SendData("DWPBidShare", DWPlus_DB.BidsSubmitted)
 				end
 			else
 				if not search then
@@ -134,11 +130,11 @@ function DWP_CHAT_MSG_WHISPER(text, ...)
 			end
 			if cmd == "cancel" and DWPlus_DB.modes.mode ~= "Roll Based Bidding" then
 				local flagCanceled = false
-				for i=1, #Bids_Submitted do 					-- !bid cancel will cancel their bid
-					if Bids_Submitted[i] and Bids_Submitted[i].player == name then
-						table.remove(Bids_Submitted, i)
+				for i=1, #DWPlus_DB.BidsSubmitted do 					-- !bid cancel will cancel their bid
+					if DWPlus_DB.BidsSubmitted[i] and DWPlus_DB.BidsSubmitted[i].player == name then
+						table.remove(DWPlus_DB.BidsSubmitted, i)
 						if DWPlus_DB.modes.BroadcastBids then
-							DWP.Sync:SendData("DWPBidShare", Bids_Submitted)
+							DWP.Sync:SendData("DWPBidShare", DWPlus_DB.BidsSubmitted)
 						end
 						BidScrollFrame_Update()
 						response = L["BIDCANCELLED"]
@@ -162,45 +158,45 @@ function DWP_CHAT_MSG_WHISPER(text, ...)
 				if dkp then
 					if (cmd and cmd <= dkp) or (DWPlus_DB.modes.SubZeroBidding == true and dkp >= 0) or (DWPlus_DB.modes.SubZeroBidding == true and DWPlus_DB.modes.AllowNegativeBidders == true) or (mode == "Static Item Values" and dkp > 0 and (dkp > core.BiddingWindow.cost:GetNumber() or DWPlus_DB.modes.SubZeroBidding == true or DWPlus_DB.modes.costvalue == "Percent")) or ((mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") and not cmd) then
 						if (cmd and core.BiddingWindow.minBid and tonumber(core.BiddingWindow.minBid:GetNumber()) <= cmd) or mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid" and cmd >= core.BiddingWindow.minBid:GetNumber()) then
-							for i=1, #Bids_Submitted do 					-- checks if a bid was submitted, removes last bid if it was
-								if (mode ~= "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType ~= "Static") and Bids_Submitted[i] and Bids_Submitted[i].player == name and Bids_Submitted[i].bid < cmd then
-									table.remove(Bids_Submitted, i)
-								elseif (mode ~= "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType ~= "Static") and Bids_Submitted[i] and Bids_Submitted[i].player == name and Bids_Submitted[i].bid >= cmd then
+							for i=1, #DWPlus_DB.BidsSubmitted do 					-- checks if a bid was submitted, removes last bid if it was
+								if (mode ~= "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType ~= "Static") and DWPlus_DB.BidsSubmitted[i] and DWPlus_DB.BidsSubmitted[i].player == name and DWPlus_DB.BidsSubmitted[i].bid < cmd then
+									table.remove(DWPlus_DB.BidsSubmitted, i)
+								elseif (mode ~= "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType ~= "Static") and DWPlus_DB.BidsSubmitted[i] and DWPlus_DB.BidsSubmitted[i].player == name and DWPlus_DB.BidsSubmitted[i].bid >= cmd then
 									SendChatMessage(L["BIDEQUALORLESS"], "WHISPER", nil, name)
 									return
 								end
 							end
 							if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-								if DWPlus_DB.modes.AnnounceBid and ((Bids_Submitted[1] and Bids_Submitted[1].bid < cmd) or not Bids_Submitted[1]) then
+								if DWPlus_DB.modes.AnnounceBid and ((DWPlus_DB.BidsSubmitted[1] and DWPlus_DB.BidsSubmitted[1].bid < cmd) or not DWPlus_DB.BidsSubmitted[1]) then
 									if not DWPlus_DB.modes.AnnounceBidName then
 										SendChatMessage(L["NEWHIGHBID"].." "..cmd.." DKP", "RAID")
 									else
 										SendChatMessage(L["NEWHIGHBIDDER"].." "..name.." ("..cmd.." DKP)", "RAID")
 									end
 								end
-								if DWPlus_DB.modes.DeclineLowerBids and Bids_Submitted[1] and cmd <= Bids_Submitted[1].bid then 	-- declines bids lower than highest bid
-									response = "Bid Declined! Current highest bid is "..Bids_Submitted[1].bid;
+								if DWPlus_DB.modes.DeclineLowerBids and DWPlus_DB.BidsSubmitted[1] and cmd <= DWPlus_DB.BidsSubmitted[1].bid then 	-- declines bids lower than highest bid
+									response = "Bid Declined! Current highest bid is "..DWPlus_DB.BidsSubmitted[1].bid;
 								else
-									table.insert(Bids_Submitted, {player=name, bid=cmd})
+									table.insert(DWPlus_DB.BidsSubmitted, {player=name, bid=cmd})
 									response = L["YOURBIDOF"].." "..cmd.." "..L["DKPWASACCEPTED"].."."
 								end
 								if DWPlus_DB.modes.BroadcastBids then
-									DWP.Sync:SendData("DWPBidShare", Bids_Submitted)
+									DWP.Sync:SendData("DWPBidShare", DWPlus_DB.BidsSubmitted)
 								end
 								if Timer ~= 0 and Timer > (core.BiddingWindow.bidTimer:GetText() - 10) and DWPlus_DB.modes.AntiSnipe > 0 then
 									DWP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText().."{"..DWPlus_DB.modes.AntiSnipe, core.BiddingWindow.item:GetText().." Min Bid: "..core.BiddingWindow.minBid:GetText(), core.BiddingWindow.itemIcon:GetTexture());
 								end
 							elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
-								if DWPlus_DB.modes.AnnounceBid and ((Bids_Submitted[1] and Bids_Submitted[1].dkp < dkp) or not Bids_Submitted[1]) then
+								if DWPlus_DB.modes.AnnounceBid and ((DWPlus_DB.BidsSubmitted[1] and DWPlus_DB.BidsSubmitted[1].dkp < dkp) or not DWPlus_DB.BidsSubmitted[1]) then
 									if not DWPlus_DB.modes.AnnounceBidName then
 										SendChatMessage(L["NEWHIGHBID"].." "..dkp.." DKP", "RAID")
 									else
 										SendChatMessage(L["NEWHIGHBIDDER"].." "..name.." ("..dkp.." DKP)", "RAID")
 									end
 								end
-								table.insert(Bids_Submitted, {player=name, dkp=dkp})
+								table.insert(DWPlus_DB.BidsSubmitted, {player=name, dkp=dkp})
 								if DWPlus_DB.modes.BroadcastBids then
-									DWP.Sync:SendData("DWPBidShare", Bids_Submitted)
+									DWP.Sync:SendData("DWPBidShare", DWPlus_DB.BidsSubmitted)
 								end
 								response = L["BIDWASACCEPTED"]
 								if Timer ~= 0 and Timer > (core.BiddingWindow.bidTimer:GetText() - 10) and DWPlus_DB.modes.AntiSnipe > 0 then
@@ -693,14 +689,14 @@ function DWP:ToggleBidWindow(loot, lootIcon, itemName, bossName)
 		if DWP.UIConfig then DWP.UIConfig:SetFrameLevel(2) end
 
 	 	if loot then
-	 		Bids_Submitted = {}
+	 		DWPlus_DB.BidsSubmitted = {}
 	 		if DWPlus_DB.modes.BroadcastBids then
-				DWP.Sync:SendData("DWPBidShare", Bids_Submitted)
+				DWP.Sync:SendData("DWPBidShare", DWPlus_DB.BidsSubmitted)
 			end
 	 		local search = DWP:Table_Search(DWPlus_MinBids, itemName)
 
-	 		CurrItemForBid = loot;
-	 		CurrItemIcon = lootIcon
+			DWPlus_DB.BidParams.CurrItemForBid = loot;
+			DWPlus_DB.BidParams.CurrItemIcon = lootIcon
 	 		CurZone = GetRealZoneText()
 	 		
 	 		if search then
@@ -713,7 +709,7 @@ function DWP:ToggleBidWindow(loot, lootIcon, itemName, bossName)
 		 				if self:GetChecked() == true then
 		 					core.BiddingWindow.minBid:SetText(DWP_round(minBid, DWPlus_DB.modes.rounding))
 		 				else
-		 					core.BiddingWindow.minBid:SetText(DWP:GetMinBid(CurrItemForBid))
+		 					core.BiddingWindow.minBid:SetText(DWP:GetMinBid(DWPlus_DB.BidParams.CurrItemForBid))
 		 				end
 		 			end)
 		 		elseif mode == "Static Item Values" or mode == "Roll Based Bidding" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
@@ -723,12 +719,12 @@ function DWP:ToggleBidWindow(loot, lootIcon, itemName, bossName)
 		 				if self:GetChecked() == true then
 		 					core.BiddingWindow.cost:SetText(DWP_round(minBid, DWPlus_DB.modes.rounding))
 		 				else
-		 					core.BiddingWindow.cost:SetText(DWP:GetMinBid(CurrItemForBid))
+		 					core.BiddingWindow.cost:SetText(DWP:GetMinBid(DWPlus_DB.BidParams.CurrItemForBid))
 		 				end
 		 			end)
 		 		end
 	 		else
-	 			minBid = DWP:GetMinBid(CurrItemForBid)
+	 			minBid = DWP:GetMinBid(DWPlus_DB.BidParams.CurrItemForBid)
 	 			core.BiddingWindow.CustomMinBid:Hide();
 	 		end
 	 		if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
@@ -744,7 +740,7 @@ function DWP:ToggleBidWindow(loot, lootIcon, itemName, bossName)
 	 		core.BiddingWindow.ItemTooltipButton:SetScript("OnEnter", function(self)
 	 			ActionButton_ShowOverlayGlow(core.BiddingWindow.ItemIconButton)
 				GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT", 0, 500);
-				GameTooltip:SetHyperlink(CurrItemForBid)
+				GameTooltip:SetHyperlink(DWPlus_DB.BidParams.CurrItemForBid)
 			end)
 			core.BiddingWindow.ItemTooltipButton:SetScript("OnLeave", function(self)
 				ActionButton_HideOverlayGlow(core.BiddingWindow.ItemIconButton)
@@ -767,16 +763,16 @@ local function StartBidding()
 
 	if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
 		core.BiddingWindow.cost:SetNumber(DWP_round(core.BiddingWindow.minBid:GetNumber(), DWPlus_DB.modes.rounding))
-		DWP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText(), core.BiddingWindow.item:GetText().." Min Bid: "..core.BiddingWindow.minBid:GetText(), CurrItemIcon)
-		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.minBid:GetText()..","..CurrItemIcon..","..core.BiddingWindow.boss:GetText())
-		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.minBid:GetText(), CurrItemIcon, core.BiddingWindow.boss:GetText())
+		DWP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText(), core.BiddingWindow.item:GetText().." Min Bid: "..core.BiddingWindow.minBid:GetText(), DWPlus_DB.BidParams.CurrItemIcon)
+		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.minBid:GetText()..","..DWPlus_DB.BidParams.CurrItemIcon..","..core.BiddingWindow.boss:GetText())
+		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.minBid:GetText(), DWPlus_DB.BidParams.CurrItemIcon, core.BiddingWindow.boss:GetText())
 
 		if DWPlus_DB.defaults.AutoOpenBid then	-- toggles bid window if option is set to
 			DWP:BidInterface_Toggle()
 		end
 
 		local search = DWP:Table_Search(DWPlus_MinBids, core.BiddingWindow.itemName:GetText())
-		local val = DWP:GetMinBid(CurrItemForBid);
+		local val = DWP:GetMinBid(DWPlus_DB.BidParams.CurrItemForBid);
 		
 		if not search and core.BiddingWindow.minBid:GetNumber() ~= tonumber(val) then
 			tinsert(DWPlus_MinBids, {item=core.BiddingWindow.itemName:GetText(), minbid=core.BiddingWindow.minBid:GetNumber()})
@@ -796,10 +792,10 @@ local function StartBidding()
 		end
 	else
 		if DWPlus_DB.modes.costvalue == "Percent" then perc = "%" else perc = " RP" end;
-		DWP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText(), core.BiddingWindow.item:GetText().." Cost: "..core.BiddingWindow.cost:GetNumber()..perc, CurrItemIcon)
-		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.cost:GetText()..perc..","..CurrItemIcon..","..core.BiddingWindow.boss:GetText())
+		DWP:BroadcastBidTimer(core.BiddingWindow.bidTimer:GetText(), core.BiddingWindow.item:GetText().." Cost: "..core.BiddingWindow.cost:GetNumber()..perc, DWPlus_DB.BidParams.CurrItemIcon)
+		DWP.Sync:SendData("DWPCommand", "BidInfo,"..core.BiddingWindow.item:GetText()..","..core.BiddingWindow.cost:GetText()..perc..","..DWPlus_DB.BidParams.CurrItemIcon..","..core.BiddingWindow.boss:GetText())
 		DWP:BidInterface_Toggle()
-		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.cost:GetText()..perc, CurrItemIcon, core.BiddingWindow.boss:GetText())
+		DWP:CurrItem_Set(core.BiddingWindow.item:GetText(), core.BiddingWindow.cost:GetText()..perc, DWPlus_DB.BidParams.CurrItemIcon, core.BiddingWindow.boss:GetText())
 	end
 
 	if mode == "Roll Based Bidding" then
@@ -807,7 +803,7 @@ local function StartBidding()
 		events:SetScript("OnEvent", Roll_OnEvent);
 	end
 	
-	if CurrItemForBid then
+	if DWPlus_DB.BidParams.CurrItemForBid then
 		local channels = {};
 		local channelText = "";
 
@@ -866,20 +862,16 @@ local function ToggleTimerBtn(self)
 end
 
 function ClearBidWindow()
-	CurrItemForBid = "";
-	CurrItemIcon = "";
-	Bids_Submitted = {}
+	DWP:BidsSubmitted_Clear();
 	SelectedBidder = {}
 	if DWPlus_DB.modes.BroadcastBids then
-		DWP.Sync:SendData("DWPBidShare", Bids_Submitted)
+		DWP.Sync:SendData("DWPBidShare", DWPlus_DB.BidsSubmitted)
 	end
-	core.BiddingWindow.cost:SetText("")
 	core.BiddingWindow.CustomMinBid:Hide();
 	core.BiddingWindow.ItemTooltipButton:SetSize(0,0)
 	BidScrollFrame_Update()
 	UpdateBidWindow()
 	core.BidInProgress = false;
-	core.BiddingWindow.boss:SetText("")
 	_G["DWPBiddingStartBiddingButton"]:SetText(L["STARTBIDDING"])
 	_G["DWPBiddingStartBiddingButton"]:SetScript("OnClick", function (self)
 		local pass, err = pcall(ToggleTimerBtn, self)
@@ -1103,7 +1095,7 @@ function DWP:StartBidTimer(seconds, title, itemIcon, sendToChat)
 		end
 		self:SetValue(timer)
 		if timer >= duration then
-			if CurrItemForBid and core.BidInProgress then
+			if DWPlus_DB.BidParams.CurrItemForBid and core.BidInProgress then
 				DWP:SendToRWorRaidChat(L["BIDDINGCLOSED"])
 				events:UnregisterEvent("CHAT_MSG_SYSTEM")
 			end
@@ -1256,14 +1248,14 @@ local function RightClickMenu(self)
   
 	menu = {
 		{ text = L["REMOVEENTRY"], notCheckable = true, func = function()
-			if Bids_Submitted[self.index].bid then
-				SendChatMessage(L["YOURBIDOF"].." "..Bids_Submitted[self.index].bid.." "..L["DKP"].." "..L["MANUALLYDENIED"], "WHISPER", nil, Bids_Submitted[self.index].player)
+			if DWPlus_DB.BidsSubmitted[self.index].bid then
+				SendChatMessage(L["YOURBIDOF"].." "..DWPlus_DB.BidsSubmitted[self.index].bid.." "..L["DKP"].." "..L["MANUALLYDENIED"], "WHISPER", nil, DWPlus_DB.BidsSubmitted[self.index].player)
 			else
-				SendChatMessage(L["YOURBID"].." "..L["MANUALLYDENIED"], "WHISPER", nil, Bids_Submitted[self.index].player)
+				SendChatMessage(L["YOURBID"].." "..L["MANUALLYDENIED"], "WHISPER", nil, DWPlus_DB.BidsSubmitted[self.index].player)
 			end
-			table.remove(Bids_Submitted, self.index)
+			table.remove(DWPlus_DB.BidsSubmitted, self.index)
 			if DWPlus_DB.modes.BroadcastBids then
-				DWP.Sync:SendData("DWPBidShare", Bids_Submitted)
+				DWP.Sync:SendData("DWPBidShare", DWPlus_DB.BidsSubmitted)
 			end
 			SelectedBidder = {}
 			for i=1, #core.BiddingWindow.bidTable.Rows do
@@ -1316,7 +1308,7 @@ end
 
 local function SortBidTable()             -- sorts the Loot History Table by date
 	mode = DWPlus_DB.modes.mode;
-	table.sort(Bids_Submitted, function(a, b)
+	table.sort(DWPlus_DB.BidsSubmitted, function(a, b)
 	    if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
 	    	return a["bid"] > b["bid"]
 	    elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
@@ -1328,13 +1320,13 @@ local function SortBidTable()             -- sorts the Loot History Table by dat
 end
 
 function BidScrollFrame_Update()
-	local numOptions = #Bids_Submitted;
+	local numOptions = #DWPlus_DB.BidsSubmitted;
 	local index, row
     local offset = FauxScrollFrame_GetOffset(core.BiddingWindow.bidTable) or 0
     local rank;
-    local showRows = #Bids_Submitted
+    local showRows = #DWPlus_DB.BidsSubmitted
 
-    if #Bids_Submitted > numrows then
+    if #DWPlus_DB.BidsSubmitted > numrows then
     	showRows = numrows
     end
 
@@ -1346,17 +1338,17 @@ function BidScrollFrame_Update()
     for i=1, showRows do
         row = core.BiddingWindow.bidTable.Rows[i]
         index = offset + i
-        local dkp_total = DWP:Table_Search(DWPlus_RPTable, Bids_Submitted[i].player)
+        local dkp_total = DWP:Table_Search(DWPlus_RPTable, DWPlus_DB.BidsSubmitted[i].player)
         local c = DWP:GetCColors(DWPlus_RPTable[dkp_total[1][1]].class)
-        rank = DWP:GetGuildRank(Bids_Submitted[i].player)
-        if Bids_Submitted[index] then
+        rank = DWP:GetGuildRank(DWPlus_DB.BidsSubmitted[i].player)
+        if DWPlus_DB.BidsSubmitted[index] then
             row:Show()
             row.index = index
-            row.Strings[1]:SetText(Bids_Submitted[i].player.." |cff666666("..rank..")|r")
+            row.Strings[1]:SetText(DWPlus_DB.BidsSubmitted[i].player.." |cff666666("..rank..")|r")
             row.Strings[1]:SetTextColor(c.r, c.g, c.b, 1)
             row.Strings[1].rowCounter:SetText(index)
             if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-            	row.Strings[2]:SetText(Bids_Submitted[i].bid)
+            	row.Strings[2]:SetText(DWPlus_DB.BidsSubmitted[i].bid)
             	row.Strings[3]:SetText(DWP_round(DWPlus_RPTable[dkp_total[1][1]].dkp, DWPlus_DB.modes.rounding))
             elseif mode == "Roll Based Bidding" then
             	local minRoll;
@@ -1381,20 +1373,20 @@ function BidScrollFrame_Update()
             	if tonumber(minRoll) < 1 then minRoll = 1 end
             	if tonumber(maxRoll) < 1 then maxRoll = 1 end
 
-            	row.Strings[2]:SetText(Bids_Submitted[i].roll..Bids_Submitted[i].range)
+            	row.Strings[2]:SetText(DWPlus_DB.BidsSubmitted[i].roll..DWPlus_DB.BidsSubmitted[i].range)
             	row.Strings[3]:SetText(math.floor(minRoll).."-"..math.floor(maxRoll))
             elseif mode == "Static Item Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Static") then
-            	row.Strings[3]:SetText(DWP_round(Bids_Submitted[i].dkp, DWPlus_DB.modes.rounding))
+            	row.Strings[3]:SetText(DWP_round(DWPlus_DB.BidsSubmitted[i].dkp, DWPlus_DB.modes.rounding))
             end
         else
             row:Hide()
         end
     end
     if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
-	    if DWPlus_DB.modes.CostSelection == "First Bidder" and Bids_Submitted[1] then
-	    	core.BiddingWindow.cost:SetText(Bids_Submitted[1].bid)
-	    elseif DWPlus_DB.modes.CostSelection == "Second Bidder" and Bids_Submitted[2] then
-	    	core.BiddingWindow.cost:SetText(Bids_Submitted[2].bid)
+	    if DWPlus_DB.modes.CostSelection == "First Bidder" and DWPlus_DB.BidsSubmitted[1] then
+	    	core.BiddingWindow.cost:SetText(DWPlus_DB.BidsSubmitted[1].bid)
+	    elseif DWPlus_DB.modes.CostSelection == "Second Bidder" and DWPlus_DB.BidsSubmitted[2] then
+	    	core.BiddingWindow.cost:SetText(DWPlus_DB.BidsSubmitted[2].bid)
 	    end
 	end
     --FauxScrollFrame_Update(core.BiddingWindow.bidTable, numOptions, numrows, height, nil, nil, nil, nil, nil, nil, true) -- alwaysShowScrollBar= true to stop frame from hiding
@@ -1490,6 +1482,13 @@ function DWP:CreateBidWindow()
 			self:HighlightText(0,0)
 			self:ClearFocus()
 		end)
+		f.boss:SetScript("OnTextChanged", function(self)    -- clears focus on esc
+			DWPlus_DB.BidParams.bossName = self:GetText();
+		end)
+
+		if DWPlus_DB.BidParams.bossName then
+			f.boss:SetText(DWPlus_DB.BidParams.bossName);
+		end
 
 
 		f.itemHeader = f:CreateFontString(nil, "OVERLAY")
@@ -1626,6 +1625,13 @@ function DWP:CreateBidWindow()
 		f.bidTimer:SetScript("OnLeave", function(self)
 			GameTooltip:Hide()
 		end)
+		f.bidTimer:SetScript("OnTextChanged", function(self)    -- clears focus on esc
+			DWPlus_DB.BidParams.bidTimer = self:GetText();
+		end)
+
+		if DWPlus_DB.BidParams.bidTimer then
+			f.bidTimer:SetText(DWPlus_DB.BidParams.bidTimer);
+		end
 
 		f.bidTimerFooter = f:CreateFontString(nil, "OVERLAY")
 		f.bidTimerFooter:SetFontObject("DWPNormalLeft");
@@ -1826,6 +1832,13 @@ function DWP:CreateBidWindow()
 		f.cost:SetScript("OnLeave", function(self)
 			GameTooltip:Hide()
 		end)
+		f.cost:SetScript("OnTextChanged", function(self)    -- clears focus on esc
+			DWPlus_DB.BidParams.cost = self:GetText();
+		end)
+
+		if DWPlus_DB.BidParams.cost then
+			f.cost:SetText(DWPlus_DB.BidParams.cost);
+		end
 
 		f.costHeader = f:CreateFontString(nil, "OVERLAY")
 		f.costHeader:SetFontObject("DWPLargeRight");
@@ -1864,7 +1877,7 @@ function DWP:CreateBidWindow()
 					return;
 				end
 				
-				DWP:AwardConfirm(SelectedBidder["player"], tonumber(f.cost:GetText()), f.boss:GetText(), DWPlus_DB.bossargs.CurrentRaidZone, CurrItemForBid)
+				DWP:AwardConfirm(SelectedBidder["player"], tonumber(f.cost:GetText()), f.boss:GetText(), DWPlus_DB.bossargs.CurrentRaidZone, DWPlus_DB.BidParams.CurrItemForBid)
 			else
 				local selected = L["PLAYERVALIDATE"];
 
@@ -1887,9 +1900,9 @@ function DWP:CreateBidWindow()
 
 				local itemName,_,_,_,_,_,_,_,_,itemIcon = GetItemInfo(link)
 
-				CurrItemForBid = link
-				CurrItemIcon = itemIcon
-				DWP:ToggleBidWindow(CurrItemForBid, CurrItemIcon, itemName)
+				DWPlus_DB.BidParams.CurrItemForBid = link
+				DWPlus_DB.BidParams.CurrItemIcon = itemIcon
+				DWP:ToggleBidWindow(DWPlus_DB.BidParams.CurrItemForBid, DWPlus_DB.BidParams.CurrItemIcon, itemName)
 				ClearCursor()
 			end
 	    end)

@@ -28,6 +28,11 @@ local MiniMapLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("DWPlus
 		tooltip:AddLine(format(TT_ENTRY, L["MINIMAPLEFTCLICK"], L["MINIMAPSETTINGS"]))
 		tooltip:AddLine(format(TT_ENTRY, "Shift + " .. L["MINIMAPLEFTCLICK"], L["CONSULMODAL"]))
 		tooltip:AddLine(format(TT_ENTRY, L["MINIMAPRIGHTCLICK"], L["OPENBIDWINDOWHELP"]))
+
+		DWP:CheckOfficer()
+		if core.IsOfficer then
+			tooltip:AddLine(format(TT_ENTRY,  "Shift + " .. L["MINIMAPRIGHTCLICK"], L["OPENAUCWINHELP"]))
+		end
 	end,
 	OnClick = function(_, button)
 		if button == "LeftButton" then
@@ -41,7 +46,11 @@ local MiniMapLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("DWPlus
 			DWP:StatusVerify_Update()
 
 			if core.IsOfficer then
-				DWP.ToggleSelectBidWindow()
+				if IsShiftKeyDown() then
+					DWP:ToggleBidWindow();
+				else
+					DWP:ToggleSelectBidWindow()
+				end
 			end
 
 			DWP:BidInterface_Toggle()
