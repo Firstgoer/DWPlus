@@ -140,6 +140,12 @@ local function UpdateBidderWindow()
 		core.BidInterface.item:Hide();
 		core.BidInterface.Boss:Hide();
 		core.BidInterface.MinBidHeader:SetPoint("TOP", core.BidInterface, "TOP", -160, -15);
+		for j=1, #core.BidInterface.LootTableIcons do
+			core.BidInterface.LootTableIcons[j]:Hide()
+		end
+		for j=1, #core.BidInterface.LootTableButtons do
+			core.BidInterface.LootTableButtons[j]:Hide()
+		end
 	end
 
 	if mode == "Minimum Bid Values" or (mode == "Zero Sum" and DWPlus_DB.modes.ZeroSumBidType == "Minimum Bid") then
